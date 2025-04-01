@@ -1,112 +1,101 @@
 package entity;
 
 public class LoaiPhong {
-    private String maLoaiPhong;
-    private String tenLoai;
-    private int soLuong;
-    private float dienTich;
-    private double giaTheoGio;
-    private double giaTheoNgay;
-    private double giaTheoDem;
-    private double phuThuQuaGio;
 
-    // Constructor mặc định
-    public LoaiPhong() {
-    }
-    public LoaiPhong(String maLoaiPhong) {
-    	this.maLoaiPhong = maLoaiPhong;
-    }
-    // Constructor đầy đủ tham số
-    public LoaiPhong(String maLoaiPhong, String tenLoai, int soLuong, float dienTich,
-                     double giaTheoGio, double giaTheoNgay, double giaTheoDem, double phuThuQuaGio) {
-        this.maLoaiPhong = maLoaiPhong;
-        this.tenLoai = tenLoai;
-        this.soLuong = soLuong;
-        this.dienTich = dienTich;
-        this.giaTheoGio = giaTheoGio;
-        this.giaTheoNgay = giaTheoNgay;
-        this.giaTheoDem = giaTheoDem;
-        this.phuThuQuaGio = phuThuQuaGio;
-    }
+	private String maLoaiPhong;
+	private String tenLoai;
+	private int soLuong;
+	private float dienTich;
+	private double giaTheoGio;
+	private double giaTheoNgay;
+	private double giaTheoDem;
+	private double phuThuQuaGio;
 
-    // Getter và Setter
-    public String getMaLoaiPhong() {
-        return maLoaiPhong;
-    }
+	public LoaiPhong() {
+		// TODO - implement LoaiPhong.LoaiPhong
+		throw new UnsupportedOperationException();
+	}
 
-    public void setMaLoaiPhong(String maLoaiPhong) {
-        this.maLoaiPhong = maLoaiPhong;
-    }
+	public LoaiPhong(String maLoaiPhong, String tenLoai, int soLuong, float dienTich, double giaTheoGio,
+			double giaTheoNgay, double giaTheoDem, double phuThuQuaGio) {
+		super();
+		this.maLoaiPhong = maLoaiPhong;
+		this.tenLoai = tenLoai;
+		this.soLuong = soLuong;
+		this.dienTich = dienTich;
+		this.giaTheoGio = giaTheoGio;
+		this.giaTheoNgay = giaTheoNgay;
+		this.giaTheoDem = giaTheoDem;
+		this.phuThuQuaGio = phuThuQuaGio;
+	}
 
-    public String getTenLoai() {
-        return tenLoai;
-    }
+	public LoaiPhong(String maLoaiPhong) {
+		super();
+		this.maLoaiPhong = maLoaiPhong;
+	}
 
-    public void setTenLoai(String tenLoai) {
-        this.tenLoai = tenLoai;
-    }
+	public String getMaLoaiPhong() {
+		return maLoaiPhong;
+	}
 
-    public int getSoLuong() {
-        return soLuong;
-    }
+	public void setMaLoaiPhong(String maLoaiPhong) {
+		this.maLoaiPhong = maLoaiPhong;
+	}
 
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
-    }
+	public String getTenLoai() {
+		return tenLoai;
+	}
 
-    public float getDienTich() {
-        return dienTich;
-    }
+	public void setTenLoai(String tenLoai) {
+		this.tenLoai = tenLoai;
+	}
 
-    public void setDienTich(float dienTich) {
-        this.dienTich = dienTich;
-    }
+	public int getSoLuong() {
+		return soLuong;
+	}
 
-    public double getGiaTheoGio() {
-        return giaTheoGio;
-    }
+	public void setSoLuong(int soLuong) {
+		this.soLuong = soLuong;
+	}
 
-    public void setGiaTheoGio(double giaTheoGio) {
-        this.giaTheoGio = giaTheoGio;
-    }
+	public float getDienTich() {
+		return dienTich;
+	}
 
-    public double getGiaTheoNgay() {
-        return giaTheoNgay;
-    }
+	public void setDienTich(float dienTich) {
+		this.dienTich = dienTich;
+	}
 
-    public void setGiaTheoNgay(double giaTheoNgay) {
-        this.giaTheoNgay = giaTheoNgay;
-    }
+	public double getGiaTheoGio() {
+		return giaTheoGio;
+	}
 
-    public double getGiaTheoDem() {
-        return giaTheoDem;
-    }
+	public void setGiaTheoGio(double giaTheoGio) {
+		this.giaTheoGio = giaTheoGio;
+	}
 
-    public void setGiaTheoDem(double giaTheoDem) {
-        this.giaTheoDem = giaTheoDem;
-    }
+	public double getGiaTheoNgay() {
+		return giaTheoNgay;
+	}
 
-    public double getPhuThuQuaGio() {
-        return phuThuQuaGio;
-    }
+	public void setGiaTheoNgay(double giaTheoNgay) {
+		this.giaTheoNgay = giaTheoNgay;
+	}
 
-    public void setPhuThuQuaGio(double phuThuQuaGio) {
-        this.phuThuQuaGio = phuThuQuaGio;
-    }
+	public double getGiaTheoDem() {
+		return giaTheoDem;
+	}
 
-    // Phương thức hiển thị thông tin LoaiPhong
-    @Override
-    public String toString() {
-        return "LoaiPhong{" +
-                "maLoaiPhong='" + maLoaiPhong + '\'' +
-                ", tenLoai='" + tenLoai + '\'' +
-                ", soLuong=" + soLuong +
-                ", dienTich=" + dienTich +
-                ", giaTheoGio=" + giaTheoGio +
-                ", giaTheoNgay=" + giaTheoNgay +
-                ", giaTheoDem=" + giaTheoDem +
-                ", phuThuQuaGio=" + phuThuQuaGio +
-                '}';
-    }
+	public void setGiaTheoDem(double giaTheoDem) {
+		this.giaTheoDem = giaTheoDem;
+	}
+
+	public double getPhuThuQuaGio() {
+		return phuThuQuaGio;
+	}
+
+	public void setPhuThuQuaGio(double phuThuQuaGio) {
+		this.phuThuQuaGio = phuThuQuaGio;
+	}
+
 }
-
