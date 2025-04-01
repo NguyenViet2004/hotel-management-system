@@ -68,7 +68,7 @@ public class giaodien extends JFrame {
         contentPane.add(mainPanel, BorderLayout.CENTER);
 
         // Thêm nội dung vào header
-        JLabel headerLabel = new JLabel("Đây là Header");
+        JLabel headerLabel = new JLabel("Đây là gì");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         headerLabel.setForeground(Color.WHITE);
         panelHeader.add(headerLabel);
