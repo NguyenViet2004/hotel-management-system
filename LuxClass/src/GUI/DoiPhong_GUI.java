@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,7 +43,6 @@ public class DoiPhong_GUI extends JFrame {
         setResizable(false);        // Không cho phép thay đổi kích thước cửa sổ bằng kéo thả
         
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(10, 10)); // 20px khoảng cách ngang và dọc giữa các panel
         setContentPane(contentPane);
         
@@ -53,7 +53,7 @@ public class DoiPhong_GUI extends JFrame {
         // Panel tiêu đề (North)
         JPanel panelNorth = new JPanel();
         panelNorth.setBackground(Color.BLACK);
-        panelNorth.setPreferredSize(new Dimension(screenWidth, (int) (screenHeight * 0.1)));
+        panelNorth.setPreferredSize(new Dimension(screenWidth, (int) (screenHeight * 0.15)));
         panelNorth.add(new JLabel("QUẢN LÝ ĐẶT PHÒNG", JLabel.CENTER));
         panelNorth.setForeground(Color.WHITE);
         add(panelNorth, BorderLayout.NORTH);
@@ -67,7 +67,10 @@ public class DoiPhong_GUI extends JFrame {
         
         // Panel phòng (Center)
         JPanel panelCen= new JPanel();
-        panelCen.setPreferredSize(new Dimension((int)(screenWidth*0.70), (screenHeight)));
+        panelCen.setPreferredSize(new Dimension((int) (screenWidth*0.8), (screenHeight)));
+        panelCen.setBackground(Color.GREEN);
+        add(panelCen,BorderLayout.CENTER);
+        
         
     }
 }
