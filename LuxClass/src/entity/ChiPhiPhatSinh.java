@@ -10,7 +10,7 @@ public class ChiPhiPhatSinh {
 	
 	public ChiPhiPhatSinh() {
 		// TODO - implement ChiPhiPhatSinh.ChiPhiPhatSinh
-		throw new UnsupportedOperationException();
+
 	}
 	
 	public ChiPhiPhatSinh(String maChiPhi, double chiPhiTBHong, int soGioThem, String moTa, DonDatPhong donDatPhong) {

@@ -9,7 +9,6 @@ public class TaiKhoan {
 	
 	public TaiKhoan() {
 		// TODO - implement TaiKhoan.TaiKhoan
-		throw new UnsupportedOperationException();
 	}
 
 	public TaiKhoan(String tenDangNhap, String matKhau, String trangThai, NhanVien nhanVien) {

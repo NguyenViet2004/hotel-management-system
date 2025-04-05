@@ -9,7 +9,6 @@ public class Phong {
 
 	public Phong() {
 		// TODO - implement Phong.Phong
-		throw new UnsupportedOperationException();
 	}
 
 	public Phong(String soPhong, String trangThai, LoaiPhong loaiPhong, String moTa) {

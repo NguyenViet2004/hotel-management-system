@@ -7,7 +7,7 @@ public class LoaiDichVu {
 
 	public LoaiDichVu() {
 		// TODO - implement LoaiDichVu.LoaiDichVu
-		throw new UnsupportedOperationException();
+
 	}
 
 	public LoaiDichVu(String maLoai, String tenLoai) {
