@@ -8,7 +8,7 @@ public class ChiTietPhieuDichVu {
 
 	public ChiTietPhieuDichVu() {
 		// TODO - implement ChiTietPhieuDichVu.ChiTietPhieuDichVu
-		throw new UnsupportedOperationException();
+
 	}
 
 	public ChiTietPhieuDichVu(PhieuDichVu phieuDichVu, DichVu dichVu, int soLuong) {

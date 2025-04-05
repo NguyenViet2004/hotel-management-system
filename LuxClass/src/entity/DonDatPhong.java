@@ -16,7 +16,7 @@ public class DonDatPhong {
 
 	public DonDatPhong() {
 		// TODO - implement DonDatPhong.DonDatPhong
-		throw new UnsupportedOperationException();
+
 	}
 	
 	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, LocalDateTime ngayNhanPhong,

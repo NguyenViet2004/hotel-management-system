@@ -10,7 +10,7 @@ public class DichVu {
 
 	public DichVu() {
 		// TODO - implement DichVu.DichVu
-		throw new UnsupportedOperationException();
+
 	}
 
 	public DichVu(String maDV, String tenDV, String moTa, double giaDV, LoaiDichVu loaiDichVu) {

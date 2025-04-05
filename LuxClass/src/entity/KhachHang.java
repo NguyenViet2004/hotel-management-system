@@ -9,7 +9,7 @@ public class KhachHang {
 
 	public KhachHang() {
 		// TODO - implement KhachHang.KhachHang
-		throw new UnsupportedOperationException();
+
 	}
 
 	public KhachHang(String maKH, String hoTen, String sdt, String soCCCD) {

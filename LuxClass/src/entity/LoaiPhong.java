@@ -13,7 +13,6 @@ public class LoaiPhong {
 
 	public LoaiPhong() {
 		// TODO - implement LoaiPhong.LoaiPhong
-		throw new UnsupportedOperationException();
 	}
 
 	public LoaiPhong(String maLoaiPhong, String tenLoai, int soLuong, float dienTich, double giaTheoGio,

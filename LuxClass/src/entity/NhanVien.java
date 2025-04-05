@@ -15,7 +15,6 @@ public class NhanVien {
 
 	public NhanVien() {
 		// TODO - implement NhanVien.NhanVien
-		throw new UnsupportedOperationException();
 	}
 
 	public NhanVien(String maNV, String hoTen, LocalDate ngaySinh, String sdt, String diaChi, String soCCCD,
@@ -99,5 +98,18 @@ public class NhanVien {
 	public void setCaLamViec(String caLamViec) {
 		this.caLamViec = caLamViec;
 	}
-	
+	@Override
+	public String toString() {
+	    return "NhanVien{" +
+	           "maNV='" + maNV + '\'' +
+	           ", hoTen='" + hoTen + '\'' +
+	           ", ngaySinh=" + ngaySinh +
+	           ", sdt='" + sdt + '\'' +
+	           ", diaChi='" + diaChi + '\'' +
+	           ", soCCCD='" + soCCCD + '\'' +
+	           ", chucVu='" + chucVu + '\'' +
+	           ", caLamViec='" + caLamViec + '\'' +
+	           '}';
+	}
+
 }

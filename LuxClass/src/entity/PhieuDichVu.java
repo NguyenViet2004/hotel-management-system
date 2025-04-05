@@ -7,7 +7,6 @@ public class PhieuDichVu {
 
 	public PhieuDichVu() {
 		// TODO - implement PhieuDichVu.PhieuDichVu
-		throw new UnsupportedOperationException();
 	}
 
 	public double tinhTienDichVu() {

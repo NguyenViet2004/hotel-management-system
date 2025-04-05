@@ -8,7 +8,7 @@ public class ChiTietDonDatPhong {
 
 	public ChiTietDonDatPhong() {
 		// TODO - implement ChiTietDonDatPhong.ChiTietDonDatPhong
-		throw new UnsupportedOperationException();
+
 	}
 
 	public ChiTietDonDatPhong(DonDatPhong donDatPhong, Phong phong, int soLuong) {
