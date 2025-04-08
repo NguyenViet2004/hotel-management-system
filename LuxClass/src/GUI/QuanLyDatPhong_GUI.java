@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Arrays;
@@ -30,16 +31,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class DoiPhong_GUI extends JFrame {
+public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	RoundedButton btnDat;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
-				DoiPhong_GUI frame = new DoiPhong_GUI();
+				QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
 				frame.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -47,7 +51,7 @@ public class DoiPhong_GUI extends JFrame {
 		});
 	}
 
-	public DoiPhong_GUI() {
+	public QuanLyDatPhong_GUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setResizable(false);
@@ -191,13 +195,16 @@ public class DoiPhong_GUI extends JFrame {
 		Font font = new Font("Arial", Font.BOLD, 16);
 
 		// Create rounded buttons and set their font
-		RoundedButton btnDat = new RoundedButton("Đặt phòng", 20);
+		btnDat= new RoundedButton("Đặt phòng", 20);
+		btnDat.addActionListener(this);
 		btnDat.setPreferredSize(new Dimension(150, 40));
 		btnDat.setFont(font); // Set bold font
 		panelCenter.add(btnDat);
+		
 
 		RoundedButton btnDoi = new RoundedButton("Đổi phòng", 20);
 		btnDoi.setPreferredSize(new Dimension(150, 40));
+		btnDoi.addActionListener(null);
 		btnDoi.setFont(font); // Set bold font
 		panelCenter.add(btnDoi);
 
@@ -403,5 +410,19 @@ public class DoiPhong_GUI extends JFrame {
 			g2.drawString("Số ngày: " + days, margin, margin + 3 * lineHeight); // Dòng 3
 		}
 	}
+
+	@Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnDat ) {
+            // Mở cửa sổ đặt phòng
+            DatPhong_GUI frameDatPhong = new DatPhong_GUI(this);
+            frameDatPhong.setVisible(true);
+        }
+//        if(e.getSource() == btnDatPhong2){
+//            // Mở cửa sổ đặt phòng
+//            DatPhong_GUI1 frameDatPhong = (DatPhong_GUI1) new DatPhong_GUI1(this);
+//            frameDatPhong.setVisible(true);
+//        }
+    }
 
 }
