@@ -17,7 +17,7 @@ private ArrayList<Phong> dsp;
         dsp = new ArrayList<Phong>();
     }
 
-    public ArrayList<Phong> getAllLoaiPhong() {
+    public ArrayList<Phong> getAllPhong() {
         try (Connection con = ConnectDB.getConnection()) {
             String sql = "SELECT * FROM Phong";
             Statement statement = con.createStatement();
@@ -28,7 +28,6 @@ private ArrayList<Phong> dsp;
                 String trangThai = rs.getString(2);
                 LoaiPhong loaiPhong = new LoaiPhong(rs.getString(3));
                 String moTa = rs.getString(4);
-
 
                 Phong p = new Phong(soPhong,trangThai,loaiPhong,moTa);
                 dsp.add(p);
