@@ -11,7 +11,7 @@ import entity.LoaiPhong;
 import entity.Phong;
 
 public class Phong_Dao {
-private ArrayList<Phong> dsp;
+	private ArrayList<Phong> dsp;
     
     public Phong_Dao() {
         dsp = new ArrayList<Phong>();
