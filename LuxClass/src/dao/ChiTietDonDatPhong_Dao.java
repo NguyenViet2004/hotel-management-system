@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 import connectDB.ConnectDB;
 import entity.ChiTietDonDatPhong;
@@ -14,9 +16,10 @@ import entity.Phong;
 
 public class ChiTietDonDatPhong_Dao {
 	private ArrayList<ChiTietDonDatPhong> dsctddp;
-    
+	private Connection connection;
     public ChiTietDonDatPhong_Dao() {
     	dsctddp = new ArrayList<ChiTietDonDatPhong>();
+    	connection = ConnectDB.getConnection();
     }
 
     public ArrayList<ChiTietDonDatPhong> getAllChiTietDonDatPhong() {
@@ -39,40 +42,37 @@ public class ChiTietDonDatPhong_Dao {
         return dsctddp;
     }
     
-    public int CountNumberRoom(String tenLoaiPhong) {
+    public int countSoPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong) throws SQLException {
         int soLuong = 0;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
 
-        try {
-            // KHÔNG dùng try-with-resources ở đây
-            Connection conn = connectDB.ConnectDB.getConnection();
-            String sql = "SELECT COUNT(*) AS SoLuongPhong " +
-                         "FROM Phong p " +
-                         "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " +
-                         "WHERE lp.tenLoai = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setNString(1, tenLoaiPhong); // dùng setNString cho Unicode (có chữ tiếng Việt)
+        String sql = """
+            SELECT COUNT(*) AS SoPhongTrong
+            FROM Phong
+            WHERE loaiPhong = ?
+              AND soPhong NOT IN (
+                SELECT CT.soPhong
+                FROM ChiTietDonDatPhong CT
+                JOIN DonDatPhong DDP ON CT.maDonDatPhong = DDP.maDonDatPhong
+                WHERE
+                    DDP.ngayNhanPhong < ?
+                    AND DDP.ngayTraPhong > ?
+              )
+        """;
 
-            rs = stmt.executeQuery();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, loaiPhong);
+            stmt.setTimestamp(2, denNgay); // ngày nhận < đến ngày
+            stmt.setTimestamp(3, tuNgay);  // ngày trả > từ ngày
 
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                soLuong = rs.getInt("SoLuongPhong");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
-                // KHÔNG được đóng conn ở đây!
-            } catch (Exception e) {
-                e.printStackTrace();
+                soLuong = rs.getInt("SoPhongTrong");
             }
         }
 
         return soLuong;
     }
+
     
     public int GetPriceToDay(String tenLoaiPhong) {
         int giaTheoNgay = 0;
@@ -108,6 +108,35 @@ public class ChiTietDonDatPhong_Dao {
         return giaTheoNgay;
     }
 
+    public List<String> layDanhSachPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong) throws SQLException {
+        List<String> danhSachPhong = new ArrayList<>();
 
+        String sql = """
+            SELECT soPhong
+            FROM Phong
+            WHERE loaiPhong = ?
+              AND soPhong NOT IN (
+                SELECT CT.soPhong
+                FROM ChiTietDonDatPhong CT
+                JOIN DonDatPhong DDP ON CT.maDonDatPhong = DDP.maDonDatPhong
+                WHERE
+                    DDP.ngayNhanPhong < ?
+                    AND DDP.ngayTraPhong > ?
+              )
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, loaiPhong);
+            stmt.setTimestamp(2, denNgay); // ngày nhận < đến ngày
+            stmt.setTimestamp(3, tuNgay);  // ngày trả > từ ngày
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                danhSachPhong.add(rs.getString("soPhong"));
+            }
+        }
+
+        return danhSachPhong;
+    }
 
 }
