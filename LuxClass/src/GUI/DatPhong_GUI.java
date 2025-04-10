@@ -43,7 +43,7 @@ public class DatPhong_GUI extends JDialog {
     private JDatePickerImpl datePickerCheckOut;
     private Timestamp tuNgay;   // ngày nhận phòng
     private Timestamp denNgay;  // ngày trả phòng
-
+    private String kieuDatPhong = null; // "GIO", "NGAY", hoặc "DEM"
 
     
 
@@ -119,9 +119,10 @@ public class DatPhong_GUI extends JDialog {
         titleClosePanel.add(titleLabel, BorderLayout.WEST);
         titleClosePanel.add(closeButton, BorderLayout.EAST);
         //tạo nút chưa 3 nút==================================phần 2 của header====================================
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,60, 5));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int)(headerHeight * 0.35)));
+
 
         //========== Tạo 3 nút với viền
         JButton theoGioButton = new JButton("Theo giờ");
@@ -150,13 +151,14 @@ public class DatPhong_GUI extends JDialog {
             new LineBorder(Color.BLACK, 2), 
             new EmptyBorder(5, 15, 5, 15)
         ));
-
+        
         buttonPanel.add(theoGioButton);
         buttonPanel.add(theoNgayButton);
         buttonPanel.add(theoDemButton);
         theoGioButton.addActionListener(e -> {
             loadGiaoDienTheoGio();
             updateButtonStyles(theoGioButton, theoNgayButton, theoDemButton);
+            kieuDatPhong = "GIO";
         });
 
         theoNgayButton.addActionListener(e -> {
@@ -167,11 +169,13 @@ public class DatPhong_GUI extends JDialog {
 				e1.printStackTrace();
 			}
             updateButtonStyles(theoNgayButton, theoGioButton, theoDemButton);
+            kieuDatPhong = "NGAY";
         });
 
         theoDemButton.addActionListener(e -> {
             loadGiaoDienTheoDem();
             updateButtonStyles(theoDemButton, theoGioButton, theoNgayButton);
+            kieuDatPhong = "DEM";
         });
 
 
@@ -247,8 +251,7 @@ public class DatPhong_GUI extends JDialog {
         minusButton.setFont(new Font("Arial", Font.BOLD, 14));
         minusButton.setPreferredSize(new Dimension(45, 25));
 
-        JLabel guestCountLabel = new JLabel("2"); // Mặc định là 2 như trong hình
-        guestCountLabel.setText("0"); 
+        JLabel guestCountLabel = new JLabel("0"); // Mặc định là 2 như trong hình
         guestCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
         guestCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
         guestCountLabel.setPreferredSize(new Dimension(30, 25));
@@ -316,16 +319,61 @@ public class DatPhong_GUI extends JDialog {
         confirmButton.setFocusPainted(false);
         confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         confirmButton.addActionListener(e -> {
+//            Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+//            Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
+//
+//            if (ngayNhan == null || ngayTra == null) {
+//                JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//
+//            if (!ngayNhan.before(ngayTra)) {
+//                JOptionPane.showMessageDialog(null, "Ngày nhận phòng phải trước ngày trả phòng.", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//            
+//            int soLuongKhach = Integer.parseInt(guestCountLabel.getText());
+//            if (soLuongKhach <= 0) {
+//                JOptionPane.showMessageDialog(null, "Số lượng khách phải lớn hơn 0.", "Lỗi số lượng", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//            
+//            if (kieuDatPhong == null) {
+//                JOptionPane.showMessageDialog(null, "Vui lòng chọn kiểu đặt phòng (Giờ / Ngày / Đêm).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//            
+//            // Kiểm tra tổng số lượng các loại phòng
+//            int tongPhong = 0;
+//            for (int qty : roomQuantities) {
+//                tongPhong += qty;
+//            }
+//
+//            if (tongPhong == 0) {
+//                JOptionPane.showMessageDialog(
+//                    null,
+//                    "Vui lòng chọn ít nhất một loại phòng.",
+//                    "Thông báo",
+//                    JOptionPane.WARNING_MESSAGE
+//                );
+//                return; // Không cho chuyển trang nếu chưa chọn phòng
+//            }
+//
+//            // Ngày hợp lệ, gán giá trị
+//            tuNgay = new Timestamp(ngayNhan.getTime());
+//            denNgay = new Timestamp(ngayTra.getTime());
+
+            // Chuyển sang trang xác nhận
             JPanel trang2 = null;
-			try {
-				trang2 = taoTrangXacNhanPhong();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} // tạo lại giao diện Trang 2, lúc này roomQuantities đã có giá trị mới
+            try {
+                trang2 = taoTrangXacNhanPhong();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             mainPanel.add(trang2, "Trang2");
             cardLayout.show(mainPanel, "Trang2");
         });
+
         footerPanel.add(confirmButton);
 
         //============end===============Thêm các phần vào panel chọn phòng==========================================
@@ -643,6 +691,7 @@ public class DatPhong_GUI extends JDialog {
         }
 
         JPanel centerPanel = new JPanel();
+        centerPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         centerPanel.setBackground(Color.white);
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
@@ -682,8 +731,6 @@ public class DatPhong_GUI extends JDialog {
                 JComboBox<String> phongComboBox = new JComboBox<>();
 
                 try {
-                    Timestamp tuNgay = Timestamp.valueOf("2025-04-12 14:00:00");
-                    Timestamp denNgay = Timestamp.valueOf("2025-04-13 12:00:00");
 
                     // CHUYỂN roomTypes[i] thành tên trong DB: "Double Room" -> "double"
                     String loaiPhongDB = loaiPhong.toLowerCase().split(" ")[0]; // ví dụ: "Single Room" -> "single"
@@ -721,7 +768,7 @@ public class DatPhong_GUI extends JDialog {
 
 
         JScrollPane scrollPane = new JScrollPane(rowsPanel);
-        scrollPane.setBorder(null);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Footer
@@ -757,14 +804,6 @@ public class DatPhong_GUI extends JDialog {
     }
     //========================Trang 3=====================================================
     private JPanel taoTrangNhapThongTin() {
-//        // Lấy kích thước màn hình
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        screenWidthTrang2 = (int) (screenSize.width * 0.3);
-//        screenHeightTrang2 = (int) (screenSize.height * 0.6);
-//
-//        // Đặt kích thước dialog
-//        setSize(screenWidthTrang2, screenHeightTrang2);
-
     	// Tính toán kích thước các phần
         int headerHeight = (int) (screenHeightTrang1 * 0.2);  
         int centerHeight = (int) (screenHeightTrang1 * 0.7); 
@@ -801,7 +840,7 @@ public class DatPhong_GUI extends JDialog {
         closePanel.add(closeButton);
 
         // ======= Panel chứa tiêu đề căn giữa =======
-        JLabel titleLabel = new JLabel("Thông tin khách hàng", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Thông tin khách hàng mới", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -820,21 +859,23 @@ public class DatPhong_GUI extends JDialog {
 
         headerPanel.add(titleClosePanel);
         
-        // =============================== Center =============================================================
+     // =============================== Center =============================================================
         JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.WHITE);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
-
         centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
-        GroupLayout layout = new GroupLayout(centerPanel);
-        centerPanel.setLayout(layout);
+        // ======================= Top Panel: Thông tin khách hàng mới =======================================
+        JPanel topPanel = new JPanel();
+        topPanel.setBackground(Color.CYAN);
+        GroupLayout layout = new GroupLayout(topPanel);
+        topPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        // ====== Tạo các thành phần ======
-        //cỡ chữ
-        int cochu =14;
+        int cochu = 14;
+
         JLabel lblHoTen = new JLabel("<html>Họ và tên <font color='red'>*</font></html>");
         lblHoTen.setFont(new Font("Arial", Font.BOLD, cochu));
         JTextField txtHoTen = new JTextField();
@@ -865,8 +906,8 @@ public class DatPhong_GUI extends JDialog {
         chkPanel.add(chkNoi);
         chkPanel.add(chkBaoMau);
         chkPanel.add(chkXeDay);
-        
-        // ====== Setup layout ======
+
+        // GroupLayout setup
         layout.setHorizontalGroup(
             layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -882,35 +923,82 @@ public class DatPhong_GUI extends JDialog {
                     .addComponent(txtTienCoc)
                     .addComponent(chkPanel))
         );
-        int khoangcach =20;
+
+        int khoangcach = 10;
         layout.setVerticalGroup(
-        	    layout.createSequentialGroup()
-        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-        	            .addComponent(lblHoTen)
-        	            .addComponent(txtHoTen))
-        	        .addGap(khoangcach)
-        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-        	            .addComponent(lblSDT)
-        	            .addComponent(txtSDT))
-        	        .addGap(khoangcach)
-        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-        	            .addComponent(lblEmail)
-        	            .addComponent(txtEmail))
-        	        .addGap(khoangcach)
-        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-        	            .addComponent(lblTienCoc)
-        	            .addComponent(txtTienCoc))
-        	        .addGap(khoangcach)
-        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-        	            .addComponent(lblYeuCau)
-        	            .addComponent(chkPanel))
-        	);
+            layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHoTen)
+                    .addComponent(txtHoTen))
+                .addGap(khoangcach)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSDT)
+                    .addComponent(txtSDT))
+                .addGap(khoangcach)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEmail)
+                    .addComponent(txtEmail))
+                .addGap(khoangcach)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTienCoc)
+                    .addComponent(txtTienCoc))
+                .addGap(khoangcach)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(lblYeuCau)
+                    .addComponent(chkPanel))
+        );
+
+        // Set chiều cao các ô nhập
         setTextFieldHeight(txtHoTen);
         setTextFieldHeight(txtSDT);
         setTextFieldHeight(txtEmail);
         setTextFieldHeight(txtTienCoc);
 
-        
+        // ======================= Bottom Panel: Khách hàng cũ =======================================
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBackground(Color.PINK);
+
+        // Tiêu đề căn giữa
+        JLabel lblKhachCu = new JLabel("Thông tin khách hàng đã từng đặt", JLabel.CENTER);
+        lblKhachCu.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Ô nhập và nút tìm kiếm
+        JTextField txtSDTKhachCu = new JTextField(15);
+        JButton btnTimKiem = new JButton("Tìm");
+
+        JPanel khachCuPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        khachCuPanel.setBackground(Color.WHITE);
+        khachCuPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        khachCuPanel.add(new JLabel("Nhập số điện thoại: "));
+        khachCuPanel.add(txtSDTKhachCu);
+        khachCuPanel.add(btnTimKiem);
+
+        // Kết quả tìm kiếm
+        JLabel lblKetQua = new JLabel("");
+        lblKetQua.setFont(new Font("Arial", Font.PLAIN, cochu));
+        lblKetQua.setForeground(Color.DARK_GRAY);
+
+        JPanel ketQuaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        ketQuaPanel.setBackground(Color.WHITE);
+        ketQuaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        ketQuaPanel.add(lblKetQua);
+
+        // Thêm vào bottomPanel
+        bottomPanel.add(Box.createVerticalStrut(10));
+        bottomPanel.add(lblKhachCu);
+        bottomPanel.add(Box.createVerticalStrut(10));
+        bottomPanel.add(khachCuPanel);
+        bottomPanel.add(ketQuaPanel);
+
+        // Set kích thước tương đối cho bottomPanel để không chiếm quá nhiều
+        bottomPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int)(centerHeight * 0.3)));
+
+        // ======================= Gộp vào centerPanel với BorderLayout =======================================
+        centerPanel.add(topPanel, BorderLayout.CENTER); // chính giữa
+        centerPanel.add(bottomPanel, BorderLayout.SOUTH); // phía dưới
+
+
         // =============================== Footer ========================================================================
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         footerPanel.setBackground(Color.WHITE);
