@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -16,6 +18,8 @@ import dao.Phong_Dao;
 import entity.Phong;
 
 import java.awt.*;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +41,9 @@ public class DatPhong_GUI extends JDialog {
     int[] roomQuantities;
     private JDatePickerImpl datePickerCheckIn;
     private JDatePickerImpl datePickerCheckOut;
+    private Timestamp tuNgay;   // ngày nhận phòng
+    private Timestamp denNgay;  // ngày trả phòng
+
 
     
 
@@ -61,8 +68,6 @@ public class DatPhong_GUI extends JDialog {
 
         // Thêm các trang
         mainPanel.add(taoTrangDatPhong(), "Trang1");
-//        mainPanel.add(taoTrangXacNhanPhong(), "Trang2");
-//        mainPanel.add(taoTrangNhapThongTin(), "Trang3");
 
         cardLayout.show(mainPanel, "Trang1");
 
@@ -130,7 +135,7 @@ public class DatPhong_GUI extends JDialog {
 
         JButton theoNgayButton = new JButton("Theo ngày");
         theoNgayButton.setFont(new Font("Arial", Font.BOLD, 14));
-        theoNgayButton.setBackground(Color.GREEN);
+        theoNgayButton.setBackground(Color.WHITE);
         theoNgayButton.setFocusPainted(false);
         theoNgayButton.setBorder(new CompoundBorder(
             new LineBorder(Color.BLACK, 2), 
@@ -155,7 +160,12 @@ public class DatPhong_GUI extends JDialog {
         });
 
         theoNgayButton.addActionListener(e -> {
-            loadGiaoDienTheoNgay();
+            try {
+				loadGiaoDienTheoNgay();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             updateButtonStyles(theoNgayButton, theoGioButton, theoDemButton);
         });
 
@@ -201,6 +211,22 @@ public class DatPhong_GUI extends JDialog {
         checkOutWrapper.setBackground(Color.WHITE);
         //tạo ngay thang năm trả phòng
         datePickerCheckOut = createDatePicker();
+     // ==== Thêm đoạn lắng nghe chọn xong ngày trả (popup đóng lại) ====
+        JDatePanelImpl datePanel = (JDatePanelImpl) datePickerCheckOut.getJDateInstantPanel();  // lấy đúng panel của datePickerCheckOut
+        datePickerCheckOut.addActionListener(e -> {
+            Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+            Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
+
+            if (ngayNhan != null && ngayTra != null && ngayNhan.before(ngayTra)) {
+                tuNgay = new Timestamp(ngayNhan.getTime());
+                denNgay = new Timestamp(ngayTra.getTime());
+
+                System.out.println("Ngày nhận phòng: " + tuNgay);
+                System.out.println("Ngày trả phòng: " + denNgay);
+            }
+        });
+
+
         checkOutWrapper.add(datePickerCheckOut);
 
         checkOutPanel.add(checkOutWrapper, BorderLayout.CENTER);
@@ -208,6 +234,7 @@ public class DatPhong_GUI extends JDialog {
         // Panel chứa số lượng khách
         JPanel guestPanel = new JPanel(new BorderLayout());
         guestPanel.setBackground(Color.WHITE);
+
 
         JLabel guestLabel = new JLabel("                    Số lượng khách");
         guestLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -256,8 +283,9 @@ public class DatPhong_GUI extends JDialog {
         headerContentPanel.setBackground(new Color(220, 220, 220));
 
         headerContentPanel.add(titleClosePanel);
-        headerContentPanel.add(buttonPanel);
         headerContentPanel.add(infoPanel);
+        headerContentPanel.add(buttonPanel);
+
 
         headerPanel.add(headerContentPanel, BorderLayout.CENTER);
 
@@ -268,8 +296,13 @@ public class DatPhong_GUI extends JDialog {
         centerPanel.setBackground(Color.WHITE);
         centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
-        // Load mặc định khi khởi tạo
-        loadGiaoDienTheoNgay();
+//        // Load mặc định khi khởi tạo
+//        try {
+//			loadGiaoDienTheoNgay();
+//		} catch (SQLException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 
         // =============================== Footer ========================================================================
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -283,7 +316,13 @@ public class DatPhong_GUI extends JDialog {
         confirmButton.setFocusPainted(false);
         confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         confirmButton.addActionListener(e -> {
-            JPanel trang2 = taoTrangXacNhanPhong(); // tạo lại giao diện Trang 2, lúc này roomQuantities đã có giá trị mới
+            JPanel trang2 = null;
+			try {
+				trang2 = taoTrangXacNhanPhong();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} // tạo lại giao diện Trang 2, lúc này roomQuantities đã có giá trị mới
             mainPanel.add(trang2, "Trang2");
             cardLayout.show(mainPanel, "Trang2");
         });
@@ -379,6 +418,7 @@ public class DatPhong_GUI extends JDialog {
     	    JLabel availabilityLabel = new JLabel("Còn " + soPhongTrong + " phòng trống", SwingConstants.CENTER);
     	    availabilityLabel.setFont(new Font("Arial", Font.ITALIC, 12));
     	    availabilityLabel.setForeground(Color.RED);
+    	    
 
     	    namePanel.add(nameLabel, BorderLayout.NORTH);
     	    namePanel.add(availabilityLabel, BorderLayout.SOUTH);
@@ -434,6 +474,7 @@ public class DatPhong_GUI extends JDialog {
     	    
     	    return rowPanel;
     	}
+
 	// Hàm cập nhật tổng cộng
 	private void updateTotal(JLabel totalLabel, int qty, int roomPrice) {
 		    int total = qty * roomPrice;
@@ -445,7 +486,7 @@ public class DatPhong_GUI extends JDialog {
   	}
 
 
-  	private void loadGiaoDienTheoNgay() {
+  	private void loadGiaoDienTheoNgay() throws SQLException {
   	    centerPanel.removeAll();
 
   	    // ======= Header Gợi ý phòng ========
@@ -479,24 +520,25 @@ public class DatPhong_GUI extends JDialog {
 	  contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 	  contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); // top, left, bottom, right
 	  contentPanel.setBackground(Color.WHITE);
-	  
-	  // ===== Double Room =====
-	  JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]), chitietdondatphongdao.CountNumberRoom(roomNames[0]), totalLabels, roomQuantities, 0);
+      //-----------------------------------------------------------------------------------------------------------
+      
+	  // ===== Double Room =====}
+	  JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]), chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
 	  contentPanel.add(rowPanelDouble);
-	  contentPanel.add(Box.createVerticalStrut(10)); // khoảng cách dọc 10px
+	  contentPanel.add(Box.createVerticalStrut(10));
 	
 	  // ===== Single Room =====
-	  JPanel rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]), chitietdondatphongdao.CountNumberRoom(roomNames[1]), totalLabels, roomQuantities, 1);
+	  JPanel rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]), chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single"), totalLabels, roomQuantities, 1);
 	  contentPanel.add(rowPanelSingle);
 	  contentPanel.add(Box.createVerticalStrut(10));
 	
 	  // ===== Twin Room =====
-	  JPanel rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]), chitietdondatphongdao.CountNumberRoom(roomNames[2]), totalLabels, roomQuantities, 2);
+	  JPanel rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]), chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin"), totalLabels, roomQuantities, 2);
 	  contentPanel.add(rowPanelTwin);
 	  contentPanel.add(Box.createVerticalStrut(10));
 	
 	  // ===== Triple Room =====
-	  JPanel rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]), chitietdondatphongdao.CountNumberRoom(roomNames[3]), totalLabels, roomQuantities, 3);
+	  JPanel rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]), chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple"), totalLabels, roomQuantities, 3);
 	  contentPanel.add(rowPanelTriple);
 
   	    // Thêm header và nội dung vào centerPanel
@@ -532,7 +574,7 @@ public class DatPhong_GUI extends JDialog {
   	}
 
      //==============================Trang 2========================================================
-    private JPanel taoTrangXacNhanPhong() {
+    private JPanel taoTrangXacNhanPhong() throws SQLException {
     	// Tính toán kích thước các phần
         int headerHeight = (int) (screenHeightTrang1 * 0.1);  
         int centerHeight = (int) (screenHeightTrang1 * 0.8); 
@@ -579,9 +621,8 @@ public class DatPhong_GUI extends JDialog {
         titleClosePanel.add(closeButton, BorderLayout.EAST);
         headerPanel.add(titleClosePanel, BorderLayout.NORTH);
         // =============================== Center =============================================================
-     // Giả sử bạn có các biến giữ số lượng phòng đã chọn từ giao diện 1
         int[] soLuongPhong = {roomQuantities[0], roomQuantities[1], roomQuantities[2], roomQuantities[3]};
-        String[] roomTypes = {"Single Room", "Twin Room", "Double Room", "Triple Room"};
+        String[] roomTypes = {"Double Room","Single Room", "Twin Room",  "Triple Room"};
 
         // Format ngày
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -624,21 +665,39 @@ public class DatPhong_GUI extends JDialog {
         rowsPanel.setBackground(Color.WHITE);
 
         for (int i = 0; i < soLuongPhong.length; i++) {
+            String loaiPhong = roomTypes[i]; // Lưu lại tên loại phòng tương ứng (ví dụ: "Single Room")
+
             for (int j = 0; j < soLuongPhong[i]; j++) {
                 JPanel row = new JPanel(new GridLayout(1, 5, 10, 10));
                 row.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
                 row.setBackground(Color.WHITE);
                 row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-                row.setPreferredSize(new Dimension(0, 40));
-                row.setMinimumSize(new Dimension(0, 40));
 
                 // Hạng phòng
-                JLabel roomTypeLabel = new JLabel(roomTypes[i], SwingConstants.CENTER);
+                JLabel roomTypeLabel = new JLabel(loaiPhong, SwingConstants.CENTER);
                 roomTypeLabel.setFont(new Font("Arial", Font.BOLD, 13));
                 row.add(roomTypeLabel);
 
                 // Phòng
-                JComboBox<String> phongComboBox = new JComboBox<>(new String[]{"Chọn phòng..."});
+                JComboBox<String> phongComboBox = new JComboBox<>();
+
+                try {
+                    Timestamp tuNgay = Timestamp.valueOf("2025-04-12 14:00:00");
+                    Timestamp denNgay = Timestamp.valueOf("2025-04-13 12:00:00");
+
+                    // CHUYỂN roomTypes[i] thành tên trong DB: "Double Room" -> "double"
+                    String loaiPhongDB = loaiPhong.toLowerCase().split(" ")[0]; // ví dụ: "Single Room" -> "single"
+
+                    List<String> danhSachPhong = chitietdondatphongdao.layDanhSachPhongTrong(tuNgay, denNgay, loaiPhongDB);
+
+                    for (String soPhong : danhSachPhong) {
+                        phongComboBox.addItem(soPhong);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Lỗi khi lấy danh sách phòng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+
                 row.add(phongComboBox);
 
                 // Ngày nhận
@@ -659,6 +718,7 @@ public class DatPhong_GUI extends JDialog {
                 rowsPanel.add(row);
             }
         }
+
 
         JScrollPane scrollPane = new JScrollPane(rowsPanel);
         scrollPane.setBorder(null);
@@ -852,27 +912,6 @@ public class DatPhong_GUI extends JDialog {
 
         
         // =============================== Footer ========================================================================
-//        JPanel footerPanel = new JPanel(new BorderLayout());
-//        footerPanel.setBackground(Color.WHITE);
-//        footerPanel.setPreferredSize(new Dimension(screenWidthTrang1, footerHeight));
-//
-//        // Nút "Xác nhận"
-//        JButton confirmButton = new JButton("Xác nhận đặt phòng");
-//        confirmButton.setFont(new Font("Arial", Font.BOLD, 14));
-//        confirmButton.setForeground(Color.BLACK);
-//        confirmButton.setBackground(new Color(0, 180, 0)); // Màu xanh lá
-//        confirmButton.setFocusPainted(false);
-//        confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-//        confirmButton.addActionListener(e -> cardLayout.show(mainPanel, "Trang1"));
-//
-//        // Tạo panel phụ để đặt nút sát góc dưới phải và cách 10px
-//        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
-//        rightPanel.setOpaque(false); // trong suốt để không che màu nền
-//        rightPanel.add(confirmButton);
-//
-//        // Thêm vào footer (ở vị trí Đông - bên phải)
-//        footerPanel.add(rightPanel, BorderLayout.EAST);
-        
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         footerPanel.setBackground(Color.WHITE);
         footerPanel.setPreferredSize(new Dimension(screenWidthTrang1, footerHeight));
