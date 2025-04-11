@@ -11,6 +11,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -110,7 +111,7 @@ public class traphong {
         JPanel Header = new JPanel();
         Header.setBounds(0, 0, frameWidth, (int) (frameHeight * 0.12));
         Header.setBackground(new Color(255, 255, 255));
-        Header.setLayout(null);
+        Header.setLayout(new BorderLayout());
         Header.setBorder(new LineBorder(Color.black));
 
         JLabel lblLoGo = new JLabel("");
@@ -165,7 +166,7 @@ public class traphong {
         JPanel body = new JPanel();
         body.setBackground(new Color(192, 192, 192));
         body.setBounds(0, (int) (frameHeight * 0.12), frameWidth, (int) (frameHeight * 0.88));
-        body.setLayout(null);
+        body.setLayout(new GridLayout(1, 2, 10, 0));
 
         JPanel Traipanel = createTraiPanel();
         body.add(Traipanel);
@@ -180,7 +181,7 @@ public class traphong {
         JPanel Traipanel = new JPanel();
         Traipanel.setBackground(new Color(255, 255, 255));
         Traipanel.setBounds(10, 10, (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
-        Traipanel.setLayout(null);
+        Traipanel.setLayout(new BorderLayout());
 
         JLabel TTDonDat = new JLabel("Thông tin đơn đặt phòng");
         TTDonDat.setBounds(186, 10, 324, 52);
