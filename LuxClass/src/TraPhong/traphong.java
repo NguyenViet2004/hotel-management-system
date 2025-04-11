@@ -10,8 +10,8 @@ import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -26,7 +26,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,14 +47,11 @@ public class traphong {
     private JTextField maDon;
     private JTextField hoVaTen;
     private JTextField ngayNhan;
-    private JTextField textField;
-    private JTextField textField_1;
-    private JTable table;
+    private JTextField ngayTra;
+    private JTextField soLuongKhach;
     private JTable table_phongTra;
     private JTable table_dichVu;
-    private JTextField textField_2;
-    private int frameWidth;
-    private int frameHeight;
+    private JTextField tongTien;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -75,216 +71,164 @@ public class traphong {
     }
 
     private void initialize() {
-        // Lấy kích thước màn hình thực tế
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        GraphicsConfiguration gc = gd.getDefaultConfiguration();
-
-        // Lấy kích thước màn hình thực sự (bao gồm cả taskbar)
-        Rectangle screenBounds = gc.getBounds();
-        Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-
-        // Tính kích thước thực tế trừ đi taskbar
-        int screenWidth = screenBounds.width - (screenInsets.left + screenInsets.right);
-        int screenHeight = screenBounds.height - (screenInsets.top + screenInsets.bottom);
-
-        // Tính toán kích thước JFrame
-        frameWidth = (int) (screenWidth);
-        frameHeight = (int) (screenHeight);
         frame = new JFrame();
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\logo.png"));
         frame.getContentPane().setBackground(new Color(226, 219, 219));
-        frame.setBounds(100, 100, frameWidth, frameHeight);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
-        frame.setLocationRelativeTo(null); // Hiển thị ở giữa màn hình (nếu không phải toàn màn hình)
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Đặt trạng thái phóng to toàn màn hình
+        frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        JPanel Header = createHeaderPanel();
-        frame.getContentPane().add(Header);
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+
+        JPanel header = createHeaderPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weighty = 0.12;
+        frame.getContentPane().add(header, gbc);
 
         JPanel body = createBodyPanel();
-        frame.getContentPane().add(body);
+        gbc.gridy = 1;
+        gbc.weighty = 0.88;
+        frame.getContentPane().add(body, gbc);
     }
 
     private JPanel createHeaderPanel() {
-        JPanel Header = new JPanel();
-        Header.setBounds(0, 0, frameWidth, (int) (frameHeight * 0.12));
-        Header.setBackground(new Color(255, 255, 255));
-        Header.setLayout(new BorderLayout());
-        Header.setBorder(new LineBorder(Color.black));
+        JPanel header = new JPanel();
+        header.setBackground(Color.WHITE);
+        header.setLayout(null);
+        header.setBorder(new LineBorder(Color.BLACK));
 
-        JLabel lblLoGo = new JLabel("");
-        ImageIcon originalIcon = new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\logo.png");
-        Image image = originalIcon.getImage().getScaledInstance(88, 88, Image.SCALE_SMOOTH);
-        ImageIcon logoIcon = new ImageIcon(image);
-        lblLoGo.setIcon(logoIcon);
-        lblLoGo.setBounds(5, 5, 88, 88);
-        Header.add(lblLoGo);
+        JLabel logo = new JLabel(new ImageIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\logo.png").getImage().getScaledInstance(88, 88, Image.SCALE_SMOOTH)));
+        logo.setBounds(5, 5, 88, 88);
+        header.add(logo);
 
-        JButton undo = new JButton("");
-        undo.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\undo.png"));
+        JButton undo = new JButton(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\undo.png"));
         undo.setBounds(103, 55, 45, 38);
-        undo.setContentAreaFilled(false);
-        undo.setBorderPainted(false);
-        undo.setFocusPainted(false);
-        Header.add(undo);
+        setButtonProperties(undo);
+        header.add(undo);
 
-        JButton Home = new JButton("");
-        Home.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\home.png"));
-        Home.setBounds(158, 55, 37, 38);
-        Home.setContentAreaFilled(false);
-        Home.setBorderPainted(false);
-        Home.setFocusPainted(false);
-        Header.add(Home);
+        JButton home = new JButton(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\home.png"));
+        home.setBounds(158, 55, 37, 38);
+        setButtonProperties(home);
+        header.add(home);
 
-        JLabel lblNewLabel_7 = new JLabel("Trả phòng");
-        lblNewLabel_7.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        lblNewLabel_7.setBounds(102, 10, 115, 35);
-        Header.add(lblNewLabel_7);
+        JLabel title = new JLabel("Trả phòng");
+        title.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        title.setBounds(102, 10, 115, 35);
+        header.add(title);
 
-        JButton help = new JButton("");
-        help.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\help.png"));
+        JButton help = new JButton(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\help.png"));
         help.setBounds(1348, 36, 37, 32);
-        help.setContentAreaFilled(false);
-        help.setBorderPainted(false);
-        help.setFocusPainted(false);
-        Header.add(help);
+        setButtonProperties(help);
+        header.add(help);
 
-        JLabel lblNewLabel_8 = new JLabel("New label");
-        lblNewLabel_8.setBounds(1464, 20, 45, 13);
-        Header.add(lblNewLabel_8);
+        return header;
+    }
 
-        JLabel lblNewLabel_9 = new JLabel("New label");
-        lblNewLabel_9.setBounds(1464, 62, 45, 13);
-        Header.add(lblNewLabel_9);
-
-        return Header;
+    private void setButtonProperties(JButton button) {
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
     }
 
     private JPanel createBodyPanel() {
-        JPanel body = new JPanel();
+        JPanel body = new JPanel(new GridBagLayout());
         body.setBackground(new Color(192, 192, 192));
-        body.setBounds(0, (int) (frameHeight * 0.12), frameWidth, (int) (frameHeight * 0.88));
-        body.setLayout(new GridLayout(1, 2, 10, 0));
 
-        JPanel Traipanel = createTraiPanel();
-        body.add(Traipanel);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 0.5;
+        gbc.weighty = 1.0;
 
-        JPanel Phaipanel = createPhaiPanel();
-        body.add(Phaipanel);
+        JPanel traiPanel = createTraiPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        body.add(traiPanel, gbc);
+
+        JPanel phaiPanel = createPhaiPanel();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        body.add(phaiPanel, gbc);
 
         return body;
     }
 
     private JPanel createTraiPanel() {
-        JPanel Traipanel = new JPanel();
-        Traipanel.setBackground(new Color(255, 255, 255));
-        Traipanel.setBounds(10, 10, (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
-        Traipanel.setLayout(new BorderLayout());
+        JPanel traiPanel = new JPanel();
+        traiPanel.setBackground(Color.WHITE);
+        traiPanel.setLayout(null);
 
-        JLabel TTDonDat = new JLabel("Thông tin đơn đặt phòng");
-        TTDonDat.setBounds(186, 10, 324, 52);
-        TTDonDat.setFont(new Font("Times New Roman", Font.BOLD, 30));
-        Traipanel.add(TTDonDat);
+        JLabel title = new JLabel("Thông tin đơn đặt phòng");
+        title.setFont(new Font("Times New Roman", Font.BOLD, 30));
+        title.setBounds(186, 10, 324, 52);
+        traiPanel.add(title);
 
-        JLabel lblNewLabel = new JLabel("Mã đơn đặt phòng:");
-        lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel.setBounds(10, 72, 194, 32);
-        Traipanel.add(lblNewLabel);
+        addLabelAndTextField(traiPanel, "Mã đơn đặt phòng:", maDon = new JTextField(), 10, 72);
+        addLabelAndTextField(traiPanel, "Họ tên khách hàng:", hoVaTen = new JTextField(), 10, 118);
+        addLabelAndTextField(traiPanel, "Ngày nhận phòng:", ngayNhan = new JTextField(), 10, 159);
+        addLabelAndTextField(traiPanel, "Ngày trả phòng:", ngayTra = new JTextField(), 10, 201);
+        addLabelAndTextField(traiPanel, "Số lượng khách:", soLuongKhach = new JTextField(), 10, 243);
 
-        JLabel lblNewLabel_1 = new JLabel("Họ tên khách hàng:");
-        lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel_1.setBounds(10, 118, 175, 24);
-        Traipanel.add(lblNewLabel_1);
+        JLabel serviceLabel = new JLabel("Các dịch vụ đã sử dụng");
+        serviceLabel.setFont(new Font("Times New Roman", Font.BOLD, 26));
+        serviceLabel.setBounds(205, 284, 270, 32);
+        traiPanel.add(serviceLabel);
 
-        JLabel lblNewLabel_2 = new JLabel("Ngày nhận phòng:");
-        lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel_2.setBounds(10, 159, 175, 24);
-        Traipanel.add(lblNewLabel_2);
+        JScrollPane serviceScroll = createDichVuScrollPane();
+        serviceScroll.setBounds(24, 326, 707, 159);
+        traiPanel.add(serviceScroll);
 
-        JLabel lblNewLabel_3 = new JLabel("Ngày trả phòng:");
-        lblNewLabel_3.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel_3.setBounds(10, 201, 159, 24);
-        Traipanel.add(lblNewLabel_3);
+        JLabel totalLabel = new JLabel("Tổng tiền sử dụng dịch vụ:");
+        totalLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        totalLabel.setBounds(24, 506, 250, 32);
+        traiPanel.add(totalLabel);
 
-        JLabel lblNewLabel_4 = new JLabel("Số lượng khách:");
-        lblNewLabel_4.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel_4.setBounds(10, 243, 159, 24);
-        Traipanel.add(lblNewLabel_4);
+        tongTien = new JTextField();
+        tongTien.setEnabled(false);
+        tongTien.setBounds(288, 511, 288, 28);
+        traiPanel.add(tongTien);
+        tongTien.setColumns(10);
 
-        JLabel lblNewLabel_5 = new JLabel("Các dịch vụ đã sử dụng");
-        lblNewLabel_5.setFont(new Font("Times New Roman", Font.BOLD, 26));
-        lblNewLabel_5.setBounds(205, 284, 270, 32);
-        Traipanel.add(lblNewLabel_5);
+        return traiPanel;
+    }
 
-        maDon = new JTextField();
-        maDon.setEnabled(false);
-        maDon.setBounds(250, 75, 404, 32);
-        Traipanel.add(maDon);
-        maDon.setColumns(10);
+    private void addLabelAndTextField(JPanel panel, String labelText, JTextField textField, int x, int y) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        label.setBounds(x, y, 194, 32);
+        panel.add(label);
 
-        hoVaTen = new JTextField();
-        hoVaTen.setEnabled(false);
-        hoVaTen.setColumns(10);
-        hoVaTen.setBounds(250, 117, 404, 32);
-        Traipanel.add(hoVaTen);
-
-        ngayNhan = new JTextField();
-        ngayNhan.setEnabled(false);
-        ngayNhan.setColumns(10);
-        ngayNhan.setBounds(250, 158, 404, 32);
-        Traipanel.add(ngayNhan);
-
-        textField = new JTextField();
         textField.setEnabled(false);
+        textField.setBounds(250, y, 404, 32);
+        panel.add(textField);
         textField.setColumns(10);
-        textField.setBounds(250, 200, 404, 32);
-        Traipanel.add(textField);
-
-        textField_1 = new JTextField();
-        textField_1.setEnabled(false);
-        textField_1.setColumns(10);
-        textField_1.setBounds(250, 242, 404, 32);
-        Traipanel.add(textField_1);
-
-        JScrollPane dichVu = createDichVuScrollPane();
-        Traipanel.add(dichVu);
-
-        JLabel lblNewLabel_11 = new JLabel("Tổng tiền sử dụng dịch vụ:");
-        lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        lblNewLabel_11.setBounds(24, 506, 250, 32);
-        Traipanel.add(lblNewLabel_11);
-
-        textField_2 = new JTextField();
-        textField_2.setEnabled(false);
-        textField_2.setBounds(288, 511, 288, 28);
-        Traipanel.add(textField_2);
-        textField_2.setColumns(10);
-
-        return Traipanel;
     }
 
     private JScrollPane createDichVuScrollPane() {
-        JScrollPane dichVu = new JScrollPane();
-        dichVu.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        dichVu.setBorder(null);
-        dichVu.setBackground(new Color(255, 255, 255));
-        dichVu.setBounds(24, 326, 707, 159);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null);
+        scrollPane.setBackground(Color.WHITE);
+        scrollPane.setBounds(24, 326, 707, 159);
 
         table_dichVu = new JTable();
-        DefaultTableModel model_dv = new DefaultTableModel(
+        DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{
                         {"DV001", "Massage", "Không"},
                         {"DV002", "Ăn sáng", "Không"},
                         {"DV003", "Giặt ủi", "Có"},
                 },
                 new String[]{
-                        "Mã dịch vụ", "Tên dịch vụ", "Thành tiền", "" // Thêm cột "Hành động"
+                        "Mã dịch vụ", "Tên dịch vụ", "Thành tiền", ""
                 }
         ) {
             boolean[] columnEditables = new boolean[]{
-                    false, false, false, true // Cột "Hành động" được phép chỉnh sửa
+                    false, false, false, true
             };
 
             @Override
@@ -292,7 +236,7 @@ public class traphong {
                 return columnEditables[column];
             }
         };
-        table_dichVu.setModel(model_dv);
+        table_dichVu.setModel(model);
         table_dichVu.setShowVerticalLines(false);
         table_dichVu.setShowHorizontalLines(false);
         table_dichVu.setShowGrid(false);
@@ -300,11 +244,11 @@ public class traphong {
         table_dichVu.setFont(new Font("Dialog", Font.PLAIN, 14));
         table_dichVu.setFillsViewportHeight(true);
         table_dichVu.setBorder(null);
-        JTableHeader header_dv = table_dichVu.getTableHeader();
-        header_dv.setBackground(new Color(220, 255, 220));
-        header_dv.setPreferredSize(new Dimension(header_dv.getWidth(), 30));
-        header_dv.setFont(new Font("Times New Roman", Font.BOLD, 16));
-        header_dv.setBorder(null);
+        JTableHeader header = table_dichVu.getTableHeader();
+        header.setBackground(new Color(220, 255, 220));
+        header.setPreferredSize(new Dimension(header.getWidth(), 30));
+        header.setFont(new Font("Times New Roman", Font.BOLD, 16));
+        header.setBorder(null);
 
         DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
             @Override
@@ -313,99 +257,88 @@ public class traphong {
                 label.setHorizontalAlignment(JLabel.CENTER);
                 label.setFont(new Font("Times New Roman", Font.BOLD, 16));
                 label.setBackground(new Color(220, 255, 220));
-                label.setBorder(BorderFactory.createEmptyBorder()); // Loại bỏ viền
+                label.setBorder(BorderFactory.createEmptyBorder());
                 return label;
             }
         };
-        header_dv.setDefaultRenderer(headerRenderer);
+        header.setDefaultRenderer(headerRenderer);
 
         table_dichVu.setBackground(Color.WHITE);
 
-        DefaultTableCellRenderer centerRenderer_dv = new DefaultTableCellRenderer();
-        centerRenderer_dv.setHorizontalAlignment(JLabel.CENTER);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < table_dichVu.getColumnCount() - 1; i++) {
-            table_dichVu.getColumnModel().getColumn(i).setCellRenderer(centerRenderer_dv);
+            table_dichVu.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Tạo ButtonRenderer và ButtonEditor
         ButtonRenderer buttonRenderer = new ButtonRenderer();
         ButtonEditor buttonEditor = new ButtonEditor();
 
-        // Áp dụng Renderer và Editor cho cột cuối cùng ("Hành động")
         int buttonColumnIndex = table_dichVu.getColumnCount() - 1;
         table_dichVu.getColumnModel().getColumn(buttonColumnIndex).setCellRenderer(buttonRenderer);
         table_dichVu.getColumnModel().getColumn(buttonColumnIndex).setCellEditor(buttonEditor);
 
-        // Lấy ButtonPanel từ ButtonEditor để thêm ActionListener bên ngoài
         ButtonPanel buttonPanelEditor = buttonEditor.getButtonPanel();
         if (buttonPanelEditor != null) {
-            buttonPanelEditor.getDeleteButton().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int row = table_dichVu.getSelectedRow();
-                    if (row != -1) {
-                        System.out.println("Nút Xóa được click ở hàng: " + row);
-                        DefaultTableModel model = (DefaultTableModel) table_dichVu.getModel();
-                        model.removeRow(row);
-                    }
+            buttonPanelEditor.getDeleteButton().addActionListener(e -> {
+                int row = table_dichVu.getSelectedRow();
+                if (row != -1) {
+                    ((DefaultTableModel) table_dichVu.getModel()).removeRow(row);
                 }
             });
 
-            buttonPanelEditor.getDetailButton().addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int row = table_dichVu.getSelectedRow();
-                    if (row != -1) {
-                        System.out.println("Nút Chi tiết được click ở hàng: " + row);
-                        // Thêm logic xử lý xem chi tiết ở đây
-                    }
+            buttonPanelEditor.getDetailButton().addActionListener(e -> {
+                int row = table_dichVu.getSelectedRow();
+                if (row != -1) {
                 }
             });
         }
 
-        dichVu.setViewportView(table_dichVu);
-        return dichVu;
+        scrollPane.setViewportView(table_dichVu);
+        return scrollPane;
     }
 
     private JPanel createPhaiPanel() {
-        JPanel Phaipanel = new JPanel();
-        Phaipanel.setBackground(new Color(255, 255, 255));
-        Phaipanel.setBounds(762, 10, (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
-        Phaipanel.setLayout(null);
+        JPanel phaiPanel = new JPanel();
+        phaiPanel.setBackground(Color.WHITE);
+        phaiPanel.setLayout(null);
 
-        JLabel lblNewLabel_6 = new JLabel("Chọn phòng muốn trả");
-        lblNewLabel_6.setFont(new Font("Times New Roman", Font.BOLD, 27));
-        lblNewLabel_6.setBounds(243, 10, 260, 37);
-        Phaipanel.add(lblNewLabel_6);
+        JLabel title = new JLabel("Chọn phòng muốn trả");
+        title.setFont(new Font("Times New Roman", Font.BOLD, 27));
+        title.setBounds(243, 10, 260, 37);
+        phaiPanel.add(title);
 
-        JButton tiepTuc = new JButton("Tiếp tục");
-        tiepTuc.setBackground(new Color(0, 255, 64));
-        tiepTuc.setFont(new Font("Times New Roman", Font.BOLD, 25));
-        tiepTuc.setBounds(597, 607, 154, 47);
-        Phaipanel.add(tiepTuc);
+        JButton continueButton = new JButton("Tiếp tục");
+        continueButton.setBackground(new Color(0, 255, 64));
+        continueButton.setFont(new Font("Times New Roman", Font.BOLD, 25));
+        continueButton.setBounds(597, 607, 154, 47);
+        phaiPanel.add(continueButton);
 
         JPanel scrollPanel = createPhongTraScrollPane();
-        Phaipanel.add(scrollPanel);
+        phaiPanel.add(scrollPanel);
 
-        return Phaipanel;
+        return phaiPanel;
     }
 
     private JPanel createPhongTraScrollPane() {
         table_phongTra = new JTable();
         table_phongTra.setShowVerticalLines(false);
         table_phongTra.setShowHorizontalLines(false);
-        table_phongTra.setBackground(new Color(255, 255, 255));
+        table_phongTra.setBackground(Color.WHITE);
         table_phongTra.setFillsViewportHeight(true);
         table_phongTra.setRowHeight(30);
         table_phongTra.setBorder(null);
         table_phongTra.setShowGrid(false);
-        Object[][] data = {
-                {false, "P102", "Single room", "5 ngày", "800.000", "4.800.000"},
-                {false, "P201", "Twin room", "5 ngày", "1.200.000", "6.000.000"},
-                {false, "P202", "Twin room", "5 ngày", "1.200.000", "6.000.000"}
-        };
-        String[] columnNames = {"", "Mã phòng", "Loại phòng", "Thời gian", "Đơn giá", "Thành tiền"};
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{
+                        {false, "P102", "Single room", "5 ngày", "800.000", "4.800.000"},
+                        {false, "P201", "Twin room", "5 ngày", "1.200.000", "6.000.000"},
+                        {false, "P202", "Twin room", "5 ngày", "1.200.000", "6.000.000"}
+                },
+                new String[]{
+                        "", "Mã phòng", "Loại phòng", "Thời gian", "Đơn giá", "Thành tiền"}
+        ) {
             @Override
             public Class<?> getColumnClass(int column) {
                 return (column == 0) ? Boolean.class : String.class;
@@ -422,26 +355,27 @@ public class traphong {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 JPanel panel = new JPanel();
-                panel.setBackground(new Color(220, 255, 220)); // Màu xanh lá cây nhạt
-                panel.setLayout(new GridBagLayout()); // Sử dụng GridBagLayout để căn giữa checkbox
+                panel.setBackground(new Color(220, 255, 220));
+                panel.setLayout(new GridBagLayout());
 
-                if (column == 0) { // Nếu là cột checkbox
+                if (column == 0) {
                     JCheckBox checkBox = new JCheckBox();
-                    checkBox.setBackground(new Color(220, 255, 220)); // Đặt màu nền cho checkbox
-                    checkBox.setHorizontalAlignment(JLabel.CENTER); // Căn giữa checkbox
+                    checkBox.setBackground(new Color(220, 255, 220));
+                    checkBox.setHorizontalAlignment(JLabel.CENTER);
                     panel.add(checkBox);
-                } else { // Nếu là các cột khác
+                } else {
                     JLabel label = new JLabel(value.toString());
-                    label.setHorizontalAlignment(JLabel.CENTER); // Căn giữa chữ
+                    label.setHorizontalAlignment(JLabel.CENTER);
                     panel.add(label);
                 }
 
                 return panel;
             }
         });
+
         JTableHeader header = table_phongTra.getTableHeader();
-        header.setBackground(new Color(220, 255, 220)); // Màu nền tiêu đề
-        header.setPreferredSize(new Dimension(header.getWidth(), 40)); // Đặt chiều cao header là 40 pixel
+        header.setBackground(new Color(220, 255, 220));
+        header.setPreferredSize(new Dimension(header.getWidth(), 40));
 
         JCheckBox selectAll = new JCheckBox();
         selectAll.setBackground(new Color(220, 255, 220));
@@ -457,7 +391,6 @@ public class traphong {
             }
         });
 
-        // Thêm MouseListener vào header
         header.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -510,7 +443,7 @@ public class traphong {
         public CheckBoxHeader(JCheckBox checkBox) {
             super(new GridBagLayout());
             this.checkBox = checkBox;
-            this.setBackground(new Color(220, 255, 220)); // Đặt màu nền cho CheckBoxHeader
+            this.setBackground(new Color(220, 255, 220));
             add(checkBox);
             checkBox.setBackground(new Color(220, 255, 220));
         }
@@ -520,7 +453,7 @@ public class traphong {
             return this;
         }
     }
- // Class ButtonPanel (đặt ở ngoài class traphong hoặc trong cùng file)
+
     class ButtonPanel extends JPanel {
         public JButton deleteButton;
         public JButton detailButton;
@@ -528,31 +461,26 @@ public class traphong {
         public ButtonPanel() {
             setLayout(new FlowLayout(FlowLayout.CENTER, 1, 10));
 
-            deleteButton = new JButton("");
-            deleteButton.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\xoa.png"));
+            deleteButton = new JButton(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\xoa.png"));
             deleteButton.setContentAreaFilled(false);
             deleteButton.setBorderPainted(false);
             add(deleteButton);
 
-            detailButton = new JButton();
-            detailButton.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\chitiet.png"));
+            detailButton = new JButton(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\AnhTraPhong\\chitiet.png"));
             detailButton.setContentAreaFilled(false);
             detailButton.setBorderPainted(false);
             add(detailButton);
         }
 
-        // Phương thức để lấy button xóa
         public JButton getDeleteButton() {
             return deleteButton;
         }
 
-        // Phương thức để lấy button chi tiết
         public JButton getDetailButton() {
             return detailButton;
         }
     }
 
-    // Class ButtonRenderer (đặt ở ngoài class traphong hoặc trong cùng file)
     class ButtonRenderer extends JPanel implements TableCellRenderer {
         private ButtonPanel panel;
 
@@ -565,16 +493,11 @@ public class traphong {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if (isSelected) {
-                panel.setBackground(table.getSelectionBackground());
-            } else {
-                panel.setBackground(table.getBackground());
-            }
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             return panel;
         }
     }
 
-    // Class ButtonEditor (đặt ở ngoài class traphong hoặc trong cùng file)
     class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
         private ButtonPanel panel;
 
@@ -584,11 +507,7 @@ public class traphong {
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            if (isSelected) {
-                panel.setBackground(table.getSelectionBackground());
-            } else {
-                panel.setBackground(table.getBackground());
-            }
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             return panel;
         }
 
@@ -597,7 +516,6 @@ public class traphong {
             return null;
         }
 
-        // Phương thức để lấy panel chứa các nút (để thêm ActionListener bên ngoài)
         public ButtonPanel getButtonPanel() {
             return panel;
         }
