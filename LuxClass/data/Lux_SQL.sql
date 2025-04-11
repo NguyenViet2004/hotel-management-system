@@ -148,3 +148,4 @@ VALUES
     ('P306', N'Trống', 'triple', NULL), ('P406', N'Trống', 'triple', NULL),
     ('P503', N'Trống', 'triple', NULL), ('P504', N'Trống', 'triple', NULL);
 go
+
