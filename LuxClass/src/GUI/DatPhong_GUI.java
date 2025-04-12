@@ -22,9 +22,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class DatPhong_GUI extends JDialog {
@@ -650,8 +655,15 @@ public class DatPhong_GUI extends JDialog {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
-        //chứa thông tin mã đơn phòng
-        JLabel donDatPhongLabel = new JLabel("<html><span style='background-color: Gray;'>21032025LT0010001</span></html>");
+        // Giả sử đã có mã nhân viên "LT001" và số thứ tự từ hàm đếm đơn (sử dụng hàm demSoLuongDonTrongNgay)
+        String maNhanVien = "2025LT001";
+        int soThuTu = chitietdondatphongdao.demSoLuongDonTrongNgay() + 1;  // Tăng số thứ tự đơn lên một
+
+        // Gọi hàm tạo mã đơn
+        String maDon = taoMaDonDatPhong(maNhanVien, soThuTu);
+        
+        // Tạo JLabel với mã đơn
+        JLabel donDatPhongLabel = new JLabel("<html><span style='background-color: Gray;'>" + maDon + "</span></html>");
         donDatPhongLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         // Nút đóng
@@ -712,7 +724,8 @@ public class DatPhong_GUI extends JDialog {
         JPanel rowsPanel = new JPanel();
         rowsPanel.setLayout(new BoxLayout(rowsPanel, BoxLayout.Y_AXIS));
         rowsPanel.setBackground(Color.WHITE);
-
+        
+        List<JComboBox<String>> danhSachComboBox = new ArrayList<>(); // lưu tất cả combo box
         for (int i = 0; i < soLuongPhong.length; i++) {
             String loaiPhong = roomTypes[i]; // Lưu lại tên loại phòng tương ứng (ví dụ: "Single Room")
 
@@ -729,7 +742,7 @@ public class DatPhong_GUI extends JDialog {
 
                 // Phòng
                 JComboBox<String> phongComboBox = new JComboBox<>();
-
+                danhSachComboBox.add(phongComboBox);// thêm vào danh sách để kiểm tra sau
                 try {
 
                     // CHUYỂN roomTypes[i] thành tên trong DB: "Double Room" -> "double"
@@ -783,6 +796,22 @@ public class DatPhong_GUI extends JDialog {
         confirmButton.setFocusPainted(false);
         confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         confirmButton.addActionListener(e -> {
+            Set<String> daChon = new HashSet<>();
+            for (JComboBox<String> comboBox : danhSachComboBox) {
+                String selected = (String) comboBox.getSelectedItem();
+                if (selected != null) {
+                    if (daChon.contains(selected)) {
+                        JOptionPane.showMessageDialog(null,
+                            "Vui lòng chọn các phòng khác nhau, không được trùng số phòng!",
+                            "Trùng số phòng",
+                            JOptionPane.WARNING_MESSAGE);
+                        return; // không chuyển trang
+                    }
+                    daChon.add(selected);
+                }
+            }
+
+            // Nếu không trùng phòng thì tiếp tục chuyển trang
             JPanel trang3 = taoTrangNhapThongTin(); // gọi trang tiếp theo
             mainPanel.add(trang3, "Trang3");
             cardLayout.show(mainPanel, "Trang3");
@@ -802,6 +831,20 @@ public class DatPhong_GUI extends JDialog {
 
         return contentPane;
     }
+    
+    public String taoMaDonDatPhong(String maNhanVien, int soThuTu) {
+        // Lấy ngày hiện tại
+        LocalDate ngayHienTai = LocalDate.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyy");
+        String ngayStr = ngayHienTai.format(dtf);
+
+        // Định dạng số thứ tự về 5 chữ số có 0 phía trước
+        String sttStr = String.format("%03d", soThuTu);
+
+        // Tạo mã
+        return ngayStr + maNhanVien + sttStr;
+    }
+
     //========================Trang 3=====================================================
     private JPanel taoTrangNhapThongTin() {
     	// Tính toán kích thước các phần
