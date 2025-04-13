@@ -15,9 +15,12 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import dao.ChiTietDonDatPhong_Dao;
 import dao.Phong_Dao;
+import entity.KhachHang;
 import entity.Phong;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -25,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -94,7 +98,7 @@ public class DatPhong_GUI extends JDialog {
 
      // ====== Panel chọn phòng ======
         JPanel chonPhongPanel = new JPanel(new BorderLayout());
-        chonPhongPanel.setBackground(Color.BLUE);
+        chonPhongPanel.setBackground(Color.WHITE);
         chonPhongPanel.setPreferredSize(new Dimension(800, 300));
         
 
@@ -574,7 +578,6 @@ public class DatPhong_GUI extends JDialog {
 	  contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); // top, left, bottom, right
 	  contentPanel.setBackground(Color.WHITE);
       //-----------------------------------------------------------------------------------------------------------
-      
 	  // ===== Double Room =====}
 	  JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]), chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
 	  contentPanel.add(rowPanelDouble);
@@ -848,8 +851,8 @@ public class DatPhong_GUI extends JDialog {
     //========================Trang 3=====================================================
     private JPanel taoTrangNhapThongTin() {
     	// Tính toán kích thước các phần
-        int headerHeight = (int) (screenHeightTrang1 * 0.2);  
-        int centerHeight = (int) (screenHeightTrang1 * 0.7); 
+        int headerHeight = (int) (screenHeightTrang1 * 0.1);  
+        int centerHeight = (int) (screenHeightTrang1 * 0.8); 
         int footerHeight = (int) (screenHeightTrang1 * 0.1);  
         // Tạo nội dung form (panel con)
         contentPane = new JPanel(new BorderLayout());
@@ -858,7 +861,7 @@ public class DatPhong_GUI extends JDialog {
         
         // ====== Panel chia panel thành 3 phần ======
         JPanel chonPhongPanel = new JPanel(new BorderLayout());
-        chonPhongPanel.setBackground(Color.BLUE);
+        chonPhongPanel.setBackground(Color.WHITE);
         chonPhongPanel.setPreferredSize(new Dimension(300, 800));
         
         // =========================================== Header ========================================================
@@ -883,7 +886,7 @@ public class DatPhong_GUI extends JDialog {
         closePanel.add(closeButton);
 
         // ======= Panel chứa tiêu đề căn giữa =======
-        JLabel titleLabel = new JLabel("Thông tin khách hàng mới", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Thông tin khách hàng", JLabel.LEFT);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -910,8 +913,11 @@ public class DatPhong_GUI extends JDialog {
         centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
         // ======================= Top Panel: Thông tin khách hàng mới =======================================
+        JLabel lblKhachMoi = new JLabel("Thông tin khách hàng mới");
+        lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 15));
         JPanel topPanel = new JPanel();
-        topPanel.setBackground(Color.CYAN);
+        topPanel.setBackground(Color.WHITE);
+        
         GroupLayout layout = new GroupLayout(topPanel);
         topPanel.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -945,6 +951,11 @@ public class DatPhong_GUI extends JDialog {
         chkXeDay.setFont(new Font("Arial", Font.BOLD, cochu));
 
         JPanel chkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        chkPanel.setMinimumSize(new Dimension((int)(screenWidthTrang1*0.6), 40));
+        chkPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1*0.6), 40));
+        chkPanel.setMaximumSize(new Dimension((int)(screenWidthTrang1*0.6), 40));
+
+
         chkPanel.setBackground(Color.WHITE);
         chkPanel.add(chkNoi);
         chkPanel.add(chkBaoMau);
@@ -952,94 +963,103 @@ public class DatPhong_GUI extends JDialog {
 
         // GroupLayout setup
         layout.setHorizontalGroup(
-            layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(lblHoTen)
-                    .addComponent(lblSDT)
-                    .addComponent(lblEmail)
-                    .addComponent(lblTienCoc)
-                    .addComponent(lblYeuCau))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(txtHoTen)
-                    .addComponent(txtSDT)
-                    .addComponent(txtEmail)
-                    .addComponent(txtTienCoc)
-                    .addComponent(chkPanel))
-        );
+        	    layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        	        .addComponent(lblKhachMoi, GroupLayout.Alignment.CENTER)
+        	        .addGroup(layout.createSequentialGroup()
+        	            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        	                .addComponent(lblHoTen)
+        	                .addComponent(lblSDT)
+        	                .addComponent(lblEmail)
+        	                .addComponent(lblTienCoc)
+        	                .addComponent(lblYeuCau))
+        	            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        	                .addComponent(txtHoTen)
+        	                .addComponent(txtSDT)
+        	                .addComponent(txtEmail)
+        	                .addComponent(txtTienCoc)
+        	                .addComponent(chkPanel)))
+        	);
 
         int khoangcach = 10;
         layout.setVerticalGroup(
-            layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblHoTen)
-                    .addComponent(txtHoTen))
-                .addGap(khoangcach)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSDT)
-                    .addComponent(txtSDT))
-                .addGap(khoangcach)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblEmail)
-                    .addComponent(txtEmail))
-                .addGap(khoangcach)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTienCoc)
-                    .addComponent(txtTienCoc))
-                .addGap(khoangcach)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(lblYeuCau)
-                    .addComponent(chkPanel))
-        );
-
+        	    layout.createSequentialGroup()
+        	        .addComponent(lblKhachMoi)
+        	        .addGap(khoangcach)
+        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+        	            .addComponent(lblHoTen)
+        	            .addComponent(txtHoTen))
+        	        .addGap(khoangcach)
+        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+        	            .addComponent(lblSDT)
+        	            .addComponent(txtSDT))
+        	        .addGap(khoangcach)
+        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+        	            .addComponent(lblEmail)
+        	            .addComponent(txtEmail))
+        	        .addGap(khoangcach)
+        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+        	            .addComponent(lblTienCoc)
+        	            .addComponent(txtTienCoc))
+        	        .addGap(khoangcach)
+        	        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        	            .addComponent(lblYeuCau)
+        	            .addComponent(chkPanel))
+        	);
         // Set chiều cao các ô nhập
         setTextFieldHeight(txtHoTen);
         setTextFieldHeight(txtSDT);
         setTextFieldHeight(txtEmail);
         setTextFieldHeight(txtTienCoc);
 
-        // ======================= Bottom Panel: Khách hàng cũ =======================================
+     // ======================= Bottom Panel: Khách hàng cũ =======================================
         JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
-        bottomPanel.setBackground(Color.PINK);
+        bottomPanel.setBackground(Color.WHITE);
+        GroupLayout layoutBottom = new GroupLayout(bottomPanel);
+        bottomPanel.setLayout(layoutBottom);
+        layoutBottom.setAutoCreateGaps(true);
+        layoutBottom.setAutoCreateContainerGaps(true);
 
         // Tiêu đề căn giữa
-        JLabel lblKhachCu = new JLabel("Thông tin khách hàng đã từng đặt", JLabel.CENTER);
-        lblKhachCu.setFont(new Font("Arial", Font.BOLD, 20));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        // Ô nhập và nút tìm kiếm
-        JTextField txtSDTKhachCu = new JTextField(15);
-        JButton btnTimKiem = new JButton("Tìm");
+        JLabel lblKhachCu = new JLabel("Thông tin khách hàng có sẵn");
+        lblKhachCu.setFont(new Font("Arial", Font.BOLD, 15));
+        
+        // Label và TextField nhập số điện thoại
+        JLabel lblSDTKhachCu = new JLabel("<html>Số điện thoại <font color='red'>*</font></html>");
+        lblSDTKhachCu.setFont(new Font("Arial", Font.BOLD, cochu));
+        lblSDTKhachCu.setBackground(Color.blue);
+        JTextField txtSDTKhachCu = new JTextField(100);
+        setTextFieldHeight(txtSDTKhachCu);
 
-        JPanel khachCuPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        khachCuPanel.setBackground(Color.WHITE);
-        khachCuPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        khachCuPanel.add(new JLabel("Nhập số điện thoại: "));
-        khachCuPanel.add(txtSDTKhachCu);
-        khachCuPanel.add(btnTimKiem);
+        // GroupLayout setup cho bottomPanel
 
-        // Kết quả tìm kiếm
-        JLabel lblKetQua = new JLabel("");
-        lblKetQua.setFont(new Font("Arial", Font.PLAIN, cochu));
-        lblKetQua.setForeground(Color.DARK_GRAY);
+        layoutBottom.setHorizontalGroup(
+        	    layoutBottom.createParallelGroup(GroupLayout.Alignment.LEADING)
+        	        .addComponent(lblKhachCu, GroupLayout.Alignment.CENTER)
+        	        .addGroup(layoutBottom.createSequentialGroup()
+        	            .addComponent(lblSDTKhachCu)
+        	            .addComponent(txtSDTKhachCu)
+        	        )
+        	);
 
-        JPanel ketQuaPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        ketQuaPanel.setBackground(Color.WHITE);
-        ketQuaPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        ketQuaPanel.add(lblKetQua);
 
-        // Thêm vào bottomPanel
-        bottomPanel.add(Box.createVerticalStrut(10));
-        bottomPanel.add(lblKhachCu);
-        bottomPanel.add(Box.createVerticalStrut(10));
-        bottomPanel.add(khachCuPanel);
-        bottomPanel.add(ketQuaPanel);
+        layoutBottom.setVerticalGroup(
+            layoutBottom.createSequentialGroup()
+                .addComponent(lblKhachCu)
+                .addGroup(layoutBottom.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSDTKhachCu)
+                    .addComponent(txtSDTKhachCu))
+        );
 
-        // Set kích thước tương đối cho bottomPanel để không chiếm quá nhiều
-        bottomPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int)(centerHeight * 0.3)));
+        setTextFieldHeight(txtSDTKhachCu);
+
+        // Set kích thước tương đối cho bottomPanel
+        bottomPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int)(centerHeight * 0.25)));
+
 
         // ======================= Gộp vào centerPanel với BorderLayout =======================================
-        centerPanel.add(topPanel, BorderLayout.CENTER); // chính giữa
-        centerPanel.add(bottomPanel, BorderLayout.SOUTH); // phía dưới
+        centerPanel.add(topPanel, BorderLayout.SOUTH);
+        centerPanel.add(bottomPanel, BorderLayout.NORTH);
+
 
 
         // =============================== Footer ========================================================================
@@ -1053,7 +1073,79 @@ public class DatPhong_GUI extends JDialog {
         confirmButton.setBackground(new Color(0, 180, 0)); // Màu xanh lá
         confirmButton.setFocusPainted(false);
         confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        confirmButton.addActionListener(e -> cardLayout.show(mainPanel, "Trang1"));
+        confirmButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String regexSDT = "^0[0-9]{9}$";
+            	String regexEmail = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+            	String regexHoTen = "^[\\p{L} ]+$";  // Cho phép chữ và khoảng trắng (cả tiếng Việt)
+
+                // Lấy giá trị nhập vào
+                String hoTen = txtHoTen.getText().trim();
+                String sdtMoi = txtSDT.getText().trim();
+                String email = txtEmail.getText().trim();
+                String tienCoc = txtTienCoc.getText().trim();
+                
+                String sdtCu = txtSDTKhachCu.getText().trim();
+
+                // Kiểm tra nhập phần 1 hay phần 2
+                boolean nhapMoi = !hoTen.isEmpty() || !sdtMoi.isEmpty() || !email.isEmpty() || !tienCoc.isEmpty(); 
+                boolean nhapCu = !sdtCu.isEmpty();
+
+                // Không được vừa nhập cả hai phần
+                if (nhapMoi && nhapCu) {
+                    JOptionPane.showMessageDialog(null, "Chỉ được nhập 1 trong 2 phần!");
+                    return;
+                }
+
+                // Nếu nhập phần 1
+                if (nhapMoi) {
+                    // Kiểm tra đủ thông tin
+                    if (hoTen.isEmpty() || sdtMoi.isEmpty() || email.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin khách hàng mới!");
+                        return;
+                    }
+                    // Kiểm tra regex
+                    if (!hoTen.matches(regexHoTen)) {
+                        JOptionPane.showMessageDialog(null, "Họ tên không hợp lệ!");
+                        return;
+                    }
+                    if (!sdtMoi.matches(regexSDT)) {
+                        JOptionPane.showMessageDialog(null, "Số điện thoại không hợp lệ!");
+                        return;
+                    }
+                    if (!email.matches(regexEmail)) {
+                        JOptionPane.showMessageDialog(null, "Email không hợp lệ!");
+                        return;
+                    }
+
+                    // Thực hiện xử lý khách hàng mới
+//                    themKhachHangMoi(hoTen, sdtMoi, email);
+                }
+                // Nếu nhập phần 2
+                else if (nhapCu) {
+                    if (!sdtCu.matches(regexSDT)) {
+                        JOptionPane.showMessageDialog(null, "Số điện thoại không hợp lệ!");
+                        return;
+                    }
+
+                    // Thực hiện tìm khách hàng cũ;
+                    KhachHang kh = chitietdondatphongdao.timKhachHangTheoSDT(sdtCu);
+
+                    if (kh != null) {
+                        System.out.println("Mã KH: " + kh.getMaKH());
+                        System.out.println("Họ tên: " + kh.getHoTen());
+                    } else {
+                        System.out.println("Không tìm thấy khách hàng.");
+                    }
+                }
+                // Nếu không nhập gì
+                else {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập thông tin khách hàng mới hoặc khách hàng cũ!");
+                }
+            }
+
+        });
+
         footerPanel.add(confirmButton);
 
         
