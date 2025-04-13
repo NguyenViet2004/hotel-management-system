@@ -12,18 +12,15 @@ public class ConnectDB {
 
     // Phương thức kết nối
     public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                // Kết nối đến SQL Server
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Kết nối SQL Server thành công!");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Lỗi kết nối SQL Server!");
-            }
+        try {
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Lỗi kết nối SQL Server!");
+            return null;
         }
-        return connection;
     }
+
 
     // Phương thức đóng kết nối
     public static void closeConnection() {
