@@ -8,10 +8,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -23,12 +26,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+
+import dao.LoaiPhong_Dao;
+import dao.Phong_Dao;
+import entity.LoaiPhong;
+import entity.Phong;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -39,6 +49,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	RoundedButton btnDat;
+	private Phong_Dao dsPhong;
+	private LoaiPhong_Dao dsLoaiPhong;
 //sửa thử
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
@@ -52,6 +64,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	}
 
 	public QuanLyDatPhong_GUI() {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setResizable(false);
@@ -152,34 +165,32 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		lblRoomType.setForeground(Color.decode("#3B9AEE"));
 		lblRoomType.setFont(ft);
 		panelWest.add(lblRoomType);
-
+		
 		// Checkboxes for room types
-		JCheckBox cbSingleRoom = new JCheckBox("Single Room");
-		cbSingleRoom.setBounds(35, 200, 150, 25);
-		cbSingleRoom.setBackground(Color.WHITE);
+		dsLoaiPhong = new LoaiPhong_Dao();
+		ArrayList<LoaiPhong> danhSachLoaiPhong = dsLoaiPhong.getAllLoaiPhong(); // Lấy danh sách loại phòng
 
-		JCheckBox cbTwinRoom = new JCheckBox("Twin Room");
-		cbTwinRoom.setBounds(35, 230, 150, 25);
-		cbTwinRoom.setBackground(Color.WHITE);
+		// Tạo JCheckBox cho từng loại phòng
+		int yPosition = 200; // Vị trí bắt đầu
 
-		JCheckBox cbDoubleRoom = new JCheckBox("Double Room");
-		cbDoubleRoom.setBounds(35, 260, 150, 25);
-		cbDoubleRoom.setBackground(Color.WHITE);
+		for (LoaiPhong loaiPhong : danhSachLoaiPhong) {
+		    JCheckBox cbLoaiPhong = new JCheckBox(loaiPhong.getTenLoai());  // Tạo checkbox cho mỗi loại phòng
+		    cbLoaiPhong.setBounds(35, yPosition, 200, 25);  // Đặt vị trí và kích thước
+		    cbLoaiPhong.setBackground(Color.WHITE);  // Đặt màu nền
+		    
+		    // Thêm vào panel (hoặc container phù hợp)
+		    panelWest.add(cbLoaiPhong);
+		    
+		    // Tăng vị trí y để các checkbox không bị chồng lên nhau
+		    yPosition += 30;
+		}
 
-		JCheckBox cbTripleRoom = new JCheckBox("Triple Room");
-		cbTripleRoom.setBounds(35, 290, 150, 25);
-		cbTripleRoom.setBackground(Color.WHITE);
-
+		// Nếu bạn cần thêm checkbox "Tất cả các loại phòng" nữa
 		JCheckBox cbAllRooms = new JCheckBox("Tất cả các loại phòng");
-		cbAllRooms.setBounds(35, 320, 150, 25);
+		cbAllRooms.setBounds(35, yPosition, 200, 25);
 		cbAllRooms.setBackground(Color.WHITE);
-
-		// Add checkboxes to the panel
-		panelWest.add(cbSingleRoom);
-		panelWest.add(cbTwinRoom);
-		panelWest.add(cbDoubleRoom);
-		panelWest.add(cbTripleRoom);
 		panelWest.add(cbAllRooms);
+
 
 		// Add panel to content pane
 		contentPane.add(panelWest);
@@ -224,15 +235,34 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		CustomRoundedPanel panelSouth = new CustomRoundedPanel(15, 15, 15, 15);
 
 		// Ví dụ dữ liệu phòng giả lập theo các loại phòng
-		Map<String, List<String>> roomCategories = new HashMap<>();
-		roomCategories.put("Single Room",
-				Arrays.asList("Room 1", "Room 2", "Room 3", "Room 4", "Room 1", "Room 2", "Room 3", "Room 4"));
-		roomCategories.put("Double Room",
-				Arrays.asList("Room 6", "Room 7", "Room 8", "Room 9", "Room 1", "Room 2", "Room 3", "Room 4"));
-		roomCategories.put("Twin Room",
-				Arrays.asList("Room 11", "Room 12", "Room 13", "Room 14", "Room 1", "Room 2", "Room 3", "Room 4"));
-		roomCategories.put("Tripple Room",
-				Arrays.asList("Room 15", "Room 16", "Room 17", "Room 18", "Room 1", "Room 2", "Room 3", "Room 4"));
+		// Giả sử dsPhong là đối tượng của lớp Phong_Dao
+		dsPhong = new Phong_Dao();
+
+		// Tạo một Map tổng hợp để lưu trữ các phòng theo loại
+		Map<String, ArrayList<Phong>> roomCategories = new HashMap<>();
+
+		// Duyệt qua từng loại phòng trong danh sách danhSachLoaiPhong
+		for (LoaiPhong loaiPhong : danhSachLoaiPhong) {
+		    // Lấy danh sách phòng theo loại từ phương thức getDanhSachPhongTheoLoai
+		    ArrayList<Phong> rooms = dsPhong.getDanhSachPhongTheoLoai(loaiPhong.getMaLoaiPhong());
+
+		    // Thêm danh sách phòng vào Map, với key là tên loại phòng
+		    roomCategories.put(loaiPhong.getTenLoai(), rooms);
+		}
+
+		// Ví dụ duyệt qua và hiển thị thông tin phòng
+		for (Map.Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
+		    String roomType = entry.getKey();  // Tên loại phòng
+		    ArrayList<Phong> rooms = entry.getValue();  // Danh sách phòng
+
+		    System.out.println("Loại phòng: " + roomType);
+		    for (Phong room : rooms) {
+		        // Giả sử Phong có phương thức getTenPhong và getTrangThai
+		        System.out.println("  Phòng: " + room.getSoPhong() + " - Trạng thái: " + room.getTrangThai());
+		    }
+		}
+
+
 
 		// Thiết lập các thông số cho ô phòng
 		int roomWidth = 200;
@@ -241,55 +271,43 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		int verticalSpacing = 10;
 
 		panelSouth.setBackground(Color.WHITE);
-		panelSouth.setLayout(new BoxLayout(panelSouth, BoxLayout.Y_AXIS)); // Sử dụng BoxLayout để sắp xếp theo chiều
-																			// dọc
+		panelSouth.setLayout(new BoxLayout(panelSouth, BoxLayout.Y_AXIS)); // Sử dụng BoxLayout để sắp xếp theo chiều dọc
 
 		// Duyệt qua các loại phòng và tạo từng phần tương ứng
-		for (Map.Entry<String, List<String>> entry : roomCategories.entrySet()) {
-			String roomType = entry.getKey();
-			List<String> rooms = entry.getValue();
+		for (Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
+		    String roomType = entry.getKey();
+		    List<Phong> rooms = entry.getValue();
 
-			// Tạo JPanel để chứa tiêu đề và căn lề trái
-			JPanel titlePanel = new JPanel();
-			titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0)); // Căn lề trái, không có khoảng cách
+		    // Tạo JPanel để chứa tiêu đề và căn lề trái
+		    JPanel titlePanel = new JPanel();
+		    titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0)); // Căn lề trái, không có khoảng cách
 
-			// Tạo JLabel cho tiêu đề loại phòng
-			JLabel lblRoomInfo = new JLabel(roomType);
-			lblRoomInfo.setFont(new Font("Arial", Font.BOLD, 20));
-			lblRoomInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // Thêm khoảng cách trên và dưới
+		    // Tạo JLabel cho tiêu đề loại phòng
+		    JLabel lblRoomInfo = new JLabel(roomType);
+		    lblRoomInfo.setFont(new Font("Arial", Font.BOLD, 20));
+		    lblRoomInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // Thêm khoảng cách trên và dưới
 
-			// Thêm JLabel vào titlePanel
-			titlePanel.add(lblRoomInfo);
+		    // Thêm JLabel vào titlePanel
+		    titlePanel.add(lblRoomInfo);
 
-			// Thêm titlePanel vào panelSouth
-			panelSouth.add(titlePanel);
+		    // Thêm titlePanel vào panelSouth
+		    panelSouth.add(titlePanel);
+		    int roomsPerRow = 4;
+		    int numberOfRooms = rooms.size();
+		    int numberOfRows = (int) Math.ceil((double) numberOfRooms / roomsPerRow);
 
-			// Tính toán số hàng cần thiết cho loại phòng này
-			int roomsPerRow = 4; // Mỗi hàng chứa 4 ô phòng
-			int numberOfRooms = rooms.size();
-			int numberOfRows = (int) Math.ceil((double) numberOfRooms / roomsPerRow);
+		    JPanel roomGridPanel = new JPanel();
+		    roomGridPanel.setLayout(new GridLayout(numberOfRows, roomsPerRow, horizontalSpacing, verticalSpacing));
+		    roomGridPanel.setBackground(Color.WHITE);
 
-			// Tạo các nhóm ô phòng cho loại phòng này
-			for (int i = 0; i < numberOfRows; i++) {
-				JPanel rowPanel = new JPanel();
-				rowPanel.setLayout(new FlowLayout(FlowLayout.CENTER, horizontalSpacing, verticalSpacing)); // Khoảng
-																											// cách giữa
-																											// các ô
-																											// phòng
-				rowPanel.setBackground(Color.WHITE);
+		    for (Phong room : rooms) {
+		        RoomPanel roomPanel = new RoomPanel(room, "Phòng trống", 0);
+		        roomPanel.setPreferredSize(new Dimension(roomWidth, roomHeight));
+		        roomGridPanel.add(roomPanel);
+		    }
 
-				// Thêm các ô phòng vào mỗi hàng
-				for (int j = i * roomsPerRow; j < (i + 1) * roomsPerRow && j < numberOfRooms; j++) {
-					String roomName = rooms.get(j);
-					RoomPanel roomPanel = new RoomPanel(roomName, "Phòng trống", 0);
-					roomPanel.setPreferredSize(new Dimension(roomWidth, roomHeight)); // Kích thước cố định cho mỗi ô
-																						// phòng
-					rowPanel.add(roomPanel);
-				}
+		    panelSouth.add(roomGridPanel);
 
-				// Thêm panel chứa các ô phòng vào panelSouth
-				panelSouth.add(rowPanel);
-			}
 		}
 
 		// Tạo JScrollPane để thêm thanh cuộn cho panelSouth
@@ -373,12 +391,12 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	}
 
 	class RoomPanel extends JPanel {
-		private String roomId;
+		private Phong roomId;
 		private String status;
 		private int days;
 
-		public RoomPanel(String roomId, String status, int days) {
-			this.roomId = roomId;
+		public RoomPanel(Phong roomName, String status, int days) {
+			this.roomId = roomName;
 			this.status = status;
 			this.days = days;
 			setPreferredSize(new Dimension(220, 180));
@@ -405,9 +423,9 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 			int lineHeight = metrics.getHeight(); // Chiều cao của mỗi dòng văn bản
 
 			// Vẽ thông tin phòng với căn chỉnh phù hợp
-			g2.drawString("ID: " + roomId, margin, margin + lineHeight); // Dòng 1
-			g2.drawString("Trạng thái: " + status, margin, margin + 2 * lineHeight); // Dòng 2
-			g2.drawString("Số ngày: " + days, margin, margin + 3 * lineHeight); // Dòng 3
+			g2.drawString("ID: " + roomId.getSoPhong(), margin, margin + lineHeight); // Dòng 1
+			g2.drawString("Trạng thái: " + roomId.getTrangThai(), margin, margin + 2 * lineHeight); // Dòng 2
+			g2.drawString("Mô tả: " + roomId.getMoTa(), margin, margin + 3 * lineHeight); // Dòng 3
 		}
 	}
 
