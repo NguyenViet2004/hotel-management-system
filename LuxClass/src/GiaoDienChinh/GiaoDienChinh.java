@@ -40,7 +40,7 @@ public class GiaoDienChinh {
     private Timer timerSlideShow;
     private ArrayList<String> imagePaths;
     private int currentIndex = 0;
-    private final String imageFolderPath = "HinhAnhGiaoDienChinh.HinhNen";
+    private final String imageFolderPath = "HinhNen";
     private JPopupMenu quanLyCaPopupMenu;
     private Color defaultMenuItemBackground;
     private Color hoverBackgroundColor = new Color(91, 249, 33); // Màu xanh lá
