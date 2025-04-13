@@ -19,7 +19,12 @@ public class KhachHang {
 		this.sdt = sdt;
 		this.soCCCD = soCCCD;
 	}
-
+	
+	public KhachHang(String maKH, String hoTen) {
+        this.maKH = maKH;
+        this.hoTen = hoTen;
+    }
+	
 	public KhachHang(String maKH) {
 		super();
 		this.maKH = maKH;
