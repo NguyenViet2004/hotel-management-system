@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,4 +38,26 @@ public class Phong_Dao {
         }
         return dsp;
     }
+    
+    public ArrayList<Phong> getDanhSachPhongTheoLoai(String maLoaiPhong) {
+    	ArrayList<Phong> danhSachPhong = new ArrayList<>();
+        String sql = "SELECT * FROM Phong WHERE loaiPhong = ?";
+        
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, maLoaiPhong);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                String soPhong = rs.getString("soPhong");
+
+                danhSachPhong.add(new Phong(soPhong));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return danhSachPhong;
+    }
+
 }
