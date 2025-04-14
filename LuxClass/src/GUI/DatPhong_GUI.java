@@ -16,6 +16,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import dao.ChiTietDonDatPhong_Dao;
+import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
 import dao.Phong_Dao;
 import entity.KhachHang;
@@ -65,6 +66,7 @@ public class DatPhong_GUI extends JDialog {
 	private int soKhach;
 	private String[] danhSachSoPhongDuocChon;
 	private String trangThai = "Chưa thanh toán";
+	private DonDatPhong_Dao dondatphongdao;
 
 
 	public DatPhong_GUI(JFrame parentFrame) {
@@ -99,6 +101,7 @@ public class DatPhong_GUI extends JDialog {
 		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
 		khachhangdao = new KhachHang_Dao();
 		phongdao = new Phong_Dao();
+		dondatphongdao = new DonDatPhong_Dao();
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.25);
 		int centerHeight = (int) (screenHeightTrang1 * 0.65);
@@ -1226,17 +1229,30 @@ public class DatPhong_GUI extends JDialog {
 				kh = chitietdondatphongdao.timKhachHangTheoSDT(sdtMoi);
 		        double tienCoc = 0;
 				//thêm đơn đặt phòng
+		        boolean themDonThanhCong = chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc, maNhanVien, loaiDon, trangThai);
+		        if (themDonThanhCong) {
+		            System.out.println("Thêm đơn đặt phòng thành công");
+		            boolean coLoi = false;
 
-				if(chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc,maNhanVien , loaiDon,trangThai)) {
-					System.out.println("thêm đơn đặt phòng thành công");
-				} else {
-					System.out.println("thêm đơn đặt phòng không thành công");
-				}
-				//thêm chi tiêt dat phong
-				for (int i = 0; i < danhSachSoPhongDuocChon.length; i++) {
-					chitietdondatphongdao.themChiTietDonDatPhong(maDon, danhSachSoPhongDuocChon[i]);
-					phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đã đặt");
-			    }
+		            for (int i = 0; i < danhSachSoPhongDuocChon.length; i++) {
+		                boolean themChiTiet = chitietdondatphongdao.themChiTietDonDatPhong(maDon, danhSachSoPhongDuocChon[i]);
+		                if (!themChiTiet) {
+		                    coLoi = true;
+		                    break;
+		                }
+		                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đã đặt");
+		            }
+
+		            if (coLoi) {
+		                // Nếu có lỗi, xóa DonDatPhong đã thêm
+		                dondatphongdao.xoaDonDatPhong(maDon);
+		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
+		            }
+
+		        } else {
+		            System.out.println("Thêm đơn đặt phòng không thành công");
+		        }
+
 
 			}
 			// Nếu nhập phần 2

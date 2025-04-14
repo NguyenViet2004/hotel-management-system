@@ -218,8 +218,20 @@ public class ChiTietDonDatPhong_Dao {
 	        System.out.println("Đến ngày 1: " + ngayTra);
 	        System.out.println("Từ ngày 1: " + ngayNhan);
 	        // Chuyển Timestamp sang LocalDateTime
-	        LocalDateTime nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
-	        LocalDateTime traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
+	        LocalDateTime nhanPhong;
+	        LocalDateTime traPhong;
+
+	        // Set giờ nhận và trả phòng tùy theo loại đơn
+	        if (loaiDon.equalsIgnoreCase("Theo ngày")) {
+	            nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
+	            traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
+	        } else if (loaiDon.equalsIgnoreCase("Theo đêm")) {
+	            nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(23, 59);
+	            traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
+	        } else {
+	            // Ném lỗi nếu loại đơn không hợp lệ
+	            throw new IllegalArgumentException("Loại đơn đặt phòng không hợp lệ: " + loaiDon);
+	        }
 	        System.out.println("Đến ngày timestamp 1: " + traPhong);
 	        System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
 	        // Chuyển lại Timestamp
