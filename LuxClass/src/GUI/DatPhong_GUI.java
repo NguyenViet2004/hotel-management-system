@@ -44,31 +44,44 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class DatPhong_GUI extends JDialog {
-	private CardLayout cardLayout;
-	private JPanel mainPanel;
+	// Giao diện
 	private JPanel contentPane;
+	private JPanel mainPanel;
 	private JPanel centerPanel;
+	private CardLayout cardLayout;
+
+	private JDatePickerImpl datePickerCheckIn;
+	private JDatePickerImpl datePickerCheckOut;
+
+	// Kích thước màn hình các trang
 	private int screenWidthTrang1;
 	private int screenHeightTrang1;
 	private int screenWidthTrang2;
 	private int screenHeightTrang2;
+
+	// DAO
 	private Phong_Dao phongdao;
 	private KhachHang_Dao khachhangdao;
+	private DonDatPhong_Dao dondatphongdao;
 	private ChiTietDonDatPhong_Dao chitietdondatphongdao;
-	int[] roomQuantities;
-	private JDatePickerImpl datePickerCheckIn;
-	private JDatePickerImpl datePickerCheckOut;
-	private Timestamp tuNgay; // ngày nhận phòng
-	private Timestamp denNgay; // ngày trả phòng
-	private String loaiDon = null; // "GIO", "NGAY", hoặc "DEM"
+
+	// Dữ liệu đặt phòng
+	private int[] roomQuantities;
+	private String[] danhSachSoPhongDuocChon;
 	private String maNhanVien = "2025LT001";
 	private String maDon;
-	private int soKhach;
-	private String[] danhSachSoPhongDuocChon;
+	private String loaiDon = null; // "GIO", "NGAY", hoặc "DEM"
 	private String trangThai = "Chưa thanh toán";
-	private DonDatPhong_Dao dondatphongdao;
+	private int soKhach;
+
+	// Ngày giờ
+	private Timestamp tuNgay; // ngày nhận phòng
+	private Timestamp denNgay; // ngày trả phòng
+	private Date ngayNhan;
+	private Date ngayTra;
 
 
+	//==============TRANG CHÍNH GUI==============
 	public DatPhong_GUI(JFrame parentFrame) {
 		super(parentFrame, "Form Đặt Phòng", true); // true = modal dialog
 
@@ -95,7 +108,8 @@ public class DatPhong_GUI extends JDialog {
 
 		add(mainPanel);
 	}
-
+	
+	//==============TAO TRANG ĐẶT PHÒNG(TRANG 1)==============
 	private JPanel taoTrangDatPhong() {
 		// tạo biến cho chi tiet don dat phòng
 		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
@@ -217,7 +231,7 @@ public class DatPhong_GUI extends JDialog {
 		JPanel checkInWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkInWrapper.setBackground(Color.WHITE);
 		// tạo ngày tháng năm nhận phòng
-		datePickerCheckIn = createDatePicker();
+		datePickerCheckIn = createDatePicker(LocalDate.now());
 		checkInWrapper.add(datePickerCheckIn);
 
 		checkInPanel.add(checkInWrapper, BorderLayout.CENTER);
@@ -233,20 +247,26 @@ public class DatPhong_GUI extends JDialog {
 		JPanel checkOutWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkOutWrapper.setBackground(Color.WHITE);
 		// tạo ngay thang năm trả phòng
-		datePickerCheckOut = createDatePicker();
+		datePickerCheckOut = createDatePicker(LocalDate.now().plusDays(1));
 		// ==== Thêm đoạn lắng nghe chọn xong ngày trả (popup đóng lại) ====
-		JDatePanelImpl datePanel = (JDatePanelImpl) datePickerCheckOut.getJDateInstantPanel(); // lấy đúng panel của
-																								// datePickerCheckOut
+		JDatePanelImpl datePanel = (JDatePanelImpl) datePickerCheckOut.getJDateInstantPanel(); // lấy đúng panel của datePickerCheckOut
+		
+		ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+		ngayTra = (Date) datePickerCheckOut.getModel().getValue();
+		
+		tuNgay = new Timestamp(ngayNhan.getTime());
+		denNgay = new Timestamp(ngayTra.getTime());
+		System.out.println("Ngày nhận phòng: " + tuNgay);
+		System.out.println("Ngày trả phòng: " + denNgay);
 		datePickerCheckOut.addActionListener(e -> {
-			Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
-			Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
-
+			ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+			ngayTra = (Date) datePickerCheckOut.getModel().getValue();
 			if (ngayNhan != null && ngayTra != null && ngayNhan.before(ngayTra)) {
 				tuNgay = new Timestamp(ngayNhan.getTime());
 				denNgay = new Timestamp(ngayTra.getTime());
 
-				System.out.println("Ngày nhận phòng: " + tuNgay);
-				System.out.println("Ngày trả phòng: " + denNgay);
+				System.out.println("Ngày nhận phòng khi nghe sk: " + tuNgay);
+				System.out.println("Ngày trả phòng khi nghe sk: " + denNgay);
 			}
 		});
 
@@ -338,8 +358,8 @@ public class DatPhong_GUI extends JDialog {
 		confirmButton.setFocusPainted(false);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
 		confirmButton.addActionListener(e -> {
-            Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
-            Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
+            ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+            ngayTra = (Date) datePickerCheckOut.getModel().getValue();
 
             if (ngayNhan == null || ngayTra == null) {
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
@@ -395,8 +415,7 @@ public class DatPhong_GUI extends JDialog {
 
 		footerPanel.add(confirmButton);
 
-		// ============end===============Thêm các phần vào panel chọn
-		// phòng==========================================
+		// ============end===============Thêm các phần vào panel chọn phòng========================
 		chonPhongPanel.add(headerPanel, BorderLayout.NORTH);
 		chonPhongPanel.add(centerPanel, BorderLayout.CENTER);
 		chonPhongPanel.add(footerPanel, BorderLayout.SOUTH);
@@ -407,7 +426,7 @@ public class DatPhong_GUI extends JDialog {
 		return contentPane;
 	}
 
-	// Hàm cập nhật màu cho 3 nút
+	//==============Hàm cập nhật màu khi ấn nút==============
 	private void updateButtonStyles(JButton selected, JButton... others) {
 		selected.setBackground(Color.GREEN); // Nút được chọn sẽ tô màu xanh
 
@@ -416,25 +435,20 @@ public class DatPhong_GUI extends JDialog {
 		}
 	}
 
-	// Phương thức tạo DatePicker tạo cho ngày nhân phong va ngay trả phòng
-	private JDatePickerImpl createDatePicker() {
-		// Lấy ngày hiện tại
-	    LocalDate now = LocalDate.now();
+	//==============Hàm tạo DatePicker==============
+	private JDatePickerImpl createDatePicker(LocalDate defaultDate) {
+
 		UtilDateModel model = new UtilDateModel();
-	    model.setDate(now.getYear(), now.getMonthValue() - 1, now.getDayOfMonth());
-	    model.setSelected(true); // rất quan trọng để hiện giá trị lên textfield
+	    model.setDate(defaultDate.getYear(), defaultDate.getMonthValue() - 1, defaultDate.getDayOfMonth());
+	    model.setSelected(true);
 	    
-	    
-		Properties p = new Properties();
-		p.put("text.today", "Today");
-		p.put("text.month", "Month");
-		p.put("text.year", "Year");
+	    Properties p = new Properties();
+	    p.put("text.today", "Today");
+	    p.put("text.month", "Month");
+	    p.put("text.year", "Year");
 
-		// Tạo panel chứa lịch
-		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-
-		// Tạo date picker với formatter mặc định
-		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateComponentFormatter());
+	    JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+	    JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
@@ -469,7 +483,6 @@ public class DatPhong_GUI extends JDialog {
 					Image scaledImage = icon.getImage().getScaledInstance(cao, ngang, Image.SCALE_SMOOTH);
 					ImageIcon resizedIcon = new ImageIcon(scaledImage);
 					button.setIcon(resizedIcon);
-//                     System.out.println("Button: " + button.getText());
 
 				}
 			}
@@ -480,6 +493,8 @@ public class DatPhong_GUI extends JDialog {
 
 		return datePicker;
 	}
+	
+	//==============Hàm tạo fomat lại Ngày nhận trả==============
 	public class DateLabelFormatter extends AbstractFormatter {
 	    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'thg' M, yyyy");
 
@@ -499,7 +514,7 @@ public class DatPhong_GUI extends JDialog {
 	    }
 	}
 	
-
+	//==============Hàm tạo từng row phòng==============
 	private JPanel createRoomRow(String roomName, int roomPrice, int soPhongTrong, JLabel[] totalLabels,
 			int[] roomQuantities, int index) {
 		JPanel rowPanel = new JPanel(new GridLayout(1, 4));
@@ -571,17 +586,19 @@ public class DatPhong_GUI extends JDialog {
 		return rowPanel;
 	}
 
-	// Hàm cập nhật tổng cộng
+	//==============Hàm cập nhật tiền sau khi chọn phòng==============
 	private void updateTotal(JLabel totalLabel, int qty, int roomPrice) {
 		int total = qty * roomPrice;
 		totalLabel.setText(formatCurrency(total));
 	}
 
+	//==============Hàm định dạng tiền (1.000.000)==============
 	private String formatCurrency(int amount) {
 		DecimalFormat df = new DecimalFormat("#,###");
 		return df.format(amount).replace(",", ".") + " VND";
 	}
 
+	//==============LOAD TRANG THEO NGÀY(TRANG 1)==============
 	private void loadGiaoDienTheoNgay() throws SQLException {
 		System.out.println("mở giao diện theo ngày");
 		centerPanel.removeAll();
@@ -650,6 +667,7 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel.repaint();
 	}
 
+	//==============LOAD TRANG THEO GIỜ(TRANG 2)==============
 	private void loadGiaoDienTheoGio() {
 		centerPanel.removeAll();
 
@@ -661,7 +679,7 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel.repaint();
 	}
 
-	// Giao diện đặt theo đêm (label thôi)
+	//==============LOAD TRANG THEO ĐÊM(TRANG 3)==============
 	private void loadGiaoDienTheoDem() throws SQLException {
 		System.out.println("mở giao diện theo đêm");
 		centerPanel.removeAll();
@@ -730,8 +748,7 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel.repaint();
 	}
 
-
-	// ==============================Trang2========================================================
+	//==============TAO TRANG XÁC NHẬN PHÒNG(TRANG 2)==============
 	private JPanel taoTrangXacNhanPhong() throws SQLException {
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.1);
@@ -958,6 +975,7 @@ public class DatPhong_GUI extends JDialog {
 		return contentPane;
 	}
 
+	//==============Hàm tạo mã đơn đặt phòng==============
 	public String taoMaDonDatPhong(String maNhanVien, int soThuTu) {
 	    // Lấy ngày hiện tại
 	    LocalDate ngayHienTai = LocalDate.now();
@@ -973,8 +991,7 @@ public class DatPhong_GUI extends JDialog {
 	    return ngayStr + maNhanVienRutGon + sttStr;
 	}
 
-
-	// ========================Trang3==========================================
+	//==============TAO TRANG TẠO THÔNG TIN KHÁCH HÀNG(TRANG 3)==============
 	private JPanel taoTrangNhapThongTin() {
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.1);
@@ -1260,8 +1277,7 @@ public class DatPhong_GUI extends JDialog {
 
 		footerPanel.add(confirmButton);
 
-		// ============end===============Thêm các phần vào panel chọn
-		// phòng==========================================
+		// ============end===============Thêm các phần vào panel chọn phòng=======================
 		chonPhongPanel.add(headerPanel, BorderLayout.NORTH);
 		chonPhongPanel.add(centerPanel, BorderLayout.CENTER);
 		chonPhongPanel.add(footerPanel, BorderLayout.SOUTH);
@@ -1272,6 +1288,7 @@ public class DatPhong_GUI extends JDialog {
 		return contentPane;
 	}
 
+	//==============Hàm set chiều cao cho textfield==============
 	private void setTextFieldHeight(JTextField field) {
 		Dimension size = new Dimension(500, 30); // width có thể để 0 hoặc linh hoạt
 		field.setMinimumSize(size);
@@ -1279,7 +1296,7 @@ public class DatPhong_GUI extends JDialog {
 		field.setMaximumSize(size);
 	}
 
-//=====================================================
+	//==============HÀM MAIN==============
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			JFrame parentFrame = new JFrame("Cửa sổ chính");
