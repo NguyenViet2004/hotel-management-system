@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -22,13 +23,22 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import dao.DonDatPhong_Dao;
+import entity.DonDatPhong;
+
 public class HuyPhong_GUI {
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	
 	public static void main(String[] args) {
+		
+		String maDonDatPhong = "140420255001";
+		DonDatPhong_Dao donDatPhong_Dao = new DonDatPhong_Dao();
+		DonDatPhong donDatPhong = donDatPhong_Dao.timDonTheoMa(maDonDatPhong);
         SwingUtilities.invokeLater(() -> {
-            new HuyPhong_GUI().taoDonHuyPhong();
+            new HuyPhong_GUI().taoDonHuyPhong(donDatPhong);
         });
 	}
-	public void taoDonHuyPhong() {
+	public void taoDonHuyPhong(DonDatPhong donDatPhong) {
 	    JFrame frame = new JFrame("Đơn Hủy Phòng");
 	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    frame.setSize(600, 700);
@@ -44,22 +54,23 @@ public class HuyPhong_GUI {
 	    customerPanel.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
 
 	    customerPanel.add(new JLabel("👤 Khách hàng:"));
-	    JTextField txtCustomer = new JTextField("Ngô Văn Dương");
+	    JTextField txtCustomer = new JTextField(donDatPhong.getKhachHang().getHoTen());
 	    customerPanel.add(txtCustomer);
 	    txtCustomer.setEditable(false);
 
 	    customerPanel.add(new JLabel("📞 Điện thoại:"));
-	    JTextField txtPhone = new JTextField("0912312345");
+	    JTextField txtPhone = new JTextField(donDatPhong.getKhachHang().getSdt());
 	    customerPanel.add(txtPhone);
 	    txtPhone.setEditable(false);
 
 	    customerPanel.add(new JLabel("📅 Ngày nhận phòng:"));
-	    JTextField txtCheckIn = new JTextField("21/03/2025");
+	    
+	    JTextField txtCheckIn = new JTextField(donDatPhong.getNgayNhanPhong().format(formatter));
 	    customerPanel.add(txtCheckIn);
 	    txtCheckIn.setEditable(false);
 
 	    customerPanel.add(new JLabel("📅 Ngày trả phòng:"));
-	    JTextField txtCheckOut = new JTextField("26/03/2025");
+	    JTextField txtCheckOut = new JTextField(donDatPhong.getNgayTraPhong().format(formatter));
 	    customerPanel.add(txtCheckOut);
 	    txtCheckOut.setEditable(false);
 
