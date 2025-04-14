@@ -180,5 +180,28 @@ public class KhachHang_Dao {
 
 		return result;
 	}
+    
+    public KhachHang timKhachHangTheoSoDienThoai(String sdt) {
+        KhachHang kh = null;
+        Connection con = ConnectDB.getConnection();
+        String sql = "SELECT * FROM KhachHang WHERE sdt = ?";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sdt);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                kh = new KhachHang(
+                    rs.getString("maKH"),
+                    rs.getString("hoTen"),
+                    rs.getString("sdt"),
+                    rs.getString("soCCCD")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return kh;
+    }
+
 
 }
