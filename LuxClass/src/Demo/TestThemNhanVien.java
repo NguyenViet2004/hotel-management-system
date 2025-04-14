@@ -12,7 +12,7 @@ public class TestThemNhanVien {
 
         // Tạo nhân viên mới
         NhanVien nv = new NhanVien(
-                "NV005",                       // Mã NV
+                "2025LT001",                       // Mã NV
                 "Nguyễn Quốc Việt",            // Họ tên
                 LocalDate.of(2004, 9, 27),     // Ngày sinh
                 "0333333333",                 // SĐT
@@ -23,15 +23,15 @@ public class TestThemNhanVien {
         );
 
         // Gọi hàm thêm
-//        boolean themThanhCong = nvDao.them(nv);
-        NhanVien tim = nvDao.timTheoMa("NV005");
-        System.out.println(tim);
-        boolean xoa = nvDao.xoa("NV005");
+        boolean themThanhCong = nvDao.them(nv);
+//        NhanVien tim = nvDao.timTheoMa("NV005");
+//        System.out.println(tim);
+//        boolean xoa = nvDaso.xoa("NV005");
         // In kết quả
-//        if (themThanhCong) {
-//            System.out.println("Thêm nhân viên thành công!");
-//        } else {
-//            System.out.println("Thêm nhân viên thất bại hoặc nhân viên đã tồn tại.");
-//        }
+        if (themThanhCong) {
+            System.out.println("Thêm nhân viên thành công!");
+        } else {
+            System.out.println("Thêm nhân viên thất bại hoặc nhân viên đã tồn tại.");
+        }
     }
 }
