@@ -124,4 +124,61 @@ public class KhachHang_Dao {
         }
         return dskh;
     }
+    
+    public boolean themThongTinKhachHang(String hoTen, String sdtMoi, String soCccd, String ngayHienTai) {
+		boolean result = false;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			Connection connection = ConnectDB.getConnection();
+
+			// Đếm số khách hàng đăng ký trong ngày để tạo số thứ tự
+			String demSql = "SELECT COUNT(*) AS tongSoKhach FROM KhachHang WHERE maKH LIKE ?";
+			stmt = connection.prepareStatement(demSql);
+			stmt.setString(1, "KH" + ngayHienTai + "%");
+			rs = stmt.executeQuery();
+
+			int soLuongKhach = 0;
+			if (rs.next()) {
+				soLuongKhach = rs.getInt("tongSoKhach");
+			}
+			rs.close();
+			stmt.close();
+
+			// Tăng số thứ tự thêm 1
+			soLuongKhach++;
+
+			// Tạo mã khách hàng: KH + DDMMYYYY + 4 chữ số tự động tăng
+			String maKH = "KH" + ngayHienTai + String.format("%04d", soLuongKhach);
+
+			// Thêm khách hàng vào CSDL
+			String insertSql = "INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD) VALUES (?, ?, ?, ?)";
+			stmt = connection.prepareStatement(insertSql);
+			stmt.setString(1, maKH);
+			stmt.setNString(2, hoTen);
+			stmt.setString(3, sdtMoi);
+			stmt.setString(4, soCccd);
+
+			int rowsInserted = stmt.executeUpdate();
+			if (rowsInserted > 0) {
+				result = true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
 }
