@@ -57,6 +57,7 @@ public class DatPhong_GUI extends JDialog {
 	private String maDon;
 	private int soKhach;
 	private String[] danhSachSoPhongDuocChon;
+	private String trangThai = "Chưa thanh toán";
 
 
 	public DatPhong_GUI(JFrame parentFrame) {
@@ -1158,7 +1159,7 @@ public class DatPhong_GUI extends JDialog {
 					//thêm đơn đặt phòng
 			        System.out.println("tư ngày ở gui:"+tuNgay);
 			        System.out.println("den ngày ở gui:"+ denNgay);
-					if(chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc,maNhanVien , loaiDon)) {
+					if(chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc,maNhanVien , loaiDon,trangThai)) {
 						System.out.println("thêm đơn đặt phòng thành công");
 					} else {
 						System.out.println("thêm đơn đặt phòng không thành công");
@@ -1197,7 +1198,7 @@ public class DatPhong_GUI extends JDialog {
 					//thêm đơn đặt phòng
 			        System.out.println("tư ngày ở gui:"+tuNgay);
 			        System.out.println("den ngày ở gui:"+ denNgay);
-					if(chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc,maNhanVien , loaiDon)) {
+					if(chitietdondatphongdao.themDonDatPhong(maDon, kh.getMaKH(), tuNgay, denNgay, soKhach, tienCoc,maNhanVien , loaiDon,trangThai)) {
 						System.out.println("thêm đơn đặt phòng thành công");
 					} else {
 						System.out.println("thêm đơn đặt phòng không thành công");

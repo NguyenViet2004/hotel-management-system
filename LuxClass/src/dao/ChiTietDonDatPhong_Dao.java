@@ -264,27 +264,27 @@ public class ChiTietDonDatPhong_Dao {
 	}
 
 	public boolean themDonDatPhong(String maDonDatPhong, String maKH, Timestamp ngayNhan, Timestamp ngayTra,
-	        int soKhach, double tienCoc, String maNV, String loaiDon) {
+	        int soKhach, double tienCoc, String maNV, String loaiDon, String trangThai) {
 	    boolean result = false;
 	    PreparedStatement stmt = null;
 
 	    try {
-			System.out.println("Đến ngày 1: " + ngayTra);
-			System.out.println("Từ ngày 1: " + ngayNhan);
+	        System.out.println("Đến ngày 1: " + ngayTra);
+	        System.out.println("Từ ngày 1: " + ngayNhan);
 	        // Chuyển Timestamp sang LocalDateTime
 	        LocalDateTime nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
 	        LocalDateTime traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
-			System.out.println("Đến ngày timestamp 1: " + traPhong);
-			System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
+	        System.out.println("Đến ngày timestamp 1: " + traPhong);
+	        System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
 	        // Chuyển lại Timestamp
 	        Timestamp newNgayNhan = Timestamp.valueOf(nhanPhong);
 	        Timestamp newNgayTra = Timestamp.valueOf(traPhong);
-			System.out.println("Đến ngày 12h 1: " + newNgayTra);
-			System.out.println("Từ ngày 14h 1: " + newNgayNhan);
+	        System.out.println("Đến ngày 12h 1: " + newNgayTra);
+	        System.out.println("Từ ngày 14h 1: " + newNgayNhan);
 
-	        
-	        String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, maNV, loaiDon) "
-	                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	        // Thêm cột trangThai vào câu lệnh SQL
+	        String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, maNV, loaiDon, trangThai) "
+	                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	        stmt = connection.prepareStatement(sql);
 	        stmt.setString(1, maDonDatPhong);
 	        stmt.setString(2, maKH);
@@ -294,6 +294,7 @@ public class ChiTietDonDatPhong_Dao {
 	        stmt.setDouble(6, tienCoc);
 	        stmt.setString(7, maNV);
 	        stmt.setNString(8, loaiDon);
+	        stmt.setNString(9, trangThai); // thêm dòng này để set giá trị trạng thái
 
 	        int rowsInserted = stmt.executeUpdate();
 	        if (rowsInserted > 0) {
@@ -312,6 +313,7 @@ public class ChiTietDonDatPhong_Dao {
 
 	    return result;
 	}
+
 
 
 	public boolean themChiTietDonDatPhong(String maDonDatPhong, String soPhong) {
