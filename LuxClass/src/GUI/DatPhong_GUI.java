@@ -53,7 +53,7 @@ public class DatPhong_GUI extends JDialog {
 	private Timestamp tuNgay; // ngày nhận phòng
 	private Timestamp denNgay; // ngày trả phòng
 	private String loaiDon = null; // "GIO", "NGAY", hoặc "DEM"
-	private String maNhanVien = "2025LT001";
+	private String maNhanVien = "NV005";
 	private String maDon;
 	private int soKhach;
 	private String[] danhSachSoPhongDuocChon;
@@ -952,7 +952,7 @@ public class DatPhong_GUI extends JDialog {
 		JLabel lblKhachMoi = new JLabel("Thông tin khách hàng mới");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 15));
 		JPanel topPanel = new JPanel();
-		topPanel.setBackground(Color.WHITE);
+		topPanel.setBackground(Color.PINK);
 
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
@@ -987,9 +987,9 @@ public class DatPhong_GUI extends JDialog {
 		chkXeDay.setFont(new Font("Arial", Font.BOLD, cochu));
 
 		JPanel chkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		chkPanel.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.6), 40));
-		chkPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.6), 40));
-		chkPanel.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.6), 40));
+		chkPanel.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
+		chkPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
+		chkPanel.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
 
 		chkPanel.setBackground(Color.WHITE);
 		chkPanel.add(chkNoi);
@@ -1030,7 +1030,7 @@ public class DatPhong_GUI extends JDialog {
 		// ======================= Bottom Panel: Khách hàng cũ
 		// =======================================
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setBackground(Color.WHITE);
+		bottomPanel.setBackground(Color.BLUE);
 		GroupLayout layoutBottom = new GroupLayout(bottomPanel);
 		bottomPanel.setLayout(layoutBottom);
 		layoutBottom.setAutoCreateGaps(true);
