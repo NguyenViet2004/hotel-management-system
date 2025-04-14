@@ -327,49 +327,49 @@ public class DatPhong_GUI extends JDialog {
 		confirmButton.setFocusPainted(false);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
 		confirmButton.addActionListener(e -> {
-//            Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
-//            Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
-//
-//            if (ngayNhan == null || ngayTra == null) {
-//                JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
-//                return;
-//            }
-//
-//            if (!ngayNhan.before(ngayTra)) {
-//                JOptionPane.showMessageDialog(null, "Ngày nhận phòng phải trước ngày trả phòng.", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
-//                return;
-//            }
-//            
-//            int soLuongKhach = Integer.parseInt(guestCountLabel.getText());
-//            if (soLuongKhach <= 0) {
-//                JOptionPane.showMessageDialog(null, "Số lượng khách phải lớn hơn 0.", "Lỗi số lượng", JOptionPane.ERROR_MESSAGE);
-//                return;
-//            }
-//            
-//            if (kieuDatPhong == null) {
-//                JOptionPane.showMessageDialog(null, "Vui lòng chọn kiểu đặt phòng (Giờ / Ngày / Đêm).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
-//                return;
-//            }
-//            
-//            // Kiểm tra tổng số lượng các loại phòng
-//            int tongPhong = 0;
-//            for (int qty : roomQuantities) {
-//                tongPhong += qty;
-//            }
-//
-//            if (tongPhong == 0) {
-//                JOptionPane.showMessageDialog(
-//                    null,
-//                    "Vui lòng chọn ít nhất một loại phòng.",
-//                    "Thông báo",
-//                    JOptionPane.WARNING_MESSAGE
-//                );
-//                return; // Không cho chuyển trang nếu chưa chọn phòng
-//            }
-//
-//            // Ngày hợp lệ, gán giá trị
-//            tuNgay = new Timestamp(ngayNhan.getTime());
-//            denNgay = new Timestamp(ngayTra.getTime());
+            Date ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
+            Date ngayTra = (Date) datePickerCheckOut.getModel().getValue();
+
+            if (ngayNhan == null || ngayTra == null) {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!ngayNhan.before(ngayTra)) {
+                JOptionPane.showMessageDialog(null, "Ngày nhận phòng phải trước ngày trả phòng.", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            int soLuongKhach = Integer.parseInt(guestCountLabel.getText());
+            if (soLuongKhach <= 0) {
+                JOptionPane.showMessageDialog(null, "Số lượng khách phải lớn hơn 0.", "Lỗi số lượng", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (loaiDon == null) {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn kiểu đặt phòng (Giờ / Ngày / Đêm).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Kiểm tra tổng số lượng các loại phòng
+            int tongPhong = 0;
+            for (int qty : roomQuantities) {
+                tongPhong += qty;
+            }
+
+            if (tongPhong == 0) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Vui lòng chọn ít nhất một loại phòng.",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return; // Không cho chuyển trang nếu chưa chọn phòng
+            }
+
+            // Ngày hợp lệ, gán giá trị
+            tuNgay = new Timestamp(ngayNhan.getTime());
+            denNgay = new Timestamp(ngayTra.getTime());
 
 			// Chuyển sang trang xác nhận
 			JPanel trang2 = null;
