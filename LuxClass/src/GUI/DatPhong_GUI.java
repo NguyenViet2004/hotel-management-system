@@ -1,7 +1,7 @@
 package GUI;
 
 import javax.swing.*;
-
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -14,6 +14,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import dao.ChiTietDonDatPhong_Dao;
+import dao.KhachHang_Dao;
 import dao.Phong_Dao;
 import entity.KhachHang;
 import entity.Phong;
@@ -24,11 +25,14 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -46,6 +50,7 @@ public class DatPhong_GUI extends JDialog {
 	private int screenWidthTrang2;
 	private int screenHeightTrang2;
 	private Phong_Dao phongdao;
+	private KhachHang_Dao khachhangdao;
 	private ChiTietDonDatPhong_Dao chitietdondatphongdao;
 	int[] roomQuantities;
 	private JDatePickerImpl datePickerCheckIn;
@@ -53,7 +58,7 @@ public class DatPhong_GUI extends JDialog {
 	private Timestamp tuNgay; // ngày nhận phòng
 	private Timestamp denNgay; // ngày trả phòng
 	private String loaiDon = null; // "GIO", "NGAY", hoặc "DEM"
-	private String maNhanVien = "NV005";
+	private String maNhanVien = "2025LT001";
 	private String maDon;
 	private int soKhach;
 	private String[] danhSachSoPhongDuocChon;
@@ -90,7 +95,7 @@ public class DatPhong_GUI extends JDialog {
 	private JPanel taoTrangDatPhong() {
 		// tạo biến cho chi tiet don dat phòng
 		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
-
+		khachhangdao = new KhachHang_Dao();
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.25);
 		int centerHeight = (int) (screenHeightTrang1 * 0.65);
@@ -408,7 +413,13 @@ public class DatPhong_GUI extends JDialog {
 
 	// Phương thức tạo DatePicker tạo cho ngày nhân phong va ngay trả phòng
 	private JDatePickerImpl createDatePicker() {
+		// Lấy ngày hiện tại
+	    LocalDate now = LocalDate.now();
 		UtilDateModel model = new UtilDateModel();
+	    model.setDate(now.getYear(), now.getMonthValue() - 1, now.getDayOfMonth());
+	    model.setSelected(true); // rất quan trọng để hiện giá trị lên textfield
+	    
+	    
 		Properties p = new Properties();
 		p.put("text.today", "Today");
 		p.put("text.month", "Month");
@@ -419,10 +430,13 @@ public class DatPhong_GUI extends JDialog {
 
 		// Tạo date picker với formatter mặc định
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateComponentFormatter());
+		//=================================
+		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 
 		// Xóa viền của DatePicker
 		datePicker.setBorder(BorderFactory.createEmptyBorder());
-
+		
+		
 		// Tùy chỉnh giao diện
 		try {
 			// Lấy JTextField (thường là component thứ 1)
@@ -461,6 +475,25 @@ public class DatPhong_GUI extends JDialog {
 
 		return datePicker;
 	}
+	public class DateLabelFormatter extends AbstractFormatter {
+	    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'thg' M, yyyy");
+
+	    @Override
+	    public Object stringToValue(String text) throws ParseException {
+	        return LocalDate.parse(text, formatter);
+	    }
+
+	    @Override
+	    public String valueToString(Object value) throws ParseException {
+	        if (value != null) {
+	            Calendar cal = (Calendar) value;
+	            LocalDate date = cal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	            return date.format(formatter);
+	        }
+	        return "";
+	    }
+	}
+	
 
 	private JPanel createRoomRow(String roomName, int roomPrice, int soPhongTrong, JLabel[] totalLabels,
 			int[] roomQuantities, int index) {
@@ -675,7 +708,7 @@ public class DatPhong_GUI extends JDialog {
 		maDon = taoMaDonDatPhong(maNhanVien, soThuTu);
 
 		// Tạo JLabel với mã đơn
-		JLabel donDatPhongLabel = new JLabel("<html><span style='background-color: Gray;'>" + maDon + "</span></html>");
+		JLabel donDatPhongLabel = new JLabel("<html><span style='background-color: #D9D9D9;'>" + maDon + "</span></html>");
 		donDatPhongLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
 		// Nút đóng
@@ -723,6 +756,7 @@ public class DatPhong_GUI extends JDialog {
 
 		// Header
 		JPanel headerPanel1 = new JPanel(new GridLayout(1, 5));
+		headerPanel1.setBorder(BorderFactory.createMatteBorder(2, 2, 0, 2, Color.BLACK));
 		headerPanel1.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.85), 40));
 		headerPanel1.setBackground(new Color(144, 238, 144));
 		String[] headers = { "Hạng phòng", "Phòng", "Ngày nhận", "Tổng ngày", "Ngày trả" };
@@ -952,7 +986,7 @@ public class DatPhong_GUI extends JDialog {
 		JLabel lblKhachMoi = new JLabel("Thông tin khách hàng mới");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 15));
 		JPanel topPanel = new JPanel();
-		topPanel.setBackground(Color.PINK);
+		topPanel.setBackground(Color.WHITE);
 
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
@@ -1030,7 +1064,7 @@ public class DatPhong_GUI extends JDialog {
 		// ======================= Bottom Panel: Khách hàng cũ
 		// =======================================
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setBackground(Color.BLUE);
+		bottomPanel.setBackground(Color.WHITE);
 		GroupLayout layoutBottom = new GroupLayout(bottomPanel);
 		bottomPanel.setLayout(layoutBottom);
 		layoutBottom.setAutoCreateGaps(true);
@@ -1141,7 +1175,7 @@ public class DatPhong_GUI extends JDialog {
 					String ngayHienTaiStr = ngayHienTai.format(formatter);
 					System.out.println("Ngày hiện tại format lại: " + ngayHienTaiStr);
 
-					if (chitietdondatphongdao.themThongTinKhachHang(hoTen, sdtMoi, soCccd, ngayHienTaiStr)) {
+					if (khachhangdao.themThongTinKhachHang(hoTen, sdtMoi, soCccd, ngayHienTaiStr)) {
 						System.out.println("thêm thông tin khách hàng thành công");
 					} else {
 						System.out.println("thêm thông tin khách hàng không thành công");
