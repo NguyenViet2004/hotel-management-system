@@ -98,6 +98,7 @@ public class DatPhong_GUI extends JDialog {
 		// tạo biến cho chi tiet don dat phòng
 		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
 		khachhangdao = new KhachHang_Dao();
+		phongdao = new Phong_Dao();
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.25);
 		int centerHeight = (int) (screenHeightTrang1 * 0.65);
@@ -185,7 +186,12 @@ public class DatPhong_GUI extends JDialog {
 		});
 
 		theoDemButton.addActionListener(e -> {
-			loadGiaoDienTheoDem();
+			try {
+				loadGiaoDienTheoDem();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			updateButtonStyles(theoDemButton, theoGioButton, theoNgayButton);
 			loaiDon = "Theo đêm";
 		});
@@ -574,6 +580,7 @@ public class DatPhong_GUI extends JDialog {
 	}
 
 	private void loadGiaoDienTheoNgay() throws SQLException {
+		System.out.println("mở giao diện theo ngày");
 		centerPanel.removeAll();
 
 		// ======= Header Gợi ý phòng ========
@@ -652,16 +659,74 @@ public class DatPhong_GUI extends JDialog {
 	}
 
 	// Giao diện đặt theo đêm (label thôi)
-	private void loadGiaoDienTheoDem() {
+	private void loadGiaoDienTheoDem() throws SQLException {
+		System.out.println("mở giao diện theo đêm");
 		centerPanel.removeAll();
 
-		JLabel label = new JLabel("Giao diện đặt theo ĐÊM", SwingConstants.CENTER);
-		label.setFont(new Font("Arial", Font.BOLD, 24));
-		centerPanel.add(label, BorderLayout.CENTER);
+		// ======= Header Gợi ý phòng ========
+		JPanel headerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		headerContainer.setPreferredSize(new Dimension(screenWidthTrang1, 60));
+		headerContainer.setBackground(Color.WHITE);
 
+		JPanel headerPanel1 = new JPanel(new GridLayout(1, 4));
+		headerPanel1.setBackground(new Color(144, 238, 144));
+		headerPanel1.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.95), 40));
+		headerContainer.add(headerPanel1);
+		String[] headers = { "Gợi ý phòng", "Giá", "Số lượng", "Tổng cộng" };
+		for (String text : headers) {
+			JLabel label = new JLabel(text, SwingConstants.CENTER);
+			label.setFont(new Font("Arial", Font.BOLD, 14));
+			headerPanel1.add(label);
+		}
+
+		// Danh sách loại phòng
+		// ======== Tạo bảng nội dung bên dưới ========
+		String[] roomNames = { "Double Room", "Single Room", "Twin Room", "Triple Room" };
+
+		// ==== Tạo mảng lưu số lượng phòng được chọn ====
+		roomQuantities = new int[roomNames.length]; // <- Mảng này sẽ được cập nhật trong createRoomRow()
+
+		// Khai báo mảng JLabel để lưu "Tổng cộng" cho từng loại phòng
+		JLabel[] totalLabels = new JLabel[roomNames.length];
+
+		// Panel chứa các hàng
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+		contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); // top, left, bottom, right
+		contentPanel.setBackground(Color.WHITE);
+		// -----------------------------------------------------------------------------------------------------------
+		// ===== Double Room =====}
+		JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]),
+				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
+		contentPanel.add(rowPanelDouble);
+		contentPanel.add(Box.createVerticalStrut(10));
+
+		// ===== Single Room =====
+		JPanel rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]),
+				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single"), totalLabels, roomQuantities, 1);
+		contentPanel.add(rowPanelSingle);
+		contentPanel.add(Box.createVerticalStrut(10));
+
+		// ===== Twin Room =====
+		JPanel rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]),
+				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin"), totalLabels, roomQuantities, 2);
+		contentPanel.add(rowPanelTwin);
+		contentPanel.add(Box.createVerticalStrut(10));
+
+		// ===== Triple Room =====
+		JPanel rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]),
+				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple"), totalLabels, roomQuantities, 3);
+		contentPanel.add(rowPanelTriple);
+
+		// Thêm header và nội dung vào centerPanel
+		centerPanel.add(headerContainer, BorderLayout.NORTH);
+		centerPanel.add(contentPanel, BorderLayout.CENTER);
+
+		// Cập nhật lại UI
 		centerPanel.revalidate();
 		centerPanel.repaint();
 	}
+
 
 	// ==============================Trang2========================================================
 	private JPanel taoTrangXacNhanPhong() throws SQLException {
@@ -906,8 +971,7 @@ public class DatPhong_GUI extends JDialog {
 	}
 
 
-	// ========================Trang
-	// 3=====================================================
+	// ========================Trang3==========================================
 	private JPanel taoTrangNhapThongTin() {
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.1);
@@ -1171,6 +1235,7 @@ public class DatPhong_GUI extends JDialog {
 				//thêm chi tiêt dat phong
 				for (int i = 0; i < danhSachSoPhongDuocChon.length; i++) {
 					chitietdondatphongdao.themChiTietDonDatPhong(maDon, danhSachSoPhongDuocChon[i]);
+					phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đã đặt");
 			    }
 
 			}

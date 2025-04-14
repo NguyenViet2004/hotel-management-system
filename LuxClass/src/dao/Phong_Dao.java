@@ -59,5 +59,21 @@ public class Phong_Dao {
         }
         return danhSachPhong;
     }
+    public boolean setTrangThaiPhong(String soPhong, String trangThai) {
+        String sql = "UPDATE Phong SET trangThai = ? WHERE soPhong = ?";
+        
+        try (
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, trangThai);
+            stmt.setString(2, soPhong);
 
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
