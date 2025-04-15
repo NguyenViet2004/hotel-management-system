@@ -40,65 +40,54 @@ public class SplashScreen {
             }
         };
 
-        try {
-            // Load hình ảnh full size
-            Image originalImage = ImageIO.read(new File("C:/Users/TOILAXIEN/OneDrive/Máy tính/Phat_trien_ung_dung/Test/BaiCuaXien/src/HinhAnhGiaoDienChinh/nenDangNhap.jpg"));
-            Image scaledImage = originalImage.getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_SMOOTH);
-            ImageIcon imageIcon = new ImageIcon(scaledImage);
+        ImageIcon icon = new ImageIcon("img/HinhAnhGiaoDienChinh/nenDangNhap.jpg");
+		Image scaledImage = icon.getImage().getScaledInstance(window.getWidth(), window.getHeight(), Image.SCALE_SMOOTH);
+		ImageIcon imageIcon = new ImageIcon(scaledImage);
 
-            // Panel ảnh nền
-            JLabel backgroundLabel = new JLabel(imageIcon);
-            backgroundLabel.setLayout(new BorderLayout());
-            panel.add(backgroundLabel, BorderLayout.CENTER);
+		// Panel ảnh nền
+		JLabel backgroundLabel = new JLabel(imageIcon);
+		backgroundLabel.setLayout(new BorderLayout());
+		panel.add(backgroundLabel, BorderLayout.CENTER);
 
-            // Thêm lớp phủ mờ để chữ dễ đọc
-            JPanel overlay = new JPanel();
-            overlay.setLayout(new BoxLayout(overlay, BoxLayout.Y_AXIS));
-            overlay.setOpaque(false);
-            overlay.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+		// Thêm lớp phủ mờ để chữ dễ đọc
+		JPanel overlay = new JPanel();
+		overlay.setLayout(new BoxLayout(overlay, BoxLayout.Y_AXIS));
+		overlay.setOpaque(false);
+		overlay.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
-            // Tiêu đề
-            JLabel titleLabel = new JLabel("Welcome to LUX", JLabel.CENTER);
-            titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 42));
-            titleLabel.setForeground(Color.WHITE);
-            titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
+		// Tiêu đề
+		JLabel titleLabel = new JLabel("Welcome to LUX", JLabel.CENTER);
+		titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 42));
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
 
-            // Thông tin trạng thái
-            statusLabel = new JLabel("Initializing application...", JLabel.CENTER);
-            statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-            statusLabel.setForeground(Color.WHITE);
-            statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+		// Thông tin trạng thái
+		statusLabel = new JLabel("Initializing application...", JLabel.CENTER);
+		statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		statusLabel.setForeground(Color.WHITE);
+		statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-            // Progress bar màu trắng
-            progressBar = new JProgressBar();
-            progressBar.setIndeterminate(false);
-            progressBar.setStringPainted(true);
-            progressBar.setForeground(Color.WHITE);
-            progressBar.setBackground(new Color(255, 255, 255, 50)); // Nền trong suốt
-            progressBar.setBorder(BorderFactory.createEmptyBorder(5, 100, 5, 100));
-            progressBar.setString("0%");
-            progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+		// Progress bar màu trắng
+		progressBar = new JProgressBar();
+		progressBar.setIndeterminate(false);
+		progressBar.setStringPainted(true);
+		progressBar.setForeground(Color.WHITE);
+		progressBar.setBackground(new Color(255, 255, 255, 50)); // Nền trong suốt
+		progressBar.setBorder(BorderFactory.createEmptyBorder(5, 100, 5, 100));
+		progressBar.setString("0%");
+		progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-            // Thêm các thành phần vào overlay
-            overlay.add(Box.createVerticalGlue());
-            overlay.add(titleLabel);
-            overlay.add(statusLabel);
-            overlay.add(progressBar);
-            overlay.add(Box.createVerticalGlue());
+		// Thêm các thành phần vào overlay
+		overlay.add(Box.createVerticalGlue());
+		overlay.add(titleLabel);
+		overlay.add(statusLabel);
+		overlay.add(progressBar);
+		overlay.add(Box.createVerticalGlue());
 
-            // Thêm overlay lên trên ảnh nền
-            backgroundLabel.add(overlay, BorderLayout.CENTER);
-
-        } catch (IOException e) {
-            System.err.println("Không tìm thấy hình ảnh splash screen");
-            // Fallback nếu không có ảnh
-            JLabel fallbackLabel = new JLabel("LUX HOTEL MANAGEMENT", JLabel.CENTER);
-            fallbackLabel.setFont(new Font("Segoe UI", Font.BOLD, 36));
-            fallbackLabel.setForeground(Color.WHITE);
-            panel.add(fallbackLabel, BorderLayout.CENTER);
-        }
+		// Thêm overlay lên trên ảnh nền
+		backgroundLabel.add(overlay, BorderLayout.CENTER);
 
         window.setContentPane(panel);
     }
