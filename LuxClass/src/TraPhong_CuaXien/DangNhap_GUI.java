@@ -52,7 +52,7 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 	private JCheckBox cbManager;
 
 	public DangNhap_GUI() {
-		super("VXD Cinema - Login");
+		super("Hotel Lux");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 700);
 		setLocationRelativeTo(null);
