@@ -25,7 +25,8 @@ public class KhachHang_DAO {
 	                    rs.getString("maKH"),
 	                    rs.getString("hoTen"),
 	                    rs.getString("sdt"),
-	                    rs.getString("soCCCD")
+	                    rs.getString("soCCCD"),
+	                    rs.getString("email")
 	                );
 	            }
 	        } catch (Exception e) {

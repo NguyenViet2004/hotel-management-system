@@ -19,7 +19,7 @@ public class DonDatPhong_DAO {
 		danhSach= new ArrayList<>();
 	}
     public List<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
                    + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
                    + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
                    + "FROM DonDatPhong ddp "
@@ -39,7 +39,8 @@ public class DonDatPhong_DAO {
 	                rs.getString("maKH"),
 	                rs.getString("tenKH"),
 	                rs.getString("sdtKH"),
-	                rs.getString("soCCCD")
+	                rs.getString("soCCCD"),
+	                rs.getString("email")
 	            );
 	            NhanVien nv = new NhanVien(
 	                rs.getString("maNV"),
@@ -71,7 +72,7 @@ public class DonDatPhong_DAO {
     }
 
     public List<DonDatPhong> getDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email "
                    + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
                    + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
                    + "FROM DonDatPhong ddp "
@@ -90,7 +91,8 @@ public class DonDatPhong_DAO {
                         rs.getString("maKH"),
                         rs.getString("tenKH"),
                         rs.getString("sdtKH"),
-                        rs.getString("soCCCD")
+                        rs.getString("soCCCD"),
+                        rs.getString("email")
                     );
                     NhanVien nv = new NhanVien(
                         rs.getString("maNV"),
@@ -122,7 +124,7 @@ public class DonDatPhong_DAO {
         return danhSach;
     }
     public DonDatPhong getDonDatPhongTheoMa(String maDon) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
                    + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
                    + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
                    + "FROM DonDatPhong ddp "
@@ -140,7 +142,8 @@ public class DonDatPhong_DAO {
                         rs.getString("maKH"),
                         rs.getString("tenKH"),
                         rs.getString("sdtKH"),
-                        rs.getString("soCCCD")
+                        rs.getString("soCCCD"),
+                        rs.getString("email")
                     );
                     NhanVien nv = new NhanVien(
                         rs.getString("maNV"),
