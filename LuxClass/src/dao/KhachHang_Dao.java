@@ -24,8 +24,8 @@ public class KhachHang_Dao {
                 String hoTen = rs.getString(2);
                 String sdt = rs.getString(3);
                 String soCCCD = rs.getString(4);
-
-                KhachHang kh = new KhachHang(maKH, hoTen, sdt, soCCCD);
+                String email = rs.getString(5);
+                KhachHang kh = new KhachHang(maKH, hoTen, sdt, soCCCD,email);
                 dskh.add(kh);
             }
         } catch (SQLException e) {
@@ -42,7 +42,7 @@ public class KhachHang_Dao {
             stmt.setString(2, kh.getHoTen());
             stmt.setString(3, kh.getSdt());
             stmt.setString(4, kh.getSoCCCD());
-
+            stmt.setString(5, kh.getEmail());
             int n = stmt.executeUpdate();
             return n > 0;
         } catch (SQLException e) {
@@ -53,13 +53,14 @@ public class KhachHang_Dao {
 
     public boolean sua(KhachHang kh) {
         try (Connection con = ConnectDB.getConnection()) {
-            String sql = "UPDATE KhachHang SET hoTen = ?, sdt = ?, soCCCD = ? WHERE maKH = ?";
+            String sql = "UPDATE KhachHang SET hoTen = ?, sdt = ?, soCCCD = ?, email =? WHERE maKH = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, kh.getHoTen());
             stmt.setString(2, kh.getSdt());
             stmt.setString(3, kh.getSoCCCD());
-            stmt.setString(4, kh.getMaKH());
-
+            stmt.setString(4, kh.getEmail());
+            stmt.setString(5, kh.getMaKH());
+   
             int n = stmt.executeUpdate();
             return n > 0;
         } catch (SQLException e) {
@@ -94,8 +95,9 @@ public class KhachHang_Dao {
                 String hoTen = rs.getString(2);
                 String sdt = rs.getString(3);
                 String soCCCD = rs.getString(4);
+                String email = rs.getString(5);
 
-                kh = new KhachHang(maKH, hoTen, sdt, soCCCD);
+                kh = new KhachHang(maKH, hoTen, sdt, soCCCD,email);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,8 +117,8 @@ public class KhachHang_Dao {
                 String maKH = rs.getString(1);
                 String hoTen = rs.getString(2);
                 String soCCCD = rs.getString(4);
-
-                KhachHang kh = new KhachHang(maKH, hoTen, sdt, soCCCD);
+                String email = rs.getString(5);
+                KhachHang kh = new KhachHang(maKH, hoTen, sdt, soCCCD,email);
                 dskh.add(kh);
             }
         } catch (SQLException e) {
@@ -125,61 +127,63 @@ public class KhachHang_Dao {
         return dskh;
     }
     
-    public boolean themThongTinKhachHang(String hoTen, String sdtMoi, String soCccd, String ngayHienTai) {
-		boolean result = false;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+    public boolean themThongTinKhachHang(String hoTen, String sdtMoi, String soCccd, String email, String ngayHienTai) {
+        boolean result = false;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-		try {
-			Connection connection = ConnectDB.getConnection();
+        try {
+            Connection connection = ConnectDB.getConnection();
 
-			// Đếm số khách hàng đăng ký trong ngày để tạo số thứ tự
-			String demSql = "SELECT COUNT(*) AS tongSoKhach FROM KhachHang WHERE maKH LIKE ?";
-			stmt = connection.prepareStatement(demSql);
-			stmt.setString(1, "KH" + ngayHienTai + "%");
-			rs = stmt.executeQuery();
+            // Đếm số khách hàng đăng ký trong ngày để tạo số thứ tự
+            String demSql = "SELECT COUNT(*) AS tongSoKhach FROM KhachHang WHERE maKH LIKE ?";
+            stmt = connection.prepareStatement(demSql);
+            stmt.setString(1, "KH" + ngayHienTai + "%");
+            rs = stmt.executeQuery();
 
-			int soLuongKhach = 0;
-			if (rs.next()) {
-				soLuongKhach = rs.getInt("tongSoKhach");
-			}
-			rs.close();
-			stmt.close();
+            int soLuongKhach = 0;
+            if (rs.next()) {
+                soLuongKhach = rs.getInt("tongSoKhach");
+            }
+            rs.close();
+            stmt.close();
 
-			// Tăng số thứ tự thêm 1
-			soLuongKhach++;
+            // Tăng số thứ tự thêm 1
+            soLuongKhach++;
 
-			// Tạo mã khách hàng: KH + DDMMYYYY + 4 chữ số tự động tăng
-			String maKH = "KH" + ngayHienTai + String.format("%04d", soLuongKhach);
+            // Tạo mã khách hàng: KH + DDMMYYYY + 4 chữ số tự động tăng
+            String maKH = "KH" + ngayHienTai + String.format("%04d", soLuongKhach);
 
-			// Thêm khách hàng vào CSDL
-			String insertSql = "INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD) VALUES (?, ?, ?, ?)";
-			stmt = connection.prepareStatement(insertSql);
-			stmt.setString(1, maKH);
-			stmt.setNString(2, hoTen);
-			stmt.setString(3, sdtMoi);
-			stmt.setString(4, soCccd);
+            // Thêm khách hàng vào CSDL
+            String insertSql = "INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES (?, ?, ?, ?, ?)";
+            stmt = connection.prepareStatement(insertSql);
+            stmt.setString(1, maKH);
+            stmt.setNString(2, hoTen);
+            stmt.setString(3, sdtMoi);
+            stmt.setString(4, soCccd);
+            stmt.setNString(5, email);
 
-			int rowsInserted = stmt.executeUpdate();
-			if (rowsInserted > 0) {
-				result = true;
-			}
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                result = true;
+            }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
+
     
     public KhachHang timKhachHangTheoSoDienThoai(String sdt) {
         KhachHang kh = null;
@@ -194,7 +198,8 @@ public class KhachHang_Dao {
                     rs.getString("maKH"),
                     rs.getString("hoTen"),
                     rs.getString("sdt"),
-                    rs.getString("soCCCD")
+                    rs.getString("soCCCD"),
+                    rs.getString("email")
                 );
             }
         } catch (SQLException e) {

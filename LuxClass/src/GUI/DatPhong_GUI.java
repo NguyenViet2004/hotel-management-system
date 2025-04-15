@@ -1145,15 +1145,17 @@ public class DatPhong_GUI extends JDialog {
 		            if (kh != null) {
 		                txtHoTen.setText(kh.getHoTen());
 		                txtCccd.setText(kh.getSoCCCD());
-		                // Email có thể không lưu trong bảng, bạn có thể bỏ qua hoặc bổ sung vào table SQL
+		                txtEmail.setText(kh.getEmail());
 		            } else {
 		                txtHoTen.setText("");
 		                txtCccd.setText("");
+		                txtEmail.setText("");
 		            }
 		        } else {
 		            // Nếu chưa đủ 10 số thì clear
 		            txtHoTen.setText("");
 		            txtCccd.setText("");
+		            txtEmail.setText("");
 		        }
 		    }
 
@@ -1237,7 +1239,7 @@ public class DatPhong_GUI extends JDialog {
 				} else {
 					System.out.println("Không tìm thấy khách hàng.");
 					System.out.println("bắt đầu thêm khách hàng.");
-					if (khachhangdao.themThongTinKhachHang(hoTen, sdtMoi, soCccd, ngayHienTaiStr)) {
+					if (khachhangdao.themThongTinKhachHang(hoTen, sdtMoi, soCccd, ngayHienTaiStr,email)) {
 						System.out.println("thêm thông tin khách hàng thành công");
 					} else {
 						System.out.println("thêm thông tin khách hàng không thành công");
@@ -1265,7 +1267,7 @@ public class DatPhong_GUI extends JDialog {
 		                dondatphongdao.xoaDonDatPhong(maDon);
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
-
+		            JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
 		        } else {
 		            System.out.println("Thêm đơn đặt phòng không thành công");
 		        }
