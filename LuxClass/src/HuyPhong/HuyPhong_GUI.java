@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ChiTietDonDatPhong_Dao;
@@ -123,6 +125,36 @@ public class HuyPhong_GUI {
 		roomPanel.repaint();
 	}
 
+	public static JPanel taoCancelFeePanel(DonDatPhong don) {
+		JPanel cancelFeePanel = new JPanel(new BorderLayout());
+		cancelFeePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+				"Chi phí hủy phòng", TitledBorder.LEFT, TitledBorder.TOP));
+
+		// Định dạng ngày giờ hiện tại
+		LocalDateTime now = LocalDateTime.now();
+		String ngayHuy = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		String thoiGianHuy = now.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+		// Tạo dữ liệu bảng
+		String[] headers = { "Ngày hủy phòng", "Thời gian hủy", "Phí hủy", "Số tiền hoàn cọc" };
+		Object[][] data = { { ngayHuy, thoiGianHuy, don.phiHuyPhong(now, now), String.format("%,.0f VND", don.tinhTienHoanCoc()) } };
+
+		// Tạo bảng bằng DefaultTableModel
+		DefaultTableModel model = new DefaultTableModel(data, headers);
+		JTable feeTable = new JTable(model);
+		feeTable.setEnabled(false);
+		feeTable.setRowHeight(25);
+		feeTable.setFont(new Font("Arial", Font.PLAIN, 13));
+		feeTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+
+		// Đặt bảng vào scroll pane
+		JScrollPane scrollCancel = new JScrollPane(feeTable);
+		scrollCancel.setPreferredSize(new Dimension(400, 60));
+
+		cancelFeePanel.add(scrollCancel, BorderLayout.CENTER);
+		return cancelFeePanel;
+	}
+
 	public void taoDonHuyPhong(DonDatPhong donDatPhong) {
 		JFrame frame = new JFrame("Đơn Hủy Phòng");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -197,23 +229,21 @@ public class HuyPhong_GUI {
 
 		// IV. Chi phí hủy phòng
 		JPanel cancelFeePanel = new JPanel(new BorderLayout());
-		cancelFeePanel.setBorder(BorderFactory.createTitledBorder("Chi phí hủy phòng"));
-
-		String[] feeHeaders = { "Ngày hủy phòng", "Thời gian hủy", "Phí hủy", "Số tiền hoàn cọc" };
-		Object[][] feeData = { { "18/03/2025", "11:33", "Miễn phí", "1.200.000 VND" } };
-		JTable feeTable = new JTable(feeData, feeHeaders);
-		cancelFeePanel.add(new JScrollPane(feeTable), BorderLayout.CENTER);
-
+//		cancelFeePanel.setBorder(BorderFactory.createTitledBorder("Chi phí hủy phòng"));
+//
+//		String[] feeHeaders = { "Ngày hủy phòng", "Thời gian hủy", "Phí hủy", "Số tiền hoàn cọc" };
+//		Object[][] feeData = { { "18/03/2025", "11:33", "Miễn phí", "1.200.000 VND" } };
+//		JTable feeTable = new JTable(feeData, feeHeaders);
+//		cancelFeePanel.add(new JScrollPane(feeTable), BorderLayout.CENTER);
+//		feeTable.setEnabled(false);
+//		feeTable.setRowHeight(25); // chỉnh độ cao dòng
+//		feeTable.setFont(new Font("Arial", Font.PLAIN, 13));
+//		feeTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+		cancelFeePanel = taoCancelFeePanel(donDatPhong);
 		mainPanel.add(cancelFeePanel);
-
-		feeTable.setEnabled(false);
-		feeTable.setRowHeight(25); // chỉnh độ cao dòng
-		feeTable.setFont(new Font("Arial", Font.PLAIN, 13));
-		feeTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
-
-		JScrollPane scrollCancel = new JScrollPane(feeTable);
-		scrollCancel.setPreferredSize(new Dimension(400, 60)); // chỉnh kích thước
-		cancelFeePanel.add(scrollCancel);
+//		JScrollPane scrollCancel = new JScrollPane(feeTable);
+//		scrollCancel.setPreferredSize(new Dimension(400, 60)); // chỉnh kích thước
+//		cancelFeePanel.add(scrollCancel);
 		// Nút xác nhận
 		JPanel buttonHuy = new JPanel((LayoutManager) new FlowLayout(FlowLayout.RIGHT));
 		JButton btnConfirm = new JButton("Xác nhận hủy");
