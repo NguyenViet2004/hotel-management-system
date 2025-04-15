@@ -59,5 +59,29 @@ public class Phong_Dao {
         }
         return danhSachPhong;
     }
+    public Phong getPhongTheoMa(String soPhong) {
+        Phong phong = null;
+        Connection conn = ConnectDB.getConnection(); 
+        String sql = "SELECT * FROM Phong WHERE soPhong = ?"; 
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, soPhong); 
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) { // Nếu có kết quả
+                String trangThai = rs.getString("trangThai");
+                String loaiPhongMa = rs.getString("loaiPhong"); 
+                String moTa = rs.getString("moTa");
+                
 
+                LoaiPhong loaiPhong = new LoaiPhong(loaiPhongMa);
+                
+                // Tạo đối tượng Phong từ kết quả truy vấn
+                phong = new Phong(soPhong, trangThai, loaiPhong, moTa);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+        
+        return phong; // Trả về null nếu không tìm thấy phòng
+    }
 }
