@@ -58,7 +58,7 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 		setLocationRelativeTo(null);
 		setResizable(false);
 		// Set logo
-		ImageIcon icon = new ImageIcon("anh\\logo.png");
+		ImageIcon icon = new ImageIcon("/LuxClass/img/HinhAnhGiaoDienChinh/logo.png");
 		this.setIconImage(icon.getImage());
 
 		jPanel_All = new JPanel();
