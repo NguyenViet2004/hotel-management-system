@@ -1,12 +1,14 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
+import entity.KhachHang;
 import entity.LoaiPhong;
 
 public class LoaiPhong_Dao {
@@ -40,4 +42,32 @@ private ArrayList<LoaiPhong> dslp;
         }
         return dslp;
     }
+    
+    public LoaiPhong getLoaiPhongTheoMa(String maLoaiPhong) {
+        LoaiPhong loai = null;
+        Connection conn = ConnectDB.getConnection();
+        String sql = "SELECT * FROM LoaiPhong WHERE maLoaiPhong = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, maLoaiPhong);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaTheoGio = rs.getDouble("giaTheoGio");
+                double giaTheoNgay = rs.getDouble("giaTheoNgay");
+                double giaTheoDem = rs.getDouble("giaTheoDem");
+                double phuThuQuaGio = rs.getDouble("phuThuQuaGio");
+
+                loai = new LoaiPhong(maLoaiPhong, tenLoai, soLuong, dienTich,
+                                      giaTheoGio, giaTheoNgay, giaTheoDem, phuThuQuaGio);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return loai;
+    }
+
 }
