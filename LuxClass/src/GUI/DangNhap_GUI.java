@@ -1,4 +1,4 @@
-package TraPhong_CuaXien;
+package GUI;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -242,9 +242,9 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 				if(chucVu.equals("Quản lý")) {
 					//Mở giao diện quản lý
 					this.dispose();
-				}else if (chucVu.equals("Nhân viên lễ tân")) {
-					//Mở màn hình nhân viên lễ tân
-					this.dispose();
+				}else if (chucVu.equals("Lễ tân")) {
+					new QuanLyDatPhong_GUI().setVisible(true);  // <- thêm dòng này
+	                this.dispose();
 				}
 			}else {
 		        // Trường hợp không tìm thấy tài khoản
@@ -253,20 +253,6 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 		}
 
 	}
-
-//	public boolean kiemTraDangNhap(String tenDangNhap, String matKhau) {
-//        try {
-//            ArrayList<TaiKhoan> danhSachTaiKhoan = taiKhoan_DAO.layDanhSachTaiKhoan();
-//            for (TaiKhoan taiKhoan : danhSachTaiKhoan) {
-//                if (taiKhoan.getTenDangNhap().equals(tenDangNhap) && taiKhoan.getMatKhau().equals(matKhau)) {
-//                    return true; 
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false; 
-//    }
 
 	private static ImageIcon resizeImage(String imagePath, int width, int height) {
 		try {

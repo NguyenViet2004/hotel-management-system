@@ -115,6 +115,9 @@ go
 ALTER TABLE DonDatPhong
 ADD trangThai NVARCHAR(50) NOT NULL;
 go
+ALTER TABLE KhachHang
+ADD email NVARCHAR(50);
+go
 INSERT INTO LoaiPhong (maLoaiPhong, tenLoai, soLuong, dienTich, giaTheoGio, giaTheoNgay, giaTheoDem, phuThuQuaGio)
 VALUES 
     ('single', N'Single Room', 8, 30, 150000, 800000, 700000, 100000),
@@ -148,4 +151,11 @@ VALUES
     ('P306', N'Trống', 'triple', NULL), ('P406', N'Trống', 'triple', NULL),
     ('P503', N'Trống', 'triple', NULL), ('P504', N'Trống', 'triple', NULL);
 go
-
+INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
+VALUES 
+('2025LT001', N'Nguyễn Thị Xuyến', '1990-01-01', '0981234567', N'Hà Nội', '123456789012', N'Lễ tân', N'Sáng'),
+('2025KT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Kế toán', N'Chiều');
+go
+INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
+VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
+go
