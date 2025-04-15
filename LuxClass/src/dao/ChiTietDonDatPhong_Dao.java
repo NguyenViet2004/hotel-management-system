@@ -27,6 +27,47 @@ public class ChiTietDonDatPhong_Dao {
 		connection = ConnectDB.getConnection();
 	}
 
+	// Thêm phương thức truy vấn ví dụ:
+	public ArrayList<ChiTietDonDatPhong> getAllChiTietDonDatPhong() {
+		try {
+			String sql = "SELECT * FROM ChiTietDonDatPhong";
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				// Lấy dữ liệu từ ResultSet để tạo đối tượng ChiTietDonDatPhong
+				// Giả sử các cột: maDDP, maPhong, ngayNhan, ngayTra, ghiChu
+				ChiTietDonDatPhong ct = new ChiTietDonDatPhong(new DonDatPhong(rs.getString("maDonDatPhong")),
+						new Phong(rs.getString("soPhong")), rs.getInt("soLuong"));
+				dsctddp.add(ct);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dsctddp;
+	}
+
+	public ArrayList<ChiTietDonDatPhong> getChiTietDonDatPhongTheoMaDon(String maDonDatPhong) {
+	    ArrayList<ChiTietDonDatPhong> dsctddp = new ArrayList<>();  
+	    try {
+	        String sql = "SELECT * FROM ChiTietDonDatPhong WHERE maDonDatPhong = ?";
+	        PreparedStatement stmt = connection.prepareStatement(sql);
+	        stmt.setString(1, maDonDatPhong);  
+	        ResultSet rs = stmt.executeQuery();  
+	        while (rs.next()) {
+	            ChiTietDonDatPhong ct = new ChiTietDonDatPhong(
+	                new DonDatPhong(rs.getString("maDonDatPhong")),  
+	                new Phong(rs.getString("soPhong")),  
+	                rs.getInt("soLuong")  
+	            );
+	            dsctddp.add(ct);  
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();  
+	    }
+	    return dsctddp; 
+	}
+
+
 	public int countSoPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong) throws SQLException {
 		int soLuong = 0;
 
@@ -207,90 +248,85 @@ public class ChiTietDonDatPhong_Dao {
 		return khachHang;
 	}
 
-	
-
 	public boolean themDonDatPhong(String maDonDatPhong, String maKH, Timestamp ngayNhan, Timestamp ngayTra,
-	        int soKhach, double tienCoc, String maNV, String loaiDon, String trangThai) {
-	    boolean result = false;
-	    PreparedStatement stmt = null;
+			int soKhach, double tienCoc, String maNV, String loaiDon, String trangThai) {
+		boolean result = false;
+		PreparedStatement stmt = null;
 
-	    try {
-	        System.out.println("Đến ngày 1: " + ngayTra);
-	        System.out.println("Từ ngày 1: " + ngayNhan);
-	        // Chuyển Timestamp sang LocalDateTime
-	        LocalDateTime nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
-	        LocalDateTime traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
-	        System.out.println("Đến ngày timestamp 1: " + traPhong);
-	        System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
-	        // Chuyển lại Timestamp
-	        Timestamp newNgayNhan = Timestamp.valueOf(nhanPhong);
-	        Timestamp newNgayTra = Timestamp.valueOf(traPhong);
-	        System.out.println("Đến ngày 12h 1: " + newNgayTra);
-	        System.out.println("Từ ngày 14h 1: " + newNgayNhan);
+		try {
+			System.out.println("Đến ngày 1: " + ngayTra);
+			System.out.println("Từ ngày 1: " + ngayNhan);
+			// Chuyển Timestamp sang LocalDateTime
+			LocalDateTime nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
+			LocalDateTime traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
+			System.out.println("Đến ngày timestamp 1: " + traPhong);
+			System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
+			// Chuyển lại Timestamp
+			Timestamp newNgayNhan = Timestamp.valueOf(nhanPhong);
+			Timestamp newNgayTra = Timestamp.valueOf(traPhong);
+			System.out.println("Đến ngày 12h 1: " + newNgayTra);
+			System.out.println("Từ ngày 14h 1: " + newNgayNhan);
 
-	        // Thêm cột trangThai vào câu lệnh SQL
-	        String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, maNV, loaiDon, trangThai) "
-	                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	        stmt = connection.prepareStatement(sql);
-	        stmt.setString(1, maDonDatPhong);
-	        stmt.setString(2, maKH);
-	        stmt.setTimestamp(3, newNgayNhan);
-	        stmt.setTimestamp(4, newNgayTra);
-	        stmt.setInt(5, soKhach);
-	        stmt.setDouble(6, tienCoc);
-	        stmt.setString(7, maNV);
-	        stmt.setNString(8, loaiDon);
-	        stmt.setNString(9, trangThai); // thêm dòng này để set giá trị trạng thái
+			// Thêm cột trangThai vào câu lệnh SQL
+			String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, maNV, loaiDon, trangThai) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, maDonDatPhong);
+			stmt.setString(2, maKH);
+			stmt.setTimestamp(3, newNgayNhan);
+			stmt.setTimestamp(4, newNgayTra);
+			stmt.setInt(5, soKhach);
+			stmt.setDouble(6, tienCoc);
+			stmt.setString(7, maNV);
+			stmt.setNString(8, loaiDon);
+			stmt.setNString(9, trangThai); // thêm dòng này để set giá trị trạng thái
 
-	        int rowsInserted = stmt.executeUpdate();
-	        if (rowsInserted > 0) {
-	            result = true;
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (stmt != null)
-	                stmt.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+			int rowsInserted = stmt.executeUpdate();
+			if (rowsInserted > 0) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return result;
+		return result;
 	}
-
-
 
 	public boolean themChiTietDonDatPhong(String maDonDatPhong, String soPhong) {
-	    boolean result = false;
-	    PreparedStatement stmt = null;
+		boolean result = false;
+		PreparedStatement stmt = null;
 
-	    try {
-	        String sql = "INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong) VALUES (?, ?, ?)";
-	        stmt = connection.prepareStatement(sql);
-	        stmt.setString(1, maDonDatPhong);
-	        stmt.setString(2, soPhong);
-	        stmt.setInt(3, 1); // soLuong luôn là 1
+		try {
+			String sql = "INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong) VALUES (?, ?, ?)";
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, maDonDatPhong);
+			stmt.setString(2, soPhong);
+			stmt.setInt(3, 1); // soLuong luôn là 1
 
-	        int rowsInserted = stmt.executeUpdate();
-	        if (rowsInserted > 0) {
-	            result = true;
-	        }
+			int rowsInserted = stmt.executeUpdate();
+			if (rowsInserted > 0) {
+				result = true;
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (stmt != null) stmt.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return result;
+		return result;
 	}
-
-
 
 }
