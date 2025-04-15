@@ -479,7 +479,7 @@ public class DatPhong_GUI extends JDialog {
 					int ngang = 25;
 					int cao = 30;
 					button.setPreferredSize(new Dimension(cao, ngang));
-					ImageIcon icon = new ImageIcon(getClass().getResource("/HinhAnhGiaoDienChinh/lich.png"));
+					ImageIcon icon = new ImageIcon("img/HinhAnhGiaoDienChinh/lich.png");
 					Image scaledImage = icon.getImage().getScaledInstance(cao, ngang, Image.SCALE_SMOOTH);
 					ImageIcon resizedIcon = new ImageIcon(scaledImage);
 					button.setIcon(resizedIcon);

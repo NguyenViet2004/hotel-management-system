@@ -59,6 +59,11 @@ public class giaodien extends JFrame implements ActionListener {
         btnDatPhong.setPreferredSize(new Dimension(200, 50));
         btnDatPhong.setFocusPainted(false);
         btnDatPhong.addActionListener(this);
+        
+        ImageIcon icon = new ImageIcon(getClass().getResource("img/HinhAnhGiaoDienChinh/lich.png"));
+		Image scaledImage = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+		ImageIcon resizedIcon = new ImageIcon(scaledImage);
+		btnDatPhong.setIcon(resizedIcon);
 
         // Nút "Đặt phòng 2"
         btnDatPhong2 = new JButton("đổi phòng");
