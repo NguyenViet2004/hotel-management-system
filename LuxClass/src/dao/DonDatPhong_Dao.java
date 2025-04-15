@@ -68,4 +68,17 @@ public class DonDatPhong_Dao {
 		}
 		return don;
 	}
+	public boolean xoaDonDatPhong(String maDonDatPhong) {
+        Connection con = ConnectDB.getConnection();
+        String sql = "DELETE FROM DonDatPhong WHERE maDonDatPhong = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, maDonDatPhong);
+            int n = stmt.executeUpdate();
+            return n > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
+
