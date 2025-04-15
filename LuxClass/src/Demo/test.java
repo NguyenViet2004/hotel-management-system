@@ -9,7 +9,7 @@ public class test {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        
+        String vietString;
         try {
             // Kết nối đến cơ sở dữ liệu
             conn = connectDB.ConnectDB.getConnection();
