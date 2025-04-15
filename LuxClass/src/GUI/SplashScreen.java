@@ -94,6 +94,7 @@ public class SplashScreen {
 
     public void show() {
         window.setVisible(true);
+        System.out.println("hiển thị thành công");
     }
 
     public void hide() {
