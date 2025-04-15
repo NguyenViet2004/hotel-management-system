@@ -42,4 +42,6 @@ public class ChiTietDonDatPhong {
 		this.soLuong = soLuong;
 	}
 	
+	
+	
 }
