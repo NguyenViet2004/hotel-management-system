@@ -1,4 +1,4 @@
-package TraPhong_CuaXien;
+package GUI;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
