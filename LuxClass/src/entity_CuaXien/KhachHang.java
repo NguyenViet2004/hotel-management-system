@@ -6,18 +6,28 @@ public class KhachHang {
 	private String hoTen;
 	private String sdt;
 	private String soCCCD;
+	private String email;
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public KhachHang() {
 		// TODO - implement KhachHang.KhachHang
 
 	}
 
-	public KhachHang(String maKH, String hoTen, String sdt, String soCCCD) {
+	public KhachHang(String maKH, String hoTen, String sdt, String soCCCD, String email) {
 		super();
 		this.maKH = maKH;
 		this.hoTen = hoTen;
 		this.sdt = sdt;
 		this.soCCCD = soCCCD;
+		this.email = email;
 	}
 
 	public KhachHang(String maKH) {
