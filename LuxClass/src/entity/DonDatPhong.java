@@ -191,4 +191,41 @@ public class DonDatPhong {
 		throw new UnsupportedOperationException();
 	}
 	
+	public void tinhTienCoc(LocalDateTime thoiGianDatPhong) {
+	    Duration duration = Duration.between(thoiGianDatPhong, ngayNhanPhong);
+	    long hoursBeforeCheckin = duration.toHours();
+
+	    if (hoursBeforeCheckin >= 1) {
+	        // Đặt trước ít nhất 1 tiếng thì yêu cầu cọc
+	        this.tienCoc = tinhTienPhong() * 0.3;
+	        System.out.println("Khách đặt trước, cần đặt cọc: " + tienCoc);
+	    } else {
+	        this.tienCoc = 0;
+	        System.out.println("Khách đặt tại quầy, không cần đặt cọc.");
+	    }
+	}
+	
+	public double phiHuyPhong(LocalDateTime thoiGianDatPhong, LocalDateTime thoiGianHuy) {
+	    Duration durationDat = Duration.between(thoiGianDatPhong, ngayNhanPhong);
+	    long hoursBeforeCheckinAtDat = durationDat.toHours();
+
+	    // Nếu đặt trực tiếp (gần giờ nhận phòng), miễn phí hủy
+	    if (hoursBeforeCheckinAtDat < 1) {
+	        return 0;
+	    }
+
+	    long gioTruoc = Duration.between(thoiGianHuy, ngayNhanPhong).toHours();
+
+	    if (gioTruoc >= 48) {
+	        return 0;
+	    } else if (gioTruoc >= 24) {
+	        return tienCoc * 0.5;
+	    } else {
+	        return tienCoc;
+	    }
+	}
+	public double tinhTienHoanCoc() {
+		return tienCoc - phiHuyPhong(ngayTraPhong, ngayNhanPhong);
+	}
+	
 }
