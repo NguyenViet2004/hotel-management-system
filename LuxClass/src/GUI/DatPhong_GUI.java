@@ -66,6 +66,7 @@ public class DatPhong_GUI extends JDialog {
 	private ChiTietDonDatPhong_Dao chitietdondatphongdao;
 
 	// Dữ liệu đặt phòng
+	String[] tienIchPhong = {"Ban công", "Phòng hút thuốc", "View biển"};
 	private int[] roomQuantities;
 	private String[] danhSachSoPhongDuocChon;
 	private String maNhanVien = "2025LT001";
@@ -117,8 +118,8 @@ public class DatPhong_GUI extends JDialog {
 		phongdao = new Phong_Dao();
 		dondatphongdao = new DonDatPhong_Dao();
 		// Tính toán kích thước các phần
-		int headerHeight = (int) (screenHeightTrang1 * 0.25);
-		int centerHeight = (int) (screenHeightTrang1 * 0.65);
+		int headerHeight = (int) (screenHeightTrang1 * 0.3);
+		int centerHeight = (int) (screenHeightTrang1 * 0.6);
 		int footerHeight = (int) (screenHeightTrang1 * 0.1);
 		// Tạo nội dung form (panel con)
 		contentPane = new JPanel(new BorderLayout());
@@ -137,8 +138,8 @@ public class DatPhong_GUI extends JDialog {
 
 		// ============== Panel chứa tiêu đề và nút đóng=================phần 1 của header===================
 		JPanel titleClosePanel = new JPanel(new BorderLayout());
-		titleClosePanel.setBackground(Color.WHITE);
-		titleClosePanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.25)));
+		titleClosePanel.setBackground(Color.CYAN);
+		titleClosePanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.22)));
 		// Tiêu đề "Chọn phòng"
 		JLabel titleLabel = new JLabel("Chọn phòng");
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -156,31 +157,48 @@ public class DatPhong_GUI extends JDialog {
 		titleClosePanel.add(titleLabel, BorderLayout.WEST);
 		titleClosePanel.add(closeButton, BorderLayout.EAST);
 		// tạo nút chưa 3 nút==================================phần 2 của header==============================
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 5));
-		buttonPanel.setBackground(Color.WHITE);
-		buttonPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.35)));
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		buttonPanel.setBackground(Color.ORANGE);
+		buttonPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1* 0.2), (int) (headerHeight * 0.78) ));
 
 		// ========== Tạo 3 nút với viền
-		JButton theoGioButton = new JButton("Theo giờ");
-		theoGioButton.setFont(new Font("Arial", Font.BOLD, 14));
-		theoGioButton.setBackground(Color.WHITE);
-		theoGioButton.setFocusPainted(false);
-		theoGioButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), // Viền ngoài màu đỏ
-				new EmptyBorder(5, 15, 5, 15) // Khoảng cách bên trong
-		));
+		// Tạo kích thước chuẩn cho cả 3 nút
+		Dimension panelSize = buttonPanel.getPreferredSize();
+		Dimension buttonSize = new Dimension((int) (panelSize.width * 0.8), (int) (headerHeight * 0.2));
 
+
+		// Nút theo ngày
 		JButton theoNgayButton = new JButton("Theo ngày");
 		theoNgayButton.setFont(new Font("Arial", Font.BOLD, 14));
 		theoNgayButton.setBackground(Color.WHITE);
 		theoNgayButton.setFocusPainted(false);
 		theoNgayButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoNgayButton.setPreferredSize(buttonSize);
+		theoNgayButton.setMaximumSize(buttonSize); // Quan trọng để BoxLayout áp đúng size
+		theoNgayButton.setAlignmentX(Component.CENTER_ALIGNMENT); // căn giữa ngang
 
+		// Nút theo giờ
+		JButton theoGioButton = new JButton("Theo giờ");
+		theoGioButton.setFont(new Font("Arial", Font.BOLD, 14));
+		theoGioButton.setBackground(Color.WHITE);
+		theoGioButton.setFocusPainted(false);
+		theoGioButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoGioButton.setPreferredSize(buttonSize);
+		theoGioButton.setMaximumSize(buttonSize);
+		theoGioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		// Nút theo đêm
 		JButton theoDemButton = new JButton("Theo đêm");
 		theoDemButton.setFont(new Font("Arial", Font.BOLD, 14));
 		theoDemButton.setBackground(Color.WHITE);
 		theoDemButton.setFocusPainted(false);
 		theoDemButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoDemButton.setPreferredSize(buttonSize);
+		theoDemButton.setMaximumSize(buttonSize);
+		theoDemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		buttonPanel.add(Box.createVerticalStrut(10)); // khoảng cách giữa các nút
 		buttonPanel.add(theoGioButton);
 		buttonPanel.add(theoNgayButton);
 		buttonPanel.add(theoDemButton);
@@ -214,121 +232,98 @@ public class DatPhong_GUI extends JDialog {
 		});
 
 		// =============Panel chứa các thông tin ngày và khách==========phần 3 của header=====================
-		JPanel infoPanel = new JPanel(new GridLayout(1, 3, 5, 5)); // Giảm khoảng cách GridLayout
-		infoPanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.40)));
+		// infoPanel chính
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BorderLayout());
+		infoPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1* 0.8),  (int) (headerHeight * 0.78)));
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		infoPanel.setBackground(Color.WHITE);
+		infoPanel.setBackground(Color.BLUE);
+
+		// ========== Panel trên: chứa ngày nhận, ngày trả và số khách ==========
+		JPanel topInfoPanel = new JPanel(new GridLayout(1, 3, 5, 5));
+		topInfoPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1* 0.8),  (int) (headerHeight * 0.39))); // Chiếm khoảng nửa infoPanel
+		topInfoPanel.setBackground(Color.BLUE);
 
 		// Ngày nhận phòng
 		JPanel checkInPanel = new JPanel(new BorderLayout());
 		checkInPanel.setBackground(Color.WHITE);
-
 		JLabel checkInLabel = new JLabel("Ngày nhận phòng");
 		checkInLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		checkInPanel.add(checkInLabel, BorderLayout.NORTH);
-
-		// Đặt DatePicker vào JPanel với FlowLayout để tránh khoảng trắng dư
 		JPanel checkInWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkInWrapper.setBackground(Color.WHITE);
-		// tạo ngày tháng năm nhận phòng
 		datePickerCheckIn = createDatePicker(LocalDate.now());
 		checkInWrapper.add(datePickerCheckIn);
-
 		checkInPanel.add(checkInWrapper, BorderLayout.CENTER);
 
 		// Ngày trả phòng
 		JPanel checkOutPanel = new JPanel(new BorderLayout());
 		checkOutPanel.setBackground(Color.WHITE);
-
 		JLabel checkOutLabel = new JLabel("Ngày trả phòng");
 		checkOutLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		checkOutPanel.add(checkOutLabel, BorderLayout.NORTH);
-
 		JPanel checkOutWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkOutWrapper.setBackground(Color.WHITE);
-		// tạo ngay thang năm trả phòng
 		datePickerCheckOut = createDatePicker(LocalDate.now().plusDays(1));
-		// ==== Thêm đoạn lắng nghe chọn xong ngày trả (popup đóng lại) ====
-		JDatePanelImpl datePanel = (JDatePanelImpl) datePickerCheckOut.getJDateInstantPanel(); // lấy đúng panel của datePickerCheckOut
-		
-		ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
-		ngayTra = (Date) datePickerCheckOut.getModel().getValue();
-		
-		tuNgay = new Timestamp(ngayNhan.getTime());
-		denNgay = new Timestamp(ngayTra.getTime());
-		System.out.println("Ngày nhận phòng: " + tuNgay);
-		System.out.println("Ngày trả phòng: " + denNgay);
-		datePickerCheckOut.addActionListener(e -> {
-			ngayNhan = (Date) datePickerCheckIn.getModel().getValue();
-			ngayTra = (Date) datePickerCheckOut.getModel().getValue();
-			if (ngayNhan != null && ngayTra != null && ngayNhan.before(ngayTra)) {
-				tuNgay = new Timestamp(ngayNhan.getTime());
-				denNgay = new Timestamp(ngayTra.getTime());
-
-				System.out.println("Ngày nhận phòng khi nghe sk: " + tuNgay);
-				System.out.println("Ngày trả phòng khi nghe sk: " + denNgay);
-			}
-		});
-
 		checkOutWrapper.add(datePickerCheckOut);
-
 		checkOutPanel.add(checkOutWrapper, BorderLayout.CENTER);
 
-		// Panel chứa số lượng khách
+		// Số lượng khách
 		JPanel guestPanel = new JPanel(new BorderLayout());
 		guestPanel.setBackground(Color.WHITE);
-
-		JLabel guestLabel = new JLabel("                    Số lượng khách");
+		JLabel guestLabel = new JLabel("Số lượng khách");
 		guestLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		guestLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		guestPanel.add(guestLabel, BorderLayout.NORTH);
-
 		JPanel guestControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 		guestControlPanel.setBackground(Color.WHITE);
-
 		JButton minusButton = new JButton("-");
 		minusButton.setFont(new Font("Arial", Font.BOLD, 14));
 		minusButton.setPreferredSize(new Dimension(45, 25));
-
-		JLabel guestCountLabel = new JLabel("0"); // Mặc định là 2 như trong hình
+		JLabel guestCountLabel = new JLabel("0");
 		guestCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		guestCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		guestCountLabel.setPreferredSize(new Dimension(30, 25));
-
 		JButton plusButton = new JButton("+");
 		plusButton.setFont(new Font("Arial", Font.BOLD, 14));
 		plusButton.setPreferredSize(new Dimension(45, 25));
-
-		minusButton.addActionListener(e -> {
-			int count = Integer.parseInt(guestCountLabel.getText());
-			if (count > 0)
-				guestCountLabel.setText(String.valueOf(count - 1));
-		});
-
-		plusButton.addActionListener(e -> {
-			int count = Integer.parseInt(guestCountLabel.getText());
-			guestCountLabel.setText(String.valueOf(count + 1));
-			int soKhachLocal = Integer.parseInt(guestCountLabel.getText());
-			soKhach = soKhachLocal;
-
-		});
-
 		guestControlPanel.add(minusButton);
 		guestControlPanel.add(guestCountLabel);
 		guestControlPanel.add(plusButton);
 		guestPanel.add(guestControlPanel, BorderLayout.CENTER);
 
-		infoPanel.add(checkInPanel);
-		infoPanel.add(checkOutPanel);
-		infoPanel.add(guestPanel);
+		// Thêm các panel vào topInfoPanel
+		topInfoPanel.add(checkInPanel);
+		topInfoPanel.add(checkOutPanel);
+		topInfoPanel.add(guestPanel);
+
+		// ========== Panel dưới: chứa 6 checkbox ==========
+		JPanel bottomInfoPanel = new JPanel();
+		bottomInfoPanel.setLayout(new GridLayout(2, 3, 10, 10)); // 2 dòng 3 cột, cách nhau 10px
+		bottomInfoPanel.setBackground(Color.CYAN);
+		bottomInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		
+		// Tạo 6 checkbox
+		for (int i = 0; i < tienIchPhong.length; i++) {
+		    JCheckBox checkBox = new JCheckBox(tienIchPhong[i]);
+		    checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
+		    bottomInfoPanel.add(checkBox);
+		}
+
+		// Thêm top và bottom vào infoPanel
+		infoPanel.add(topInfoPanel, BorderLayout.NORTH);
+		infoPanel.add(bottomInfoPanel, BorderLayout.CENTER);
+
 
 		// Panel chứa tất cả nội dung header
 		JPanel headerContentPanel = new JPanel();
-		headerContentPanel.setLayout(new BoxLayout(headerContentPanel, BoxLayout.Y_AXIS));
+		headerContentPanel.setLayout(new BorderLayout());
 		headerContentPanel.setBackground(new Color(220, 220, 220));
 
-		headerContentPanel.add(titleClosePanel);
-		headerContentPanel.add(infoPanel);
-		headerContentPanel.add(buttonPanel);
+		headerContentPanel.add(titleClosePanel, BorderLayout.NORTH);
+		headerContentPanel.add(buttonPanel, BorderLayout.WEST);
+		headerContentPanel.add(infoPanel, BorderLayout.CENTER);
 
 		headerPanel.add(headerContentPanel, BorderLayout.CENTER);
 
