@@ -241,10 +241,13 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 				System.out.println("Chức vụ: " + chucVu);
 				if(chucVu.equals("Quản lý")) {
 					//Mở giao diện quản lý
+					
 					this.dispose();
+					new QuanLyDatPhong_GUI().setVisible(true);
 				}else if (chucVu.equals("Lễ tân")) {
-					new QuanLyDatPhong_GUI().setVisible(true);  // <- thêm dòng này
+					  // <- thêm dòng này
 	                this.dispose();
+	                new QuanLyDatPhong_GUI().setVisible(true);
 				}
 			}else {
 		        // Trường hợp không tìm thấy tài khoản

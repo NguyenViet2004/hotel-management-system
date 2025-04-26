@@ -1525,9 +1525,11 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 					 int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
 				        if (option == JOptionPane.OK_OPTION) {
 				            SwingUtilities.getWindowAncestor(thanhToan).dispose();
+				            new QuanLyDatPhong_GUI().setVisible(true); 
+				            
 				        }
 				}else {
-					 int option = JOptionPane.showConfirmDialog(null, "Bạn chưa chọn phương thức thanh toán", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
+					 int option = JOptionPane.showConfirmDialog(null, "Bạn chưa chọn phương thức thanh toán", "Thông báo", JOptionPane.OK_OPTION);
 				}
                
 			}

@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.EventQueue;
+
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -8,11 +9,15 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.RoundRectangle2D;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
@@ -21,20 +26,28 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
 import entity.LoaiPhong;
 import entity.Phong;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -47,10 +60,12 @@ import java.awt.event.ActionListener;
 public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JPanel contentPane,panelSouth,panelWest;
 	RoundedButton btnDat;
 	private Phong_Dao dsPhong;
 	private LoaiPhong_Dao dsLoaiPhong;
+	private Map<String, ArrayList<Phong>> roomCategories;
+	private RoundedButton btnTra;
 //sửa thử
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
@@ -65,6 +80,11 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
 	public QuanLyDatPhong_GUI() {
 		
+        panelWest = new JPanel(); // Khởi tạo panelWest
+        initializeComponents(); 
+        roomCategories = new HashMap<>(); // Khởi tạo roomCategories
+        loadRoomData();
+        
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setResizable(false);
@@ -109,25 +129,43 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		// Font for Titles
 		Font ft = new Font("Arial", Font.BOLD, 18);
 
-		// Panel chứa ngày tháng và icon lịch
+
+		// Panel chứa lịch chọn ngày
 		CustomRoundedPanel panelDate = new CustomRoundedPanel(10, 10, 10, 10);
-		panelDate.setBounds(20, 10, 180, 50);
+		panelDate.setBounds(20, 10, 180, 60);
 		panelDate.setBackground(Color.WHITE);
-		panelDate.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		panelDate.setLayout(null);
-		panelWest.add(panelDate);
 
 		// Label "Chọn ngày"
 		JLabel lblDate = new JLabel("Chọn ngày");
-		lblDate.setFont(new Font("Arial", Font.PLAIN, 12));
-		lblDate.setBounds(10, 5, 100, 15);
+		lblDate.setFont(new Font("Arial", Font.BOLD, 12));
 		panelDate.add(lblDate);
 
-		// Label ngày tháng
-		JLabel lblSelectedDate = new JLabel("15/3/2025");
-		lblSelectedDate.setFont(new Font("Arial", Font.BOLD, 22));
-		lblSelectedDate.setBounds(10, 20, 100, 25);
-		panelDate.add(lblSelectedDate);
+		// Khởi tạo UtilDateModel
+		UtilDateModel model = new UtilDateModel();
+		Calendar cal = Calendar.getInstance();
+		model.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+		model.setSelected(true);
+
+		// Cấu hình hiển thị cho JDatePanelImpl
+		Properties p = new Properties();
+		p.put("text.today", "Hôm nay");
+		p.put("text.month", "Tháng");
+		p.put("text.year", "Năm");
+
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setBounds(10, 30, 160, 26);
+		panelDate.add(datePicker);
+
+		datePicker.addActionListener(e -> {
+			java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
+			if (selectedDate != null) {
+				loadData(selectedDate);
+			}
+		});
+
+		panelWest.add(panelDate);
 
 		// Biểu tượng lịch
 		ImageIcon calendarIcon = new ImageIcon(
@@ -165,23 +203,24 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		lblRoomType.setForeground(Color.decode("#3B9AEE"));
 		lblRoomType.setFont(ft);
 		panelWest.add(lblRoomType);
-		
+
 		// Checkboxes for room types
 		dsLoaiPhong = new LoaiPhong_Dao();
 		ArrayList<LoaiPhong> danhSachLoaiPhong = dsLoaiPhong.getAllLoaiPhong(); // Lấy danh sách loại phòng
 
-		// Tạo JCheckBox cho từng loại phòng
+		// Vị trí bắt đầu cho checkbox
 		int yPosition = 200; // Vị trí bắt đầu
 
 		for (LoaiPhong loaiPhong : danhSachLoaiPhong) {
-		    JCheckBox cbLoaiPhong = new JCheckBox(loaiPhong.getTenLoai());  // Tạo checkbox cho mỗi loại phòng
-		    cbLoaiPhong.setBounds(35, yPosition, 200, 25);  // Đặt vị trí và kích thước
-		    cbLoaiPhong.setBackground(Color.WHITE);  // Đặt màu nền
-		    
-		    // Thêm vào panel (hoặc container phù hợp)
+		    JCheckBox cbLoaiPhong = new JCheckBox(loaiPhong.getTenLoai());
+		    cbLoaiPhong.setBounds(35, yPosition, 200, 25);
+		    cbLoaiPhong.setBackground(Color.WHITE);
+		    cbLoaiPhong.setActionCommand(loaiPhong.getMaLoaiPhong()); // Lưu mã loại phòng
+
+		    // Thêm ItemListener
+		    cbLoaiPhong.addItemListener(e -> filterRooms());
+
 		    panelWest.add(cbLoaiPhong);
-		    
-		    // Tăng vị trí y để các checkbox không bị chồng lên nhau
 		    yPosition += 30;
 		}
 
@@ -190,7 +229,6 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		cbAllRooms.setBounds(35, yPosition, 200, 25);
 		cbAllRooms.setBackground(Color.WHITE);
 		panelWest.add(cbAllRooms);
-
 
 		// Add panel to content pane
 		contentPane.add(panelWest);
@@ -206,12 +244,11 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		Font font = new Font("Arial", Font.BOLD, 16);
 
 		// Create rounded buttons and set their font
-		btnDat= new RoundedButton("Đặt phòng", 20);
+		btnDat = new RoundedButton("Đặt phòng", 20);
 		btnDat.addActionListener(this);
 		btnDat.setPreferredSize(new Dimension(150, 40));
 		btnDat.setFont(font); // Set bold font
 		panelCenter.add(btnDat);
-		
 
 		RoundedButton btnDoi = new RoundedButton("Đổi phòng", 20);
 		btnDoi.setPreferredSize(new Dimension(150, 40));
@@ -219,10 +256,12 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		btnDoi.setFont(font); // Set bold font
 		panelCenter.add(btnDoi);
 
-		RoundedButton btnTra = new RoundedButton("Trả phòng", 20);
+		btnTra = new RoundedButton("Trả phòng", 20);
 		btnTra.setPreferredSize(new Dimension(150, 40));
+		btnTra.addActionListener(this);
 		btnTra.setFont(font); // Set bold font
 		panelCenter.add(btnTra);
+		
 
 		RoundedButton btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
 		btnHuy.setPreferredSize(new Dimension(230, 40));
@@ -231,11 +270,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
 		contentPane.add(panelCenter);
 
-		// Khởi tạo panel South
 		CustomRoundedPanel panelSouth = new CustomRoundedPanel(15, 15, 15, 15);
 
-		// Ví dụ dữ liệu phòng giả lập theo các loại phòng
-		// Giả sử dsPhong là đối tượng của lớp Phong_Dao
 		dsPhong = new Phong_Dao();
 
 		// Tạo một Map tổng hợp để lưu trữ các phòng theo loại
@@ -250,19 +286,18 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		    roomCategories.put(loaiPhong.getTenLoai(), rooms);
 		}
 
+
 		// Ví dụ duyệt qua và hiển thị thông tin phòng
 		for (Map.Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
-		    String roomType = entry.getKey();  // Tên loại phòng
-		    ArrayList<Phong> rooms = entry.getValue();  // Danh sách phòng
+			String roomType = entry.getKey(); // Tên loại phòng
+			ArrayList<Phong> rooms = entry.getValue(); // Danh sách phòng
 
-		    System.out.println("Loại phòng: " + roomType);
-		    for (Phong room : rooms) {
-		        // Giả sử Phong có phương thức getTenPhong và getTrangThai
-		        System.out.println("  Phòng: " + room.getSoPhong() + " - Trạng thái: " + room.getTrangThai());
-		    }
+			System.out.println("Loại phòng: " + roomType);
+			for (Phong room : rooms) {
+				// Giả sử Phong có phương thức getTenPhong và getTrangThai
+				System.out.println("  Phòng: " + room.getSoPhong() + " - Trạng thái: " + room.getTrangThai());
+			}
 		}
-
-
 
 		// Thiết lập các thông số cho ô phòng
 		int roomWidth = 200;
@@ -271,42 +306,45 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		int verticalSpacing = 10;
 
 		panelSouth.setBackground(Color.WHITE);
-		panelSouth.setLayout(new BoxLayout(panelSouth, BoxLayout.Y_AXIS)); // Sử dụng BoxLayout để sắp xếp theo chiều dọc
+		panelSouth.setLayout(new BoxLayout(panelSouth, BoxLayout.Y_AXIS)); // Sử dụng BoxLayout để sắp xếp theo chiều
+																			// dọc
 
 		// Duyệt qua các loại phòng và tạo từng phần tương ứng
 		for (Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
-		    String roomType = entry.getKey();
-		    List<Phong> rooms = entry.getValue();
+			String roomType = entry.getKey();
+			List<Phong> rooms = entry.getValue();
 
-		    // Tạo JPanel để chứa tiêu đề và căn lề trái
-		    JPanel titlePanel = new JPanel();
-		    titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0)); // Căn lề trái, không có khoảng cách
+			// Tạo JPanel để chứa tiêu đề và căn lề trái
+			JPanel titlePanel = new JPanel();
+			titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0)); // Căn lề trái, không có khoảng cách
 
-		    // Tạo JLabel cho tiêu đề loại phòng
-		    JLabel lblRoomInfo = new JLabel(roomType);
-		    lblRoomInfo.setFont(new Font("Arial", Font.BOLD, 20));
-		    lblRoomInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // Thêm khoảng cách trên và dưới
+			// Tạo JLabel cho tiêu đề loại phòng
+			JLabel lblRoomInfo = new JLabel(roomType);
+			lblRoomInfo.setFont(new Font("Arial", Font.BOLD, 20));
+			lblRoomInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // Thêm khoảng cách trên và dưới
 
-		    // Thêm JLabel vào titlePanel
-		    titlePanel.add(lblRoomInfo);
+			// Thêm JLabel vào titlePanel
+			titlePanel.add(lblRoomInfo);
 
-		    // Thêm titlePanel vào panelSouth
-		    panelSouth.add(titlePanel);
-		    int roomsPerRow = 4;
-		    int numberOfRooms = rooms.size();
-		    int numberOfRows = (int) Math.ceil((double) numberOfRooms / roomsPerRow);
+			// Thêm titlePanel vào panelSouth
+			panelSouth.add(titlePanel);
+			int roomsPerRow = 4;
+			int numberOfRooms = rooms.size();
+			int numberOfRows = (int) Math.ceil((double) numberOfRooms / roomsPerRow);
 
-		    JPanel roomGridPanel = new JPanel();
-		    roomGridPanel.setLayout(new GridLayout(numberOfRows, roomsPerRow, horizontalSpacing, verticalSpacing));
-		    roomGridPanel.setBackground(Color.WHITE);
+			JPanel roomGridPanel = new JPanel();
+			roomGridPanel.setLayout(new GridLayout(numberOfRows, roomsPerRow, horizontalSpacing, verticalSpacing));
+			roomGridPanel.setBackground(Color.WHITE);
 
-		    for (Phong room : rooms) {
-		        RoomPanel roomPanel = new RoomPanel(room, "Phòng trống", 0);
-		        roomPanel.setPreferredSize(new Dimension(roomWidth, roomHeight));
-		        roomGridPanel.add(roomPanel);
-		    }
+			for (Phong room : rooms) {
+			    int days = 0; // Lấy số ngày ở từ dữ liệu của bạn
+			    RoomPanel roomPanel = new RoomPanel(room, "Phòng trống", days);
+			    roomPanel.setPreferredSize(new Dimension(roomWidth, roomHeight));
+			    roomGridPanel.add(roomPanel);
+			}
 
-		    panelSouth.add(roomGridPanel);
+
+			panelSouth.add(roomGridPanel);
 
 		}
 
@@ -321,8 +359,68 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 				screenHeight - (int) (screenHeight * 0.15) - 50);
 		scrollPane.setBorder(null);
 		contentPane.add(scrollPane);
+		
 
 	}
+	
+	private void initializeComponents() {
+        // Thêm các checkbox vào panelWest
+        panelWest.add(new JCheckBox("Loại phòng 1"));
+        panelWest.add(new JCheckBox("Loại phòng 2"));
+        // Thêm các thành phần khác nếu cần
+    }
+	private void loadRoomData() {
+        // Giả sử bạn đã có danh sách loại phòng và phòng
+        // Ví dụ thêm dữ liệu vào roomCategories
+        roomCategories.put("Triple Room", new ArrayList<>(Arrays.asList(new Phong("P106"), new Phong("P206"))));
+        roomCategories.put("Single Room", new ArrayList<>(Arrays.asList(new Phong("P101"), new Phong("P102"))));
+        // Tiếp tục thêm dữ liệu cho các loại phòng khác
+    }
+    private void filterRooms() {
+        if (panelWest == null) {
+            System.out.println("panelWest is not initialized!");
+            return; // Tránh lỗi null pointer
+        }
+
+        // Lấy danh sách các checkbox
+        Component[] components = panelWest.getComponents();
+        List<String> selectedRoomTypes = new ArrayList<>();
+
+        for (Component component : components) {
+            if (component instanceof JCheckBox) {
+                JCheckBox checkBox = (JCheckBox) component;
+                if (checkBox.isSelected()) {
+                    selectedRoomTypes.add(checkBox.getActionCommand());
+                }
+            }
+        }
+
+        // Lọc danh sách phòng
+        ArrayList<Phong> filteredRooms = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
+            String roomType = entry.getKey();
+            if (selectedRoomTypes.isEmpty() || selectedRoomTypes.contains(roomType)) {
+                filteredRooms.addAll(entry.getValue());
+            }
+        }
+
+        // Cập nhật giao diện với danh sách phòng đã lọc
+        updateRoomDisplay(filteredRooms);
+    }
+
+	private void updateRoomDisplay(ArrayList<Phong> rooms) {
+		panelSouth.removeAll(); 
+
+	    for (Phong room : rooms) {
+	        RoomPanel roomPanel = new RoomPanel(room, "Phòng trống", 0); 
+	        panelSouth.add(roomPanel);
+	    }
+
+	    panelSouth.revalidate(); 
+	    panelSouth.repaint(); 
+	}
+
+
 
 	class RoundedButton extends JButton {
 		private int radius;
@@ -391,56 +489,155 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	}
 
 	class RoomPanel extends JPanel {
-		private Phong roomId;
-		private String status;
-		private int days;
+	    private Phong room;
+	    private String status;
+	    private int days;
 
-		public RoomPanel(Phong roomName, String status, int days) {
-			this.roomId = roomName;
-			this.status = status;
-			this.days = days;
-			setPreferredSize(new Dimension(220, 180));
-			setBackground(new Color(0, 0, 0, 0));
-		}
+	    public RoomPanel(Phong room, String status, int days) {
+	        this.room = room;
+	        this.status = status;
+	        this.days = days;
 
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	        setPreferredSize(new Dimension(220, 180));
+	        setOpaque(false); // Để bo tròn hiện đúng
+	        setToolTipText("<html><b>Phòng:</b> " + room.getSoPhong()
+	                     + "<br><b>Trạng thái:</b> " + status
+	                     + "<br><b>Số ngày:</b> " + days + "</html>");
+	    }
 
-			// Vẽ hình chữ nhật bo tròn
-			g2.setColor(status.equals("Phòng Trống") ? Color.LIGHT_GRAY : Color.green);
-			g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 20, 20));
+	    @Override
+	    protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        Graphics2D g2 = (Graphics2D) g.create();
+	        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-			// Vẽ thông tin phòng lên trong ô
-			g2.setColor(Color.BLACK);
-			g2.setFont(new Font("Arial", Font.PLAIN, 14));
+	        // Màu nền theo trạng thái
+	        Color bgColor = status.equals("Phòng trống") ? Color.GREEN: new Color(220, 220, 220);
+	        g2.setColor(bgColor);
 
-			// Tính toán vị trí và chiều dài của các dòng văn bản
-			FontMetrics metrics = g2.getFontMetrics();
-			int margin = 10; // Khoảng cách lề
-			int lineHeight = metrics.getHeight(); // Chiều cao của mỗi dòng văn bản
+	        // Bo tròn nền
+	        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 25, 25));
 
-			// Vẽ thông tin phòng với căn chỉnh phù hợp
-			g2.drawString("ID: " + roomId.getSoPhong(), margin, margin + lineHeight); // Dòng 1
-			g2.drawString("Trạng thái: " + roomId.getTrangThai(), margin, margin + 2 * lineHeight); // Dòng 2
-			g2.drawString("Mô tả: " + roomId.getMoTa(), margin, margin + 3 * lineHeight); // Dòng 3
-		}
+	        // Viền nhẹ
+	        g2.setColor(new Color(180, 180, 180));
+	        g2.setStroke(new BasicStroke(1));
+	        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, 25, 25));
+
+	        // Vẽ nội dung
+	        int margin = 15;
+	        int y = margin + 15;
+	        g2.setColor(Color.DARK_GRAY);
+	        g2.setFont(new Font("Arial", Font.BOLD, 16));
+	        g2.drawString("Phòng: " + room.getSoPhong(), margin, y);
+
+	        y += 25;
+	        g2.setFont(new Font("Arial", Font.PLAIN, 14));
+	        g2.drawString("Trạng thái: " + status, margin, y);
+	        
+	        y += 20;
+	        Font font = new Font("Arial", Font.PLAIN, 14);
+	        g2.setFont(font);
+	        FontMetrics fm = g2.getFontMetrics(font);
+	        List<String> lines = wrapText("Mô tả: " + room.getMoTa(), fm, getWidth() - 2 * margin);
+	        for (String line : lines) {
+	            g2.drawString(line, margin, y);
+	            y += fm.getHeight(); // tăng y cho dòng tiếp theo
+	        }
+
+	     // Vẽ icon check trong vòng tròn
+	        y += 10;
+	        int iconSize = 20;
+	        int centerX = margin + iconSize / 2;
+	        int centerY = y + iconSize / 2;
+
+	        // Vẽ vòng tròn
+	        g2.setColor(Color.black); // Màu xanh lá nhẹ
+	        g2.setStroke(new BasicStroke(2));
+	        g2.drawOval(margin, y, iconSize, iconSize);
+
+	        // Vẽ dấu check
+	        g2.setStroke(new BasicStroke(2));
+	        g2.drawLine(margin + 5, y + 10, margin + 9, y + 14);  // phần đầu dấu check
+	        g2.drawLine(margin + 9, y + 14, margin + 15, y + 6);  // phần đuôi
+
+
+	        g2.setColor(Color.black);
+	        g2.drawString("Khách ở: " + days + " ngày", margin + 30, y + 15);
+
+	        g2.dispose();
+	    }
+	 // Hàm chia chuỗi mô tả dài thành nhiều dòng
+	    private List<String> wrapText(String text, FontMetrics fm, int maxWidth) {
+	        List<String> lines = new ArrayList<>();
+	        StringBuilder line = new StringBuilder();
+	        for (String word : text.split(" ")) {
+	            if (fm.stringWidth(line + word + " ") > maxWidth) {
+	                lines.add(line.toString());
+	                line = new StringBuilder(word + " ");
+	            } else {
+	                line.append(word).append(" ");
+	            }
+	        }
+	        lines.add(line.toString());
+	        return lines;
+	    }
+
 	}
 
+
 	@Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnDat ) {
-            // Mở cửa sổ đặt phòng
-            DatPhong_GUI frameDatPhong = new DatPhong_GUI(this);
-            frameDatPhong.setVisible(true);
-        }
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnDat) {
+			// Mở cửa sổ đặt phòng
+			DatPhong_GUI frameDatPhong = new DatPhong_GUI(this);
+			frameDatPhong.setVisible(true);
+		}
+		
+		if(e.getSource() == btnTra) {
+			timKiemDialog dialog = new timKiemDialog();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setUndecorated(true);
+			dialog.setLocationRelativeTo(null);
+			dialog.setSize(929, 629);
+			dialog.setResizable(false);
+			dialog.setVisible(true);
+		}
 //        if(e.getSource() == btnDatPhong2){
 //            // Mở cửa sổ đặt phòng
 //            DatPhong_GUI1 frameDatPhong = (DatPhong_GUI1) new DatPhong_GUI1(this);
 //            frameDatPhong.setVisible(true);
 //        }
-    }
+	}
+	private void loadData(java.util.Date selectedDate) {
+		// Thực hiện các thao tác cần thiết để load dữ liệu dựa trên ngày được chọn
+		String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
+		System.out.println("Ngày được chọn: " + formattedDate);
+		
+		// Ví dụ: Gọi phương thức để load dữ liệu từ database
+		loadDataFromDatabase(selectedDate);
+	}
+
+
+	public class DateLabelFormatter extends AbstractFormatter {
+
+		private static final String DATE_PATTERN = "dd/MM/yyyy";
+		private final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_PATTERN);
+
+		public Object stringToValue(String text) throws ParseException {
+			return dateFormatter.parse(text);
+		}
+
+		public String valueToString(Object value) {
+			if (value != null) {
+				Calendar cal = (Calendar) value;
+				return dateFormatter.format(cal.getTime());
+			}
+			return "";
+		}
+	}
+	private void loadDataFromDatabase(java.util.Date selectedDate) {
+		// Thực hiện các thao tác để load dữ liệu từ database dựa trên ngày được chọn
+		// ...
+	}
 
 }

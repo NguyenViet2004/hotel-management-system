@@ -1,5 +1,4 @@
 package TraPhong_CuaXien;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
