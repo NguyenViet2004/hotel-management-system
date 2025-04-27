@@ -12,7 +12,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import TraPhong_CuaXien.panel_timKiem;
+import GUI.panel_timKiem;
 public class timKiemDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
