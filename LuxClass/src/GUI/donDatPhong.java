@@ -156,15 +156,15 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		JLabel lblLoGo = new JLabel("");
 		ImageIcon originalIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/logo.png");
-		Image image = originalIcon.getImage().getScaledInstance(Math.round(88f * frameWidth), Math.round(88f * frameHeight), Image.SCALE_SMOOTH);
+		Image image = originalIcon.getImage().getScaledInstance(Math.round(88f * frameWidth / frameWidth), Math.round(88f * frameHeight /frameHeight ), Image.SCALE_SMOOTH);
 		ImageIcon logoIcon = new ImageIcon(image);
 		lblLoGo.setIcon(logoIcon);
-		lblLoGo.setBounds(Math.round(5f * frameWidth), Math.round(5f * frameHeight), Math.round(88f * frameWidth), Math.round(88f * frameHeight));
+		lblLoGo.setBounds(Math.round(5f * frameWidth / frameWidth), Math.round(5f * frameHeight /frameHeight ), Math.round(88f * frameWidth / frameWidth), Math.round(88f * frameHeight /frameHeight ));
 		Header.add(lblLoGo);
 
 		JButton undo = new JButton("");
 		undo.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/undo.png"));
-		undo.setBounds(Math.round(103f * frameWidth), Math.round(55f * frameHeight), Math.round(45f * frameWidth), Math.round(38f * frameHeight));
+		undo.setBounds(Math.round(103f * frameWidth / frameWidth), Math.round(55f * frameHeight /frameHeight ), Math.round(45f * frameWidth / frameWidth), Math.round(38f * frameHeight /frameHeight ));
 		undo.setContentAreaFilled(false);
 		undo.setBorderPainted(false);
 		undo.setFocusPainted(false);
@@ -172,31 +172,31 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		JButton Home = new JButton("");
 		Home.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/home.png"));
-		Home.setBounds(Math.round(158f * frameWidth), Math.round(55f * frameHeight), Math.round(37f * frameWidth), Math.round(38f * frameHeight));
+		Home.setBounds(Math.round(158f * frameWidth / frameWidth), Math.round(55f * frameHeight /frameHeight ), Math.round(37f * frameWidth / frameWidth), Math.round(38f * frameHeight /frameHeight ));
 		Home.setContentAreaFilled(false);
 		Home.setBorderPainted(false);
 		Home.setFocusPainted(false);
 		Header.add(Home);
 
 		JLabel lblNewLabel_7 = new JLabel("Trả phòng");
-		lblNewLabel_7.setFont(new Font("Times New Roman", Font.BOLD, Math.round(25f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_7.setBounds(Math.round(102f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(115f * frameWidth / 1536), Math.round(35f * frameHeight));
+		lblNewLabel_7.setFont(new Font("Times New Roman", Font.BOLD, Math.round(25f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_7.setBounds(Math.round(102f * frameWidth / frameWidth), Math.round(10f * frameHeight /frameHeight ), Math.round(115f * frameWidth / frameWidth), Math.round(35f * frameHeight /frameHeight ));
 		Header.add(lblNewLabel_7);
 
 		JButton help = new JButton("");
 		help.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/help.png"));
-		help.setBounds(Math.round(1348f * frameWidth / 1536), Math.round(36f * frameHeight), Math.round(37f * frameWidth / 1536), Math.round(32f * frameHeight));
+		help.setBounds(Math.round(1348f * frameWidth / frameWidth), Math.round(36f * frameHeight /frameHeight ), Math.round(37f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		help.setContentAreaFilled(false);
 		help.setBorderPainted(false);
 		help.setFocusPainted(false);
 		Header.add(help);
 
 		JLabel lblNewLabel_8 = new JLabel("New label");
-		lblNewLabel_8.setBounds(Math.round(1464f * frameWidth / 1536), Math.round(20f * frameHeight), Math.round(45f * frameWidth / 1536), Math.round(13f * frameHeight));
+		lblNewLabel_8.setBounds(Math.round(1464f * frameWidth / frameWidth), Math.round(20f * frameHeight /frameHeight ), Math.round(45f * frameWidth / frameWidth), Math.round(13f * frameHeight /frameHeight ));
 		Header.add(lblNewLabel_8);
 
 		JLabel lblNewLabel_9 = new JLabel("New label");
-		lblNewLabel_9.setBounds(Math.round(1464f * frameWidth / 1536), Math.round(62f * frameHeight), Math.round(45f * frameWidth / 1536), Math.round(13f * frameHeight));
+		lblNewLabel_9.setBounds(Math.round(1464f * frameWidth / frameWidth), Math.round(62f * frameHeight /frameHeight ), Math.round(45f * frameWidth / frameWidth), Math.round(13f * frameHeight /frameHeight ));
 		Header.add(lblNewLabel_9);
 
 		return Header;
@@ -220,97 +220,97 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	private JPanel createTraiPanel() {
 		JPanel Traipanel = new JPanel();
 		Traipanel.setBackground(new Color(255, 255, 255));
-		Traipanel.setBounds(Math.round(10f * frameWidth / 1536), Math.round(10f * frameHeight), (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
+		Traipanel.setBounds(Math.round(10f * frameWidth / frameWidth), Math.round(10f * frameHeight /frameHeight ), (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
 		Traipanel.setLayout(null);
 
 		JLabel TTDonDat = new JLabel("Thông tin đơn đặt phòng");
-		TTDonDat.setBounds(Math.round(186f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(324f * frameWidth / 1536), Math.round(52f * frameHeight));
-		TTDonDat.setFont(new Font("Times New Roman", Font.BOLD, Math.round(30f * Math.min( frameWidth, frameHeight))));
+		TTDonDat.setBounds(Math.round(186f * frameWidth / frameWidth), Math.round(10f * frameHeight /frameHeight ), Math.round(324f * frameWidth / frameWidth), Math.round(52f * frameHeight /frameHeight ));
+		TTDonDat.setFont(new Font("Times New Roman", Font.BOLD, Math.round(30f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		Traipanel.add(TTDonDat);
 
 		JLabel lblNewLabel = new JLabel("Mã đơn đặt phòng:");
-		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel.setBounds(Math.round(50f * frameWidth / 1536), Math.round(72f * frameHeight), Math.round(194f * frameWidth / 1536), Math.round(32f * frameHeight));
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel.setBounds(Math.round(50f * frameWidth / frameWidth), Math.round(72f * frameHeight /frameHeight ), Math.round(194f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("Họ tên khách hàng:");
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_1.setBounds(Math.round(50f * frameWidth / 1536), Math.round(118f * frameHeight), Math.round(175f * frameWidth / 1536), Math.round(24f * frameHeight));
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_1.setBounds(Math.round(50f * frameWidth / frameWidth), Math.round(118f * frameHeight /frameHeight ), Math.round(175f * frameWidth / frameWidth), Math.round(24f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_1);
 
 		JLabel lblNewLabel_2 = new JLabel("Ngày nhận phòng:");
-		lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_2.setBounds(Math.round(50f * frameWidth / 1536), Math.round(159f * frameHeight), Math.round(175f * frameWidth / 1536), Math.round(24f * frameHeight));
+		lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_2.setBounds(Math.round(50f * frameWidth / frameWidth), Math.round(159f * frameHeight /frameHeight ), Math.round(175f * frameWidth / frameWidth), Math.round(24f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_3 = new JLabel("Ngày trả phòng:");
-		lblNewLabel_3.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_3.setBounds(Math.round(50f * frameWidth / 1536), Math.round(201f * frameHeight), Math.round(159f * frameWidth / 1536), Math.round(24f * frameHeight));
+		lblNewLabel_3.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_3.setBounds(Math.round(50f * frameWidth / frameWidth), Math.round(201f * frameHeight /frameHeight ), Math.round(159f * frameWidth / frameWidth), Math.round(24f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_3);
 
 		JLabel lblNewLabel_4 = new JLabel("Số lượng khách:");
-		lblNewLabel_4.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_4.setBounds(Math.round(50f * frameWidth / 1536), Math.round(243f * frameHeight), Math.round(159f * frameWidth / 1536), Math.round(24f * frameHeight));
+		lblNewLabel_4.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_4.setBounds(Math.round(50f * frameWidth / frameWidth), Math.round(243f * frameHeight /frameHeight ), Math.round(159f * frameWidth / frameWidth), Math.round(24f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_4);
 
 		JLabel lblNewLabel_5 = new JLabel("Các dịch vụ đã sử dụng");
-		lblNewLabel_5.setFont(new Font("Times New Roman", Font.BOLD, Math.round(26f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_5.setBounds(Math.round(205f * frameWidth / 1536), Math.round(284f * frameHeight), Math.round(270f * frameWidth / 1536), Math.round(32f * frameHeight));
+		lblNewLabel_5.setFont(new Font("Times New Roman", Font.BOLD, Math.round(26f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_5.setBounds(Math.round(205f * frameWidth / frameWidth), Math.round(284f * frameHeight /frameHeight ), Math.round(270f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_5);
 
 		maDon = new JTextField();
 		maDon.setEditable(false);
 		maDon.setFocusable(false);
-		maDon.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		maDon.setBounds(Math.round(275f * frameWidth / 1536), Math.round(75f * frameHeight), Math.round(404f * frameWidth / 1536), Math.round(32f * frameHeight));
+		maDon.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		maDon.setBounds(Math.round(275f * frameWidth / frameWidth), Math.round(75f * frameHeight /frameHeight ), Math.round(404f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(maDon);
 		maDon.setColumns(10);
 
 		hoVaTen = new JTextField();
-		hoVaTen.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		hoVaTen.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		hoVaTen.setEditable(false);
 		hoVaTen.setFocusable(false);
 		hoVaTen.setColumns(10);
-		hoVaTen.setBounds(Math.round(275f * frameWidth / 1536), Math.round(117f * frameHeight), Math.round(404f * frameWidth / 1536), Math.round(32f * frameHeight));
+		hoVaTen.setBounds(Math.round(275f * frameWidth / frameWidth), Math.round(117f * frameHeight /frameHeight ), Math.round(404f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(hoVaTen);
 
 		ngayNhan = new JTextField();
-		ngayNhan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		ngayNhan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		ngayNhan.setEditable(false);
 		ngayNhan.setFocusable(false);
 		ngayNhan.setColumns(10);
-		ngayNhan.setBounds(Math.round(275f * frameWidth / 1536), Math.round(158f * frameHeight), Math.round(404f * frameWidth / 1536), Math.round(32f * frameHeight));
+		ngayNhan.setBounds(Math.round(275f * frameWidth / frameWidth), Math.round(158f * frameHeight /frameHeight ), Math.round(404f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(ngayNhan);
 
 		ngayTra = new JTextField();
-		ngayTra.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		ngayTra.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		ngayTra.setEditable(false);
 		ngayTra.setFocusable(false);
 		ngayTra.setColumns(10);
-		ngayTra.setBounds(Math.round(275f * frameWidth / 1536), Math.round(200f * frameHeight), Math.round(404f * frameWidth / 1536), Math.round(32f * frameHeight));
+		ngayTra.setBounds(Math.round(275f * frameWidth / frameWidth), Math.round(200f * frameHeight /frameHeight ), Math.round(404f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(ngayTra);
 
 		soLuongKhach = new JTextField();
-		soLuongKhach.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		soLuongKhach.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		soLuongKhach.setEditable(false);
 		soLuongKhach.setFocusable(false);
 		soLuongKhach.setColumns(10);
-		soLuongKhach.setBounds(Math.round(275f * frameWidth / 1536), Math.round(242f * frameHeight), Math.round(404f * frameWidth / 1536), Math.round(32f * frameHeight));
+		soLuongKhach.setBounds(Math.round(275f * frameWidth / frameWidth), Math.round(242f * frameHeight /frameHeight ), Math.round(404f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(soLuongKhach);
 
 		JScrollPane dichVu = createDichVuScrollPane();
 		Traipanel.add(dichVu);
 
 		JLabel lblNewLabel_11 = new JLabel("Tổng tiền sử dụng dịch vụ:");
-		lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_11.setBounds(Math.round(71f * frameWidth / 1536), Math.round(535f * frameHeight), Math.round(250f * frameWidth / 1536), Math.round(32f * frameHeight));
+		lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_11.setBounds(Math.round(71f * frameWidth / frameWidth), Math.round(535f * frameHeight /frameHeight ), Math.round(250f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Traipanel.add(lblNewLabel_11);
 
 		tongTienSDDV = new JTextField();
-		tongTienSDDV.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tongTienSDDV.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		tongTienSDDV.setEditable(false);
 		tongTienSDDV.setFocusable(false);
-		tongTienSDDV.setBounds(Math.round(351f * frameWidth / 1536), Math.round(537f * frameHeight), Math.round(288f * frameWidth / 1536), Math.round(28f * frameHeight /816));
+		tongTienSDDV.setBounds(Math.round(351f * frameWidth / frameWidth), Math.round(537f * frameHeight /frameHeight ), Math.round(288f * frameWidth / frameWidth), Math.round(28f * frameHeight /816));
 		Traipanel.add(tongTienSDDV);
 		tongTienSDDV.setColumns(10);
 
@@ -322,7 +322,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		dichVu.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		dichVu.setBorder(null);
 		dichVu.setBackground(new Color(255, 255, 255));
-		dichVu.setBounds(Math.round(25f * frameWidth / 1536), Math.round(345f * frameHeight), Math.round(707f * frameWidth / 1536), Math.round(159f * frameHeight));
+		dichVu.setBounds(Math.round(25f * frameWidth / frameWidth), Math.round(345f * frameHeight /frameHeight ), Math.round(707f * frameWidth / frameWidth), Math.round(159f * frameHeight /frameHeight ));
 
 		table_dichVu = new JTable();
 		DefaultTableModel model_dv = new DefaultTableModel(new Object[][] {},
@@ -338,14 +338,14 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		table_dichVu.setShowVerticalLines(false);
 		table_dichVu.setShowHorizontalLines(false);
 		table_dichVu.setShowGrid(false);
-		table_dichVu.setRowHeight(Math.round(40f * frameHeight));
-		table_dichVu.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(14f * Math.min( frameWidth, frameHeight))));
+		table_dichVu.setRowHeight(Math.round(40f * frameHeight /frameHeight ));
+		table_dichVu.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(14f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		table_dichVu.setFillsViewportHeight(true);
 		table_dichVu.setBorder(null);
 		JTableHeader header_dv = table_dichVu.getTableHeader();
 		header_dv.setBackground(new Color(220, 255, 220));
-		header_dv.setPreferredSize(new Dimension(header_dv.getWidth(), Math.round(30f * frameHeight)));
-		header_dv.setFont(new Font("Times New Roman", Font.BOLD, Math.round(16f * Math.min( frameWidth, frameHeight))));
+		header_dv.setPreferredSize(new Dimension(header_dv.getWidth(), Math.round(30f * frameHeight /frameHeight )));
+		header_dv.setFont(new Font("Times New Roman", Font.BOLD, Math.round(16f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		header_dv.setBorder(null);
 
 		DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
@@ -355,7 +355,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
 						column);
 				label.setHorizontalAlignment(JLabel.CENTER);
-				label.setFont(new Font("Times New Roman", Font.BOLD, Math.round(16f * Math.min( frameWidth, frameHeight))));
+				label.setFont(new Font("Times New Roman", Font.BOLD, Math.round(16f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 				label.setBackground(new Color(220, 255, 220));
 				label.setBorder(BorderFactory.createEmptyBorder());
 				return label;
@@ -450,41 +450,40 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	private JPanel createPhaiPanel() {
 		JPanel Phaipanel = new JPanel();
 		Phaipanel.setBackground(new Color(255, 255, 255));
-		Phaipanel.setBounds(Math.round(762f * frameWidth / 1536), Math.round(10f * frameHeight), (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
+		Phaipanel.setBounds(Math.round(762f * frameWidth / frameWidth), Math.round(10f * frameHeight /frameHeight ), (int) (frameWidth * 0.5), (int) (frameHeight * 0.83));
 		Phaipanel.setLayout(null);
 
 		JLabel lblNewLabel_6 = new JLabel("Chọn phòng muốn trả");
-		lblNewLabel_6.setFont(new Font("Times New Roman", Font.BOLD, Math.round(27f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_6.setBounds(Math.round(243f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(260f * frameWidth / 1536), Math.round(37f * frameHeight));
+		lblNewLabel_6.setFont(new Font("Times New Roman", Font.BOLD, Math.round(27f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_6.setBounds(Math.round(243f * frameWidth / frameWidth), Math.round(10f * frameHeight /frameHeight ), Math.round(260f * frameWidth / frameWidth), Math.round(37f * frameHeight /frameHeight ));
 		Phaipanel.add(lblNewLabel_6);
 
 		JButton tiepTuc = new JButton("Tiếp tục");
 		tiepTuc.setBackground(new Color(0, 255, 64));
-		tiepTuc.setFont(new Font("Times New Roman", Font.BOLD, Math.round(25f * Math.min( frameWidth, frameHeight))));
-		tiepTuc.setBounds(Math.round(597f * frameWidth / 1536), Math.round(607f * frameHeight), Math.round(154f * frameWidth / 1536), Math.round(47f * frameHeight));
+		tiepTuc.setFont(new Font("Times New Roman", Font.BOLD, Math.round(25f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		tiepTuc.setBounds(Math.round(597f * frameWidth / frameWidth), Math.round(607f * frameHeight /frameHeight ), Math.round(154f * frameWidth / frameWidth), Math.round(47f * frameHeight /frameHeight ));
 		Phaipanel.add(tiepTuc);
-//		tiepTuc.addActionListener(new ActionListener() {
-//		    @Override
-//		    public void actionPerformed(ActionEvent e) {
-//		        layDanhSachPhongDuocChon();
-//		        // Kiểm tra xem danh sách phòng được chọn có trống không sau khi gọi layDanhSachPhongDuocChon()
-//		        if (danhSachPhongDuocChon.isEmpty()) {
-//		            // Thông báo đã được hiển thị bên trong layDanhSachPhongDuocChon()
-//		            // Không cần hiển thị thêm thông báo ở đây nếu bạn muốn tránh trùng lặp
-//		            return;
-//		        } else {
-//		            body.setVisible(false);
-//		            capNhatHoaDonCT();
-//		            hoaDonCT.setVisible(true);
-//		            capNhatTongTienThanhToan();
-//		        }
-//		    }
-//		});
+		tiepTuc.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        layDanhSachPhongDuocChon();
+
+		        if (danhSachPhongDuocChon.isEmpty()) {
+
+		            return; 
+		        } else {
+		            body.setVisible(false);
+		            capNhatHoaDonCT();
+		            hoaDonCT.setVisible(true);
+		            capNhatTongTienThanhToan();
+		        }
+		    }
+		});
 		JPanel scrollPanel = createPhongTraScrollPane();
 		Phaipanel.add(scrollPanel);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(Math.round(34f * frameWidth / 1536), Math.round(349f * frameHeight), Math.round(693f * frameWidth / 1536), Math.round(162f * frameHeight));
+		scrollPane.setBounds(Math.round(34f * frameWidth / frameWidth), Math.round(349f * frameHeight /frameHeight ), Math.round(693f * frameWidth / frameWidth), Math.round(162f * frameHeight /frameHeight ));
 		scrollPane.setBorder(null);
 		scrollPane.setBackground(null);
 		scrollPane.getViewport().setOpaque(false);
@@ -500,8 +499,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				return columnEditables[column];
 			}
 		});
-		table_TinhChiPhiPhatSinh.setRowHeight(Math.round(30f * frameHeight));
-		table_TinhChiPhiPhatSinh.setFont(new Font("Times New Roman", Font.BOLD, Math.round(14f * Math.min( frameWidth, frameHeight))));
+		table_TinhChiPhiPhatSinh.setRowHeight(Math.round(30f * frameHeight /frameHeight ));
+		table_TinhChiPhiPhatSinh.setFont(new Font("Times New Roman", Font.BOLD, Math.round(14f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		scrollPane.setViewportView(table_TinhChiPhiPhatSinh);
 		table_TinhChiPhiPhatSinh.getModel().addTableModelListener(new TableModelListener() {
 			@Override
@@ -513,25 +512,25 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		});
 
 		JLabel lblNewLabel_6_1 = new JLabel("Chi phí phát sinh");
-		lblNewLabel_6_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(27f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_6_1.setBounds(Math.round(257f * frameWidth / 1536), Math.round(293f * frameHeight), Math.round(260f * frameWidth / 1536), Math.round(37f * frameHeight));
+		lblNewLabel_6_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(27f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_6_1.setBounds(Math.round(257f * frameWidth / frameWidth), Math.round(293f * frameHeight /frameHeight ), Math.round(260f * frameWidth / frameWidth), Math.round(37f * frameHeight /frameHeight ));
 		Phaipanel.add(lblNewLabel_6_1);
 
 		tongTienPS = new JTextField();
 		tongTienPS.setText((String) null);
-		tongTienPS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tongTienPS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		tongTienPS.setFocusable(false);
 		tongTienPS.setEditable(false);
 		tongTienPS.setColumns(10);
-		tongTienPS.setBounds(Math.round(407f * frameWidth / 1536), Math.round(537f * frameHeight), Math.round(288f * frameWidth / 1536), Math.round(28f * frameHeight));
+		tongTienPS.setBounds(Math.round(407f * frameWidth / frameWidth), Math.round(537f * frameHeight /frameHeight ), Math.round(288f * frameWidth / frameWidth), Math.round(28f * frameHeight /frameHeight ));
 		Phaipanel.add(tongTienPS);
 
 		JLabel lblNewLabel_11 = new JLabel("Tổng chi phi phát sinh:");
-		lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_11.setBounds(Math.round(66f * frameWidth / 1536), Math.round(535f * frameHeight), Math.round(250f * frameWidth / 1536), Math.round(32f * frameHeight));
+		lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		lblNewLabel_11.setBounds(Math.round(66f * frameWidth / frameWidth), Math.round(535f * frameHeight /frameHeight ), Math.round(250f * frameWidth / frameWidth), Math.round(32f * frameHeight /frameHeight ));
 		Phaipanel.add(lblNewLabel_11);
 		JTableHeader header1 = table_TinhChiPhiPhatSinh.getTableHeader();
-		header1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(15f * Math.min( frameWidth, frameHeight))));
+		header1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(15f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 		header1.setForeground(Color.black);
 		header1.setBackground(new Color(220, 255, 220));
 
@@ -544,7 +543,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		table_phongTra.setShowHorizontalLines(false);
 		table_phongTra.setBackground(new Color(255, 255, 255));
 		table_phongTra.setFillsViewportHeight(true);
-		table_phongTra.setRowHeight(Math.round(30f * frameHeight));
+		table_phongTra.setRowHeight(Math.round(30f * frameHeight /frameHeight ));
 		table_phongTra.setBorder(null);
 		table_phongTra.setShowGrid(false);
 		Object[][] data = {};
@@ -586,7 +585,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		});
 		JTableHeader header = table_phongTra.getTableHeader();
 		header.setBackground(new Color(220, 255, 220));
-		header.setPreferredSize(new Dimension(header.getWidth(), Math.round(40f * frameHeight)));
+		header.setPreferredSize(new Dimension(header.getWidth(), Math.round(40f * frameHeight /frameHeight )));
 
 		JCheckBox selectAll = new JCheckBox();
 		selectAll.setBackground(new Color(220, 255, 220));
@@ -594,7 +593,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		TableColumnModel columnModel = table_phongTra.getColumnModel();
 		columnModel.getColumn(0).setHeaderRenderer(new CheckBoxHeader(selectAll));
-		columnModel.getColumn(0).setPreferredWidth(Math.round(20f * frameWidth / 1536));
+		columnModel.getColumn(0).setPreferredWidth(Math.round(20f * frameWidth / frameWidth));
 		selectAll.addActionListener(e ->{
 			boolean checked = selectAll.isSelected();
 			for (int i = 0; i < table_phongTra.getRowCount(); i++) {
@@ -628,19 +627,19 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 			table_phongTra.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 
-		table_phongTra.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(17f * Math.min( frameWidth, frameHeight))));
-		header.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		table_phongTra.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(17f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
+		header.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth / frameWidth, frameHeight /frameHeight))));
 
 		JScrollPane scrollPane = new JScrollPane(table_phongTra);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(0, 0, Math.round(693f * frameWidth / 1536), Math.round(226f * frameHeight));
+		scrollPane.setBounds(0, 0, Math.round(693f * frameWidth / frameWidth), Math.round(226f * frameHeight /frameHeight ));
 		scrollPane.setBackground(new Color(0, 0, 0, 0));
 		scrollPane.setBorder(null);
 		scrollPane.getViewport().setBackground(new Color(0, 0, 0, 0));
 		scrollPane.getViewport().setBorder(null);
 
 		JPanel scrollPanel = new JPanel();
-		scrollPanel.setBounds(Math.round(34f * frameWidth / 1536), Math.round(57f * frameHeight), Math.round(693f * frameWidth / 1536), Math.round(226f * frameHeight));
+		scrollPanel.setBounds(Math.round(34f * frameWidth / frameWidth), Math.round(57f * frameHeight /frameHeight ), Math.round(693f * frameWidth / frameWidth), Math.round(226f * frameHeight /frameHeight ));
 		scrollPanel.setLayout(null);
 		scrollPanel.setBackground(new Color(0, 0, 0, 0));
 		scrollPanel.setBorder(null);
@@ -951,80 +950,80 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		String sdt = khachHang.getSdt();
 
 		JPanel panel = new JPanel();
-		panel.setBounds(0, Math.round(96f * frameHeight), frameWidth, Math.round(731f * frameHeight));
+		panel.setBounds(0, Math.round(96f * frameHeight / frameHeight), frameWidth, Math.round(731f * frameHeight / frameHeight));
 		panel.setBackground(new Color(192, 192, 192));
 		panel.setLayout(null);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(Math.round(10f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(864f * frameWidth / 1536), Math.round(673f * frameHeight));
+		panel_1.setBounds(Math.round(10f * frameWidth /frameWidth), Math.round(10f * frameHeight / frameHeight), Math.round(864f * frameWidth /frameWidth), Math.round(673f * frameHeight / frameHeight));
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 
 		JLabel lblNewLabel_1 = new JLabel("Hóa đơn thanh toán chi tiết");
-		lblNewLabel_1.setBounds(Math.round(222f * frameWidth / 1536), Math.round(48f * frameHeight), Math.round(391f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(30f * Math.min( frameWidth, frameHeight))));
+		lblNewLabel_1.setBounds(Math.round(222f * frameWidth /frameWidth), Math.round(48f * frameHeight / frameHeight), Math.round(391f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(30f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblNewLabel_1);
 
 		JLabel lblKhchHng = new JLabel("Khách hàng:");
-		lblKhchHng.setBounds(Math.round(179f * frameWidth / 1536), Math.round(102f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(28f * frameHeight));
-		lblKhchHng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblKhchHng.setBounds(Math.round(179f * frameWidth /frameWidth), Math.round(102f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
+		lblKhchHng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblKhchHng);
 
 		JLabel lblinThoi = new JLabel("Điện thoại:");
-		lblinThoi.setBounds(Math.round(179f * frameWidth / 1536), Math.round(145f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(28f * frameHeight));
-		lblinThoi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblinThoi.setBounds(Math.round(179f * frameWidth /frameWidth), Math.round(145f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
+		lblinThoi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblinThoi);
 
 		JLabel lblNgyNhnPhng = new JLabel("Ngày nhận phòng:");
-		lblNgyNhnPhng.setBounds(Math.round(179f * frameWidth / 1536), Math.round(188f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(28f * frameHeight));
-		lblNgyNhnPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblNgyNhnPhng.setBounds(Math.round(179f * frameWidth /frameWidth), Math.round(188f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
+		lblNgyNhnPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblNgyNhnPhng);
 
 		JLabel lblNgyTrPhng = new JLabel("Ngày trả phòng:");
-		lblNgyTrPhng.setBounds(Math.round(179f * frameWidth / 1536), Math.round(231f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(28f * frameHeight));
-		lblNgyTrPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblNgyTrPhng.setBounds(Math.round(179f * frameWidth /frameWidth), Math.round(231f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
+		lblNgyTrPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblNgyTrPhng);
 
 		JLabel lblITinPhng = new JLabel("I Tiền phòng:");
-		lblITinPhng.setBounds(Math.round(27f * frameWidth / 1536), Math.round(247f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblITinPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblITinPhng.setBounds(Math.round(27f * frameWidth /frameWidth), Math.round(247f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblITinPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblITinPhng);
 
 		JLabel lblIiTinS = new JLabel("II Tiền sử dụng dịch vụ:");
-		lblIiTinS.setBounds(Math.round(27f * frameWidth / 1536), Math.round(472f * frameHeight), Math.round(225f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblIiTinS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblIiTinS.setBounds(Math.round(27f * frameWidth /frameWidth), Math.round(472f * frameHeight / frameHeight), Math.round(225f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblIiTinS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblIiTinS);
 
 		JLabel lblIiiTinChi = new JLabel("III Tiền chi phí phát sinh:");
-		lblIiiTinChi.setBounds(Math.round(27f * frameWidth / 1536), Math.round(553f * frameHeight), Math.round(225f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblIiiTinChi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblIiiTinChi.setBounds(Math.round(27f * frameWidth /frameWidth), Math.round(553f * frameHeight / frameHeight), Math.round(225f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblIiiTinChi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblIiiTinChi);
 
 		JLabel lblTngTinPhng = new JLabel("Tổng tiền phòng:");
-		lblTngTinPhng.setBounds(Math.round(320f * frameWidth / 1536), Math.round(434f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblTngTinPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblTngTinPhng.setBounds(Math.round(320f * frameWidth /frameWidth), Math.round(434f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblTngTinPhng.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblTngTinPhng);
 
 		JLabel lblTngTinS = new JLabel("Tổng tiền sử dụng dịch vụ:");
-		lblTngTinS.setBounds(Math.round(243f * frameWidth / 1536), Math.round(508f * frameHeight), Math.round(248f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblTngTinS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblTngTinS.setBounds(Math.round(243f * frameWidth /frameWidth), Math.round(508f * frameHeight / frameHeight), Math.round(248f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblTngTinS.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblTngTinS);
 
 		JLabel lblNgyTrPhng_2_1 = new JLabel("Tổng tiền chi phí phát sinh:");
-		lblNgyTrPhng_2_1.setBounds(Math.round(238f * frameWidth / 1536), Math.round(598f * frameHeight), Math.round(235f * frameWidth / 1536), Math.round(44f * frameHeight));
-		lblNgyTrPhng_2_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		lblNgyTrPhng_2_1.setBounds(Math.round(238f * frameWidth /frameWidth), Math.round(598f * frameHeight / frameHeight), Math.round(235f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
+		lblNgyTrPhng_2_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		panel_1.add(lblNgyTrPhng_2_1);
 
 		JScrollPane scrollPane_11 = new JScrollPane();
 		scrollPane_11.setBorder(null); // Tắt viền
 		scrollPane_11.setBackground(null); // Tắt màu nền
 		scrollPane_11.getViewport().setOpaque(false); // Làm trong suốt phần viewport
-		scrollPane_11.setBounds(Math.round(37f * frameWidth / 1536), Math.round(280f * frameHeight), Math.round(792f * frameWidth / 1536), Math.round(158f * frameHeight));
+		scrollPane_11.setBounds(Math.round(37f * frameWidth /frameWidth), Math.round(280f * frameHeight / frameHeight), Math.round(792f * frameWidth /frameWidth), Math.round(158f * frameHeight / frameHeight));
 		panel_1.add(scrollPane_11);
 
 		table1 = new JTable();
-		table1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min( frameWidth, frameHeight))));
+		table1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		table1.setModel(new DefaultTableModel(new Object[][] { { null, null, null, null, null }, },
 				new String[] { "M\u00E3 ph\u00F2ng", "Lo\u1EA1i ph\u00F2ng", "Th\u1EDDi gian", "\u0110\u01A1n gi\u00E1",
 						"Th\u00E0nh ti\u1EC1n" }) {
@@ -1034,12 +1033,12 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				return columnEditables[column];
 			}
 		});
-		table1.setRowHeight(Math.round(25f * frameHeight));
+		table1.setRowHeight(Math.round(25f * frameHeight / frameHeight));
 
 		// Điều chỉnh kích thước header
 		JTableHeader header = table1.getTableHeader();
-		header.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
-		header.setPreferredSize(new Dimension(header.getWidth(), Math.round(20f * frameHeight)));
+		header.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		header.setPreferredSize(new Dimension(header.getWidth(), Math.round(20f * frameHeight / frameHeight)));
 		scrollPane_11.setViewportView(table1);
 
 		DefaultTableModel model_HoaDon = (DefaultTableModel) table1.getModel();
@@ -1051,48 +1050,48 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		tenKhach1 = new JTextField();
 		tenKhach1.setEditable(false);
-		tenKhach1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
-		tenKhach1.setBounds(Math.round(360f * frameWidth / 1536), Math.round(102f * frameHeight), Math.round(304f * frameWidth / 1536), Math.round(28f * frameHeight));
+		tenKhach1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		tenKhach1.setBounds(Math.round(360f * frameWidth /frameWidth), Math.round(102f * frameHeight / frameHeight), Math.round(304f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(tenKhach1);
 		tenKhach1.setColumns(10);
 		tenKhach1.setText(hotenString);
 
 		dienThoai1 = new JTextField();
-		dienThoai1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		dienThoai1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		dienThoai1.setEditable(false);
 		dienThoai1.setColumns(10);
-		dienThoai1.setBounds(Math.round(360f * frameWidth / 1536), Math.round(145f * frameHeight), Math.round(304f * frameWidth / 1536), Math.round(28f * frameHeight));
+		dienThoai1.setBounds(Math.round(360f * frameWidth /frameWidth), Math.round(145f * frameHeight / frameHeight), Math.round(304f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(dienThoai1);
 		dienThoai1.setText(sdt);
 
 		ngayNhanPhong1 = new JTextField();
-		ngayNhanPhong1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		ngayNhanPhong1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		ngayNhanPhong1.setEditable(false);
 		ngayNhanPhong1.setColumns(10);
-		ngayNhanPhong1.setBounds(Math.round(360f * frameWidth / 1536), Math.round(188f * frameHeight), Math.round(304f * frameWidth / 1536), Math.round(28f * frameHeight));
+		ngayNhanPhong1.setBounds(Math.round(360f * frameWidth /frameWidth), Math.round(188f * frameHeight / frameHeight), Math.round(304f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(ngayNhanPhong1);
 		ngayNhanPhong1.setText(dayNhanString);
 
 		ngayTraPhong1 = new JTextField();
-		ngayTraPhong1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		ngayTraPhong1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		ngayTraPhong1.setEditable(false);
 		ngayTraPhong1.setColumns(10);
-		ngayTraPhong1.setBounds(Math.round(360f * frameWidth / 1536), Math.round(231f * frameHeight), Math.round(304f * frameWidth / 1536), Math.round(28f * frameHeight));
+		ngayTraPhong1.setBounds(Math.round(360f * frameWidth /frameWidth), Math.round(231f * frameHeight / frameHeight), Math.round(304f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(ngayTraPhong1);
 		ngayTraPhong1.setText(dayTraString);
 
 		tongTienPhongTable1 = new JTextField();
-		tongTienPhongTable1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		tongTienPhongTable1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tongTienPhongTable1.setEditable(false);
 		tongTienPhongTable1.setColumns(10);
-		tongTienPhongTable1.setBounds(Math.round(483f * frameWidth / 1536), Math.round(445f * frameHeight), Math.round(275f * frameWidth / 1536), Math.round(28f * frameHeight));
+		tongTienPhongTable1.setBounds(Math.round(483f * frameWidth /frameWidth), Math.round(445f * frameHeight / frameHeight), Math.round(275f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(tongTienPhongTable1);
 
 		tongTienSuDungDichVu1 = new JTextField();
-		tongTienSuDungDichVu1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		tongTienSuDungDichVu1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tongTienSuDungDichVu1.setEditable(false);
 		tongTienSuDungDichVu1.setColumns(10);
-		tongTienSuDungDichVu1.setBounds(Math.round(483f * frameWidth / 1536), Math.round(517f * frameHeight), Math.round(275f * frameWidth / 1536), Math.round(28f * frameHeight));
+		tongTienSuDungDichVu1.setBounds(Math.round(483f * frameWidth /frameWidth), Math.round(517f * frameHeight / frameHeight), Math.round(275f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(tongTienSuDungDichVu1);
 		if (phiDV != null) {
 			tongTienSuDungDichVu1.setText(String.valueOf(phiDV));
@@ -1101,10 +1100,10 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		}
 
 		tongChiPhiPhatSinh1 = new JTextField();
-		tongChiPhiPhatSinh1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min( frameWidth, frameHeight))));
+		tongChiPhiPhatSinh1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(18f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tongChiPhiPhatSinh1.setEditable(false);
 		tongChiPhiPhatSinh1.setColumns(10);
-		tongChiPhiPhatSinh1.setBounds(Math.round(483f * frameWidth / 1536), Math.round(598f * frameHeight), Math.round(275f * frameWidth / 1536), Math.round(28f * frameHeight));
+		tongChiPhiPhatSinh1.setBounds(Math.round(483f * frameWidth /frameWidth), Math.round(598f * frameHeight / frameHeight), Math.round(275f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(tongChiPhiPhatSinh1);
 
 		if (chiPhiPhatString != null) {
@@ -1115,70 +1114,70 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		JLabel lblNewLabel_2 = new JLabel("");
 		ImageIcon undoIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/undo.png");
-		Image scaledUndoImage = undoIcon.getImage().getScaledInstance(Math.round(32f * frameWidth / 1536), Math.round(44f * frameHeight), Image.SCALE_SMOOTH);
+		Image scaledUndoImage = undoIcon.getImage().getScaledInstance(Math.round(32f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight), Image.SCALE_SMOOTH);
 		lblNewLabel_2.setIcon(new ImageIcon(scaledUndoImage));
-		lblNewLabel_2.setBounds(Math.round(124f * frameWidth / 1536), Math.round(89f * frameHeight), Math.round(32f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblNewLabel_2.setBounds(Math.round(124f * frameWidth /frameWidth), Math.round(89f * frameHeight / frameHeight), Math.round(32f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_1.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_2_1 = new JLabel("");
 		ImageIcon phoneIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/phone-call.png");
-		Image scaledPhoneImage = phoneIcon.getImage().getScaledInstance(Math.round(45f * frameWidth / 1536), Math.round(35f * frameHeight), Image.SCALE_SMOOTH);
+		Image scaledPhoneImage = phoneIcon.getImage().getScaledInstance(Math.round(45f * frameWidth /frameWidth), Math.round(35f * frameHeight / frameHeight), Image.SCALE_SMOOTH);
 		lblNewLabel_2_1.setIcon(new ImageIcon(scaledPhoneImage));
-		lblNewLabel_2_1.setBounds(Math.round(124f * frameWidth / 1536), Math.round(138f * frameHeight), Math.round(45f * frameWidth / 1536), Math.round(35f * frameHeight));
+		lblNewLabel_2_1.setBounds(Math.round(124f * frameWidth /frameWidth), Math.round(138f * frameHeight / frameHeight), Math.round(45f * frameWidth /frameWidth), Math.round(35f * frameHeight / frameHeight));
 		panel_1.add(lblNewLabel_2_1);
 
 		JLabel lblNewLabel_2_2 = new JLabel("");
 		ImageIcon calendarIcon1 = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/calendar.png");
-		Image scaledCalendarImage1 = calendarIcon1.getImage().getScaledInstance(Math.round(45f * frameWidth / 1536), Math.round(33f * frameHeight), Image.SCALE_SMOOTH);
+		Image scaledCalendarImage1 = calendarIcon1.getImage().getScaledInstance(Math.round(45f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight), Image.SCALE_SMOOTH);
 		lblNewLabel_2_2.setIcon(new ImageIcon(scaledCalendarImage1));
-		lblNewLabel_2_2.setBounds(Math.round(124f * frameWidth / 1536), Math.round(183f * frameHeight), Math.round(45f * frameWidth / 1536), Math.round(33f * frameHeight));
+		lblNewLabel_2_2.setBounds(Math.round(124f * frameWidth /frameWidth), Math.round(183f * frameHeight / frameHeight), Math.round(45f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_1.add(lblNewLabel_2_2);
 
 		JLabel lblNewLabel_2_3 = new JLabel("");
 		ImageIcon calendarIcon2 = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/calendar.png");
-		Image scaledCalendarImage2 = calendarIcon2.getImage().getScaledInstance(Math.round(43f * frameWidth / 1536), Math.round(44f * frameHeight), Image.SCALE_SMOOTH);
+		Image scaledCalendarImage2 = calendarIcon2.getImage().getScaledInstance(Math.round(43f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight), Image.SCALE_SMOOTH);
 		lblNewLabel_2_3.setIcon(new ImageIcon(scaledCalendarImage2));
-		lblNewLabel_2_3.setBounds(Math.round(124f * frameWidth / 1536), Math.round(226f * frameHeight), Math.round(43f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblNewLabel_2_3.setBounds(Math.round(124f * frameWidth /frameWidth), Math.round(226f * frameHeight / frameHeight), Math.round(43f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_1.add(lblNewLabel_2_3);
 
 		maHoaDon1 = new JTextField();
-		maHoaDon1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(15f * Math.min( frameWidth, frameHeight))));
+		maHoaDon1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(15f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		maHoaDon1.setEditable(false);
 		maHoaDon1.setColumns(10);
-		maHoaDon1.setBounds(Math.round(636f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(218f * frameWidth / 1536), Math.round(28f * frameHeight));
+		maHoaDon1.setBounds(Math.round(636f * frameWidth /frameWidth), Math.round(10f * frameHeight / frameHeight), Math.round(218f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		panel_1.add(maHoaDon1);
 		maHoaDon1.setText(mahd);
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 255, 255));
-		panel_2.setBounds(Math.round(884f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(642f * frameWidth / 1536), Math.round(621f * frameHeight));
+		panel_2.setBounds(Math.round(884f * frameWidth /frameWidth), Math.round(10f * frameHeight / frameHeight), Math.round(642f * frameWidth /frameWidth), Math.round(621f * frameHeight / frameHeight));
 		panel.add(panel_2);
 		panel_2.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Tổng tiền chi phí:");
-		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel.setBounds(Math.round(25f * frameWidth / 1536), Math.round(26f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblNewLabel.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(26f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_2.add(lblNewLabel);
 
 		JLabel lblTinCc = new JLabel("Tiền cọc:");
-		lblTinCc.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblTinCc.setBounds(Math.round(25f * frameWidth / 1536), Math.round(80f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(39f * frameHeight));
+		lblTinCc.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblTinCc.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(80f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(39f * frameHeight / frameHeight));
 		panel_2.add(lblTinCc);
 
 		JLabel lblThnhTin = new JLabel("Thành tiền:");
-		lblThnhTin.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblThnhTin.setBounds(Math.round(25f * frameWidth / 1536), Math.round(219f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblThnhTin.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblThnhTin.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(219f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_2.add(lblThnhTin);
 
 		JRadioButton tienMat = new JRadioButton("Tiền mặt");
 		tienMat.setBackground(new Color(255, 255, 255));
-		tienMat.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		tienMat.setBounds(Math.round(110f * frameWidth / 1536), Math.round(307f * frameHeight), Math.round(134f * frameWidth / 1536), Math.round(39f * frameHeight));
+		tienMat.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		tienMat.setBounds(Math.round(110f * frameWidth /frameWidth), Math.round(307f * frameHeight / frameHeight), Math.round(134f * frameWidth /frameWidth), Math.round(39f * frameHeight / frameHeight));
 		panel_2.add(tienMat);
 
 		JRadioButton chuyenKhoan = new JRadioButton("Chuyển khoản");
-		chuyenKhoan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		chuyenKhoan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		chuyenKhoan.setBackground(Color.WHITE);
-		chuyenKhoan.setBounds(Math.round(369f * frameWidth / 1536), Math.round(307f * frameHeight), Math.round(201f * frameWidth / 1536), Math.round(39f * frameHeight));
+		chuyenKhoan.setBounds(Math.round(369f * frameWidth /frameWidth), Math.round(307f * frameHeight / frameHeight), Math.round(201f * frameWidth /frameWidth), Math.round(39f * frameHeight / frameHeight));
 		panel_2.add(chuyenKhoan);
 		// Nhóm hai RadioButton lại để chỉ được chọn một
 		ButtonGroup paymentGroup = new ButtonGroup();
@@ -1186,66 +1185,66 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		paymentGroup.add(chuyenKhoan);
 
 		JLabel lblPhngThcThanh = new JLabel("Phương thức thanh toán:");
-		lblPhngThcThanh.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblPhngThcThanh.setBounds(Math.round(25f * frameWidth / 1536), Math.round(273f * frameHeight), Math.round(284f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblPhngThcThanh.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblPhngThcThanh.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(273f * frameHeight / frameHeight), Math.round(284f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_2.add(lblPhngThcThanh);
 
 		JPanel panel_thoiTien = new JPanel();
 		panel_thoiTien.setBackground(new Color(255, 255, 255));
-		panel_thoiTien.setBounds(Math.round(25f * frameWidth / 1536), Math.round(352f * frameHeight), Math.round(594f * frameWidth / 1536), Math.round(216f * frameHeight));
+		panel_thoiTien.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(352f * frameHeight / frameHeight), Math.round(594f * frameWidth /frameWidth), Math.round(216f * frameHeight / frameHeight));
 		panel_2.add(panel_thoiTien);
 		panel_thoiTien.setLayout(null);
 
 		JLabel lblTinKhcha = new JLabel("Tiền khách đưa:");
-		lblTinKhcha.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblTinKhcha.setBounds(Math.round(10f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(44f * frameHeight));
+		lblTinKhcha.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblTinKhcha.setBounds(Math.round(10f * frameWidth /frameWidth), Math.round(10f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		panel_thoiTien.add(lblTinKhcha);
 
 		JLabel lblNewLabel_1_1 = new JLabel("Tiền thối lại:");
-		lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblNewLabel_1_1.setBounds(Math.round(10f * frameWidth / 1536), Math.round(134f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(33f * frameHeight));
+		lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblNewLabel_1_1.setBounds(Math.round(10f * frameWidth /frameWidth), Math.round(134f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_thoiTien.add(lblNewLabel_1_1);
 
 		tienKhachDua1 = new JTextField();
-		tienKhachDua1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tienKhachDua1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tienKhachDua1.setColumns(10);
-		tienKhachDua1.setBounds(Math.round(165f * frameWidth / 1536), Math.round(10f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(33f * frameHeight));
+		tienKhachDua1.setBounds(Math.round(165f * frameWidth /frameWidth), Math.round(10f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 
 		panel_thoiTien.add(tienKhachDua1);
 
 		tienThoi1 = new JTextField();
-		tienThoi1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tienThoi1.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tienThoi1.setEditable(false);
 		tienThoi1.setColumns(10);
-		tienThoi1.setBounds(Math.round(165f * frameWidth / 1536), Math.round(136f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(33f * frameHeight));
+		tienThoi1.setBounds(Math.round(165f * frameWidth /frameWidth), Math.round(136f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 
 		JButton btnNewButton = new JButton("");
-		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min( frameWidth, frameHeight))));
-		btnNewButton.setBounds(Math.round(10f * frameWidth / 1536), Math.round(64f * frameHeight), Math.round(144f * frameWidth / 1536), Math.round(44f * frameHeight));
+		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		btnNewButton.setBounds(Math.round(10f * frameWidth /frameWidth), Math.round(64f * frameHeight / frameHeight), Math.round(144f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		btnNewButton.setBorderPainted(false);
 		btnNewButton.setContentAreaFilled(false);
 		btnNewButton.setFocusPainted(false);
 		panel_thoiTien.add(btnNewButton);
 
 		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min( frameWidth, frameHeight))));
-		btnNewButton_1.setBounds(Math.round(153f * frameWidth / 1536), Math.round(64f * frameHeight), Math.round(144f * frameWidth / 1536), Math.round(44f * frameHeight));
+		btnNewButton_1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		btnNewButton_1.setBounds(Math.round(153f * frameWidth /frameWidth), Math.round(64f * frameHeight / frameHeight), Math.round(144f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		btnNewButton_1.setBorderPainted(false);
 		btnNewButton_1.setContentAreaFilled(false);
 		btnNewButton_1.setFocusPainted(false);
 		panel_thoiTien.add(btnNewButton_1);
 
 		JButton btnNewButton_2 = new JButton("");
-		btnNewButton_2.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min( frameWidth, frameHeight))));
-		btnNewButton_2.setBounds(Math.round(292f * frameWidth / 1536), Math.round(64f * frameHeight), Math.round(144f * frameWidth / 1536), Math.round(44f * frameHeight));
+		btnNewButton_2.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		btnNewButton_2.setBounds(Math.round(292f * frameWidth /frameWidth), Math.round(64f * frameHeight / frameHeight), Math.round(144f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		btnNewButton_2.setBorderPainted(false);
 		btnNewButton_2.setContentAreaFilled(false);
 		btnNewButton_2.setFocusPainted(false);
 		panel_thoiTien.add(btnNewButton_2);
 
 		JButton btnNewButton_3 = new JButton("");
-		btnNewButton_3.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min( frameWidth, frameHeight))));
-		btnNewButton_3.setBounds(Math.round(440f * frameWidth / 1536), Math.round(64f * frameHeight), Math.round(144f * frameWidth / 1536), Math.round(44f * frameHeight));
+		btnNewButton_3.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(19f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		btnNewButton_3.setBounds(Math.round(440f * frameWidth /frameWidth), Math.round(64f * frameHeight / frameHeight), Math.round(144f * frameWidth /frameWidth), Math.round(44f * frameHeight / frameHeight));
 		btnNewButton_3.setBorderPainted(false);
 		btnNewButton_3.setContentAreaFilled(false);
 		btnNewButton_3.setFocusPainted(false);
@@ -1273,24 +1272,24 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		chuyenKhoan.addActionListener(e -> panel_thoiTien.setVisible(false));
 
 		tongChiPhi1 = new JTextField();
-		tongChiPhi1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tongChiPhi1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tongChiPhi1.setEditable(false);
 		tongChiPhi1.setBorder(BorderFactory.createEmptyBorder());
 		tongChiPhi1.setBackground(null);
 		tongChiPhi1.setOpaque(false);
-		tongChiPhi1.setBounds(Math.round(270f * frameWidth / 1536), Math.round(20f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(33f * frameHeight));
+		tongChiPhi1.setBounds(Math.round(270f * frameWidth /frameWidth), Math.round(20f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_2.add(tongChiPhi1);
 		tongChiPhi1.setColumns(10);
 		capNhatTongChiPhi();
 
 		tienCoc1 = new JTextField();
-		tienCoc1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		tienCoc1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tienCoc1.setEditable(false);
 		tienCoc1.setBorder(BorderFactory.createEmptyBorder());
 		tienCoc1.setBackground(null);
 		tienCoc1.setOpaque(false);
 		tienCoc1.setColumns(10);
-		tienCoc1.setBounds(Math.round(270f * frameWidth / 1536), Math.round(68f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(33f * frameHeight));
+		tienCoc1.setBounds(Math.round(270f * frameWidth /frameWidth), Math.round(68f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_2.add(tienCoc1);
 
 		DonDatPhong_DAO ddp_DAO = new DonDatPhong_DAO();
@@ -1300,12 +1299,12 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		thanhTien1 = new JTextField();
 		thanhTien1.setEditable(false);
-		thanhTien1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		thanhTien1.setFont(new Font("Times New Roman", Font.PLAIN, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		thanhTien1.setBorder(BorderFactory.createEmptyBorder());
 		thanhTien1.setBackground(null);
 		thanhTien1.setOpaque(false);
 		thanhTien1.setColumns(10);
-		thanhTien1.setBounds(Math.round(270f * frameWidth / 1536), Math.round(227f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(33f * frameHeight));
+		thanhTien1.setBounds(Math.round(270f * frameWidth /frameWidth), Math.round(227f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_2.add(thanhTien1);
 		tienKhachDua1.getDocument().addDocumentListener(new DocumentListener() {
 			public void insertUpdate(DocumentEvent e) {
@@ -1436,19 +1435,19 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		panel_thoiTien.add(tienThoi1);
 
 		tienThoiBangChu1 = new JTextField();
-		tienThoiBangChu1.setFont(new Font("Times New Roman", Font.ITALIC, Math.round(15f * Math.min( frameWidth, frameHeight))));
+		tienThoiBangChu1.setFont(new Font("Times New Roman", Font.ITALIC, Math.round(15f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		tienThoiBangChu1.setEditable(false);
 		tienThoiBangChu1.setBorder(BorderFactory.createEmptyBorder());
 		tienThoiBangChu1.setBackground(null);
 		tienThoiBangChu1.setOpaque(false);
-		tienThoiBangChu1.setBounds(Math.round(10f * frameWidth / 1536), Math.round(177f * frameHeight), Math.round(574f * frameWidth / 1536), Math.round(29f * frameHeight));
+		tienThoiBangChu1.setBounds(Math.round(10f * frameWidth /frameWidth), Math.round(177f * frameHeight / frameHeight), Math.round(574f * frameWidth /frameWidth), Math.round(29f * frameHeight / frameHeight));
 		tienThoiBangChu1.setHorizontalAlignment(JTextField.CENTER);
 		panel_thoiTien.add(tienThoiBangChu1);
 		tienThoiBangChu1.setColumns(10);
 		JButton thanhToan = new JButton("Thanh toán");
-		thanhToan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
+		thanhToan.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
 		thanhToan.setBackground(new Color(0, 255, 128));
-		thanhToan.setBounds(Math.round(498f * frameWidth / 1536), Math.round(578f * frameHeight), Math.round(134f * frameWidth / 1536), Math.round(33f * frameHeight));
+		thanhToan.setBounds(Math.round(498f * frameWidth /frameWidth), Math.round(578f * frameHeight / frameHeight), Math.round(134f * frameWidth /frameWidth), Math.round(33f * frameHeight / frameHeight));
 		panel_2.add(thanhToan);
 		thanhToan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1487,7 +1486,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				JLabel qrLabel = new JLabel("", JLabel.CENTER);
 
 				if (chuyenKhoan.isSelected()) {
-					qrLabel.setSize(Math.round(150f * frameWidth / 1536), Math.round(150f * frameHeight));
+					qrLabel.setSize(Math.round(150f * frameWidth /frameWidth), Math.round(150f * frameHeight / frameHeight));
 					try {
 						String amount = thanhTien1.getText().trim();
 						String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
@@ -1501,12 +1500,12 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 								+ java.net.URLEncoder.encode(name, "UTF-8");
 
 						BufferedImage originalImage = ImageIO.read(new java.net.URL(qrUrl));
-						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth / 1536), Math.round(150f * frameHeight), BufferedImage.TYPE_INT_ARGB);
+						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth /frameWidth), Math.round(150f * frameHeight / frameHeight), BufferedImage.TYPE_INT_ARGB);
 
 						Graphics2D g2d = resizedImage.createGraphics();
 						g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 								RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR); // Dành cho ảnh QR rõ nét
-						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth / 1536), Math.round(150f * frameHeight), null);
+						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth /frameWidth), Math.round(150f * frameHeight / frameHeight), null);
 						g2d.dispose();
 						qrLabel.setIcon(new ImageIcon(resizedImage));
 
@@ -1555,17 +1554,17 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		});
 		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(new Color(0, 0, 0));
-		panel_4.setBounds(Math.round(258f * frameWidth / 1536), Math.round(198f * frameHeight), Math.round(347f * frameWidth / 1536), Math.round(2f * frameHeight));
+		panel_4.setBounds(Math.round(258f * frameWidth /frameWidth), Math.round(198f * frameHeight / frameHeight), Math.round(347f * frameWidth /frameWidth), Math.round(2f * frameHeight / frameHeight));
 		panel_2.add(panel_4);
 
 		JLabel lblKhuynMi = new JLabel("Khuyến mãi:");
-		lblKhuynMi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		lblKhuynMi.setBounds(Math.round(25f * frameWidth / 1536), Math.round(133f * frameHeight), Math.round(195f * frameWidth / 1536), Math.round(39f * frameHeight));
+		lblKhuynMi.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		lblKhuynMi.setBounds(Math.round(25f * frameWidth /frameWidth), Math.round(133f * frameHeight / frameHeight), Math.round(195f * frameWidth /frameWidth), Math.round(39f * frameHeight / frameHeight));
 		panel_2.add(lblKhuynMi);
 
 		JComboBox khuyenMai = new JComboBox();
-		khuyenMai.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min( frameWidth, frameHeight))));
-		khuyenMai.setBounds(Math.round(270f * frameWidth / 1536), Math.round(140f * frameHeight), Math.round(321f * frameWidth / 1536), Math.round(28f * frameHeight));
+		khuyenMai.setFont(new Font("Times New Roman", Font.BOLD, Math.round(20f * Math.min(frameWidth /frameWidth, frameHeight / frameHeight))));
+		khuyenMai.setBounds(Math.round(270f * frameWidth /frameWidth), Math.round(140f * frameHeight / frameHeight), Math.round(321f * frameWidth /frameWidth), Math.round(28f * frameHeight / frameHeight));
 		khuyenMai.setBorder(BorderFactory.createEmptyBorder()); // Tắt viền
 		khuyenMai.setBackground(null); // Tắt màu nền
 		khuyenMai.setOpaque(false); // Làm comboBox trong suốt
