@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
+import java.awt.event.ActionListener;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,7 +44,7 @@ import entity.Phong;
 
 public class HuyPhong_GUI {
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+	DonDatPhong_Dao donDatPhongDao = new DonDatPhong_Dao();
 	public static void main(String[] args) {
 
 		String maDonDatPhong = "14042025LT001002";
@@ -257,5 +258,22 @@ public class HuyPhong_GUI {
 		frame.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 		frame.setVisible(true);
 	}
-
+	
+//	btnConfirm.addActionListener((ActionListener) new ActionListener() {
+//	    @Override
+//	    public void actionPerformed(ActionEvent e) {
+//	        // Giả sử bạn có mã đơn đặt phòng cần hủy
+//	        String maDonDatPhong = JOptionPane.showInputDialog(null, "Nhập mã đơn đặt phòng cần hủy:");
+//
+//	        if (maDonDatPhong != null && !maDonDatPhong.trim().isEmpty()) {
+//	            boolean huyThanhCong = donDatPhongDao.huyDonDatPhong(maDonDatPhong.trim());
+//
+//	            if (huyThanhCong) {
+//	                JOptionPane.showMessageDialog(null, "Hủy đơn đặt phòng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+//	            } else {
+//	                JOptionPane.showMessageDialog(null, "Hủy đơn đặt phòng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//	            }
+//	        }
+//	    }
+//	});
 }
