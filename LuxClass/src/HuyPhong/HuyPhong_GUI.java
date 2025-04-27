@@ -47,7 +47,7 @@ public class HuyPhong_GUI {
 	DonDatPhong_Dao donDatPhongDao = new DonDatPhong_Dao();
 	public static void main(String[] args) {
 
-		String maDonDatPhong = "14042025LT001002";
+		String maDonDatPhong = "DDP005";
 		DonDatPhong_Dao donDatPhong_Dao = new DonDatPhong_Dao();
 		DonDatPhong donDatPhong = donDatPhong_Dao.timDonTheoMa(maDonDatPhong);
 		SwingUtilities.invokeLater(() -> {

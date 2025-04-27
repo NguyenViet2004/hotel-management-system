@@ -51,8 +51,12 @@ public class Phong_Dao {
             
             while (rs.next()) {
                 String soPhong = rs.getString("soPhong");
+                String trangThai = rs.getString("trangThai");
+                String loaiPhongMa = rs.getString("loaiPhong");
+                String moTa = rs.getString("moTa");
 
-                danhSachPhong.add(new Phong(soPhong));
+                LoaiPhong loaiPhong = new LoaiPhong(loaiPhongMa);
+                danhSachPhong.add(new Phong(soPhong, trangThai, loaiPhong, moTa));
             }
         } catch (SQLException e) {
             e.printStackTrace();
