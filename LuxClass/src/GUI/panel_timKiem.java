@@ -9,11 +9,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import TraPhong_CuaXien.donDatPhong;
 import dao_CuaXien.DonDatPhong_DAO;
 import dao_CuaXien.Phong_DAO;
 import entity_CuaXien.DonDatPhong;
 import entity_CuaXien.Phong;
+import GUI.donDatPhong;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -225,7 +225,8 @@ public class panel_timKiem extends JPanel {
 		                }
 
 		                EventQueue.invokeLater(() -> {
-		                    donDatPhong chiTiet = new donDatPhong(ddp);
+		                    donDatPhong chiTiet= new donDatPhong(ddp);
+//		                    chiTiet = new donDatPhong(ddp);
 		                    chiTiet.setVisible(true);
 		                });
 		            }

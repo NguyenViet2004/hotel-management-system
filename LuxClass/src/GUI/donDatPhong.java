@@ -9,8 +9,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import TraPhong_CuaXien.inHoaDon;
-import TraPhong_CuaXien.chiPhiPhatSinh_Dialog.ChiPhiPhatSinhListener;
 import dao_CuaXien.DichVu_DAO;
 import dao_CuaXien.DonDatPhong_DAO;
 import dao_CuaXien.KhachHang_DAO;
@@ -467,9 +465,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
 		        layDanhSachPhongDuocChon();
-
 		        if (danhSachPhongDuocChon.isEmpty()) {
-
 		            return; 
 		        } else {
 		            body.setVisible(false);
@@ -1687,19 +1683,18 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	    if (table_phongTra != null) {
 	        DefaultTableModel model = (DefaultTableModel) table_phongTra.getModel();
 	        int rowCount = model.getRowCount();
-	        boolean phongDuocChon = false; // Biến kiểm tra xem có phòng nào được chọn không
+	        boolean phongDuocChon = false; 
 	        for (int i = 0; i < rowCount; i++) {
-	            Boolean isSelected = (Boolean) model.getValueAt(i, 0); // Lấy giá trị checkbox từ cột đầu tiên
+	            Boolean isSelected = (Boolean) model.getValueAt(i, 0); 
 	            if (isSelected != null && isSelected) {
 	                phongDuocChon = true; // Đánh dấu là có phòng được chọn
-	                Object[] phong = new Object[model.getColumnCount() - 1]; // Tạo mảng Object để lưu dữ liệu phòng
+	                Object[] phong = new Object[model.getColumnCount() - 1]; 
 	                for (int j = 1; j < model.getColumnCount(); j++) {
-	                    phong[j - 1] = model.getValueAt(i, j); // Lấy dữ liệu từ các cột còn lại
+	                    phong[j - 1] = model.getValueAt(i, j); 
 	                }
 	                danhSachPhongDuocChon.add(phong);
 	            }
 	        }
-	        // Kiểm tra nếu không có phòng nào được chọn
 	        if (!phongDuocChon) {
 	            JOptionPane.showMessageDialog(null, "Bạn chưa chọn phòng để trả.", "Thông báo", JOptionPane.WARNING_MESSAGE);
 	        }
