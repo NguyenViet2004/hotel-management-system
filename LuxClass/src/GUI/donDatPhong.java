@@ -1194,52 +1194,52 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	    ImageIcon undoIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/undo.png");
 	    Image scaledUndoImage = undoIcon.getImage().getScaledInstance(
 	            Math.round(32f * frameWidth / 1536f),
-	            Math.round(44f * frameHeight / 816f),
+	            Math.round(32f * frameHeight / 816f),
 	            Image.SCALE_SMOOTH);
 	    lblNewLabel_2.setIcon(new ImageIcon(scaledUndoImage));
 	    lblNewLabel_2.setBounds(Math.round(124f * frameWidth / 1536f),
 	            Math.round(89f * frameHeight / 816f),
 	            Math.round(32f * frameWidth / 1536f),
-	            Math.round(44f * frameHeight / 816f));
+	            Math.round(32f * frameHeight / 816f));
 	    panel_1.add(lblNewLabel_2);
 
 	    JLabel lblNewLabel_2_1 = new JLabel("");
 	    ImageIcon phoneIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/phone-call.png");
 	    Image scaledPhoneImage = phoneIcon.getImage().getScaledInstance(
-	            Math.round(45f * frameWidth / 1536f),
-	            Math.round(35f * frameHeight / 816f),
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f),
 	            Image.SCALE_SMOOTH);
 	    lblNewLabel_2_1.setIcon(new ImageIcon(scaledPhoneImage));
 	    lblNewLabel_2_1.setBounds(Math.round(124f * frameWidth / 1536f),
 	            Math.round(138f * frameHeight / 816f),
-	            Math.round(45f * frameWidth / 1536f),
-	            Math.round(35f * frameHeight / 816f));
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f));
 	    panel_1.add(lblNewLabel_2_1);
 
 	    JLabel lblNewLabel_2_2 = new JLabel("");
 	    ImageIcon calendarIcon1 = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/calendar.png");
 	    Image scaledCalendarImage1 = calendarIcon1.getImage().getScaledInstance(
-	            Math.round(45f * frameWidth / 1536f),
-	            Math.round(33f * frameHeight / 816f),
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f),
 	            Image.SCALE_SMOOTH);
 	    lblNewLabel_2_2.setIcon(new ImageIcon(scaledCalendarImage1));
 	    lblNewLabel_2_2.setBounds(Math.round(124f * frameWidth / 1536f),
 	            Math.round(183f * frameHeight / 816f),
-	            Math.round(45f * frameWidth / 1536f),
-	            Math.round(33f * frameHeight / 816f));
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f));
 	    panel_1.add(lblNewLabel_2_2);
 
 	    JLabel lblNewLabel_2_3 = new JLabel("");
 	    ImageIcon calendarIcon2 = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/calendar.png");
 	    Image scaledCalendarImage2 = calendarIcon2.getImage().getScaledInstance(
-	            Math.round(43f * frameWidth / 1536f),
-	            Math.round(44f * frameHeight / 816f),
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f),
 	            Image.SCALE_SMOOTH);
 	    lblNewLabel_2_3.setIcon(new ImageIcon(scaledCalendarImage2));
 	    lblNewLabel_2_3.setBounds(Math.round(124f * frameWidth / 1536f),
 	            Math.round(226f * frameHeight / 816f),
-	            Math.round(43f * frameWidth / 1536f),
-	            Math.round(44f * frameHeight / 816f));
+	            Math.round(32f * frameWidth / 1536f),
+	            Math.round(32f * frameHeight / 816f));
 	    panel_1.add(lblNewLabel_2_3);
 
 	    maHoaDon1 = new JTextField();
