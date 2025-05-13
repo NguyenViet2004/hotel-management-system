@@ -84,6 +84,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	private JPanel body;
 	private JTextField tongTienPS;
 	private List<Object[]> danhSachPhongDuocChon = new ArrayList<>();
+    private JTextField amountField;
+    private JLabel qrLabel;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -1263,7 +1265,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	    panel.add(panel_2);
 	    panel_2.setLayout(null);
 
-	    JLabel lblNewLabel = new JLabel("Tổng tiền chi phí:");
+	    JLabel lblNewLabel = new JLabel("Tổng chi phí:");
 	    lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD,
 	            Math.round(20f * Math.min(frameWidth / 1536f, frameHeight / 816f))));
 	    lblNewLabel.setBounds(Math.round(25f * frameWidth / 1536f),
@@ -1434,10 +1436,47 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	    // Ẩn panel_thoiTien lúc đầu
 	    panel_thoiTien.setVisible(false);
 	    // Xử lý sự kiện khi chọn tiền mặt
-	    tienMat.addActionListener(e -> panel_thoiTien.setVisible(true));
+	    
+	    JPanel panel_chuyenKhoan = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    panel_chuyenKhoan.setBackground(new Color(255, 255, 255));
+	    panel_chuyenKhoan.setBounds(Math.round(25f * frameWidth / 1536f),
+	            Math.round(352f * frameHeight / 816f),
+	            Math.round(594f * frameWidth / 1536f),
+	            Math.round(216f * frameHeight / 816f));
+	    
 
+	    panel_2.add(panel_chuyenKhoan);
+	    panel_chuyenKhoan.setVisible(false);
+	    
+	    tienMat.addActionListener(e -> {panel_thoiTien.setVisible(true);
+	    panel_chuyenKhoan.setVisible(false);
+	    });
+        qrLabel = new JLabel("", JLabel.CENTER);
+        panel_chuyenKhoan.add(qrLabel);
 	    // Xử lý sự kiện khi chọn chuyển khoản
-	    chuyenKhoan.addActionListener(e -> panel_thoiTien.setVisible(false));
+	    chuyenKhoan.addActionListener(e -> {
+	        panel_thoiTien.setVisible(false);
+	        try {
+	            String amount = thanhTien1.getText().trim();
+	            String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
+	            String account = "7714205086854";
+	            String name = "NGO BINH XUYEN";
+	            String content = "THANH TOAN";
+
+	            String qrUrl = "https://img.vietqr.io/image/" + bankCode.toLowerCase() + "-" + account + "-compact2.jpg"
+	                         + "?amount=" + amount
+	                         + "&addInfo=" + java.net.URLEncoder.encode(content, "UTF-8")
+	                         + "&accountName=" + java.net.URLEncoder.encode(name, "UTF-8");
+	            ImageIcon icon = new ImageIcon(new java.net.URL(qrUrl));
+	            Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH); // Thay 300x300 theo ý bạn
+	            qrLabel.setIcon(new ImageIcon(img));
+                System.out.println("đã in");
+
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	        panel_chuyenKhoan.setVisible(true);
+	    });
 
 	    tongChiPhi1 = new JTextField();
 	    tongChiPhi1.setFont(new Font("Times New Roman", Font.PLAIN,
@@ -1646,14 +1685,15 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		        double chiPhiPhatSinh = Double.parseDouble(tongChiPhiPhatSinh1.getText());
 		        double tienCoc = Double.parseDouble(tienCoc1.getText());
 		        double thanhTien = Double.parseDouble(thanhTien1.getText());
-
-
 //			              setPhong
 		        List<String> maPhongs = layDanhSachMaPhong(table1);
 		        Phong_DAO phong_DAO = new Phong_DAO();
 		        for (String ma : maPhongs) {
+		        	System.out.println(ma);
 		            phong_DAO.setTrangThaiPhong(ma, "Trống");
 		        }
+		        
+
 
 //							setDonDatPhong
 		        // Kiểm tra trước khi set trạng thái đơn đặt phòng
@@ -1730,11 +1770,10 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		                e1.printStackTrace();
 		            }
 		            int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo",
-		                    JOptionPane.OK_CANCEL_OPTION);
+		                    JOptionPane.OK_OPTION);
 		            if (option == JOptionPane.OK_OPTION) {
 		                SwingUtilities.getWindowAncestor(thanhToan).dispose();
-//							            new QuanLyDatPhong_GUI().setVisible(true);
-
+					    new QuanLyDatPhong_GUI().setVisible(true);
 		            }
 		        } else {
 		            int option = JOptionPane.showConfirmDialog(null, "Bạn chưa chọn phương thức thanh toán", "Thông báo",
@@ -1980,7 +2019,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		int rowCount = model.getRowCount();
 
 		for (int i = 0; i < rowCount; i++) {
-			Object value = model.getValueAt(i, 1); // Cột 1: Mã phòng (sau checkbox)
+			Object value = model.getValueAt(i, 0); // Cột 1: Mã phòng (sau checkbox)
 			if (value != null) {
 				danhSachMaPhong.add(value.toString().trim());
 			}
