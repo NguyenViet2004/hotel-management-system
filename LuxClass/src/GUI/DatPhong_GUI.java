@@ -25,12 +25,15 @@ import entity.Phong;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DatPhong_GUI extends JDialog {
 	// Giao diện
@@ -71,7 +76,7 @@ public class DatPhong_GUI extends JDialog {
 	private String[] danhSachSoPhongDuocChon;
 	private String maNhanVien = "2025LT001";
 	private String maDon;
-	private String loaiDon = null; // "GIO", "NGAY", hoặc "DEM"
+	private String loaiDon = null;
 	private String trangThai = "Chưa thanh toán";
 	private int soKhach;
 
@@ -80,7 +85,32 @@ public class DatPhong_GUI extends JDialog {
 	private Timestamp denNgay; // ngày trả phòng
 	private Date ngayNhan;
 	private Date ngayTra;
+	private Timestamp todayTimestamp = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+	private Timestamp tomorrowTimestamp = Timestamp.valueOf(LocalDate.now().plusDays(1).atStartOfDay());
 
+	JPanel timePanel;
+	
+	JPanel topInfoPanel;
+
+	JPanel checkInPanel;
+	
+	JPanel checkOutPanel;
+	
+	JPanel guestPanel;
+	
+	JPanel bookingTypePanel;
+	
+	CustomDateButton checkInButton;
+	
+	CustomDateButton checkOutButton;
+	
+	LocalTime now;
+	
+	LocalTime roundedHour;
+	
+	JLabel tongTienLabel;
+	
+	JLabel[] totalLabels;
 
 	//==============TRANG CHÍNH GUI==============
 	public DatPhong_GUI(JFrame parentFrame) {
@@ -103,7 +133,12 @@ public class DatPhong_GUI extends JDialog {
 		mainPanel = new JPanel(cardLayout);
 
 		// Thêm các trang
-		mainPanel.add(taoTrangDatPhong(), "Trang1");
+		try {
+			mainPanel.add(taoTrangDatPhong(), "Trang1");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		cardLayout.show(mainPanel, "Trang1");
 
@@ -111,7 +146,7 @@ public class DatPhong_GUI extends JDialog {
 	}
 	
 	//==============TAO TRANG ĐẶT PHÒNG(TRANG 1)==============
-	private JPanel taoTrangDatPhong() {
+	private JPanel taoTrangDatPhong() throws SQLException {
 		// tạo biến cho chi tiet don dat phòng
 		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
 		khachhangdao = new KhachHang_Dao();
@@ -124,7 +159,7 @@ public class DatPhong_GUI extends JDialog {
 		// Tạo nội dung form (panel con)
 		contentPane = new JPanel(new BorderLayout());
 		contentPane.setBackground(Color.WHITE); // Màu nền cho contentPane
-		contentPane.setBorder(new LineBorder(Color.BLACK, 2));
+		contentPane.setBorder(new LineBorder(Color.WHITE, 2));
 
 		// ====== Panel chọn phòng ======
 		JPanel chonPhongPanel = new JPanel(new BorderLayout());
@@ -138,8 +173,9 @@ public class DatPhong_GUI extends JDialog {
 
 		// ============== Panel chứa tiêu đề và nút đóng=================phần 1 của header===================
 		JPanel titleClosePanel = new JPanel(new BorderLayout());
-		titleClosePanel.setBackground(Color.CYAN);
+		titleClosePanel.setBackground(Color.WHITE);
 		titleClosePanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.22)));
+
 		// Tiêu đề "Chọn phòng"
 		JLabel titleLabel = new JLabel("Chọn phòng");
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -151,15 +187,121 @@ public class DatPhong_GUI extends JDialog {
 		closeButton.setForeground(Color.BLACK);
 		closeButton.setBackground(Color.WHITE);
 		closeButton.setFocusPainted(false);
-		closeButton.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		closeButton.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
 		closeButton.addActionListener(e -> dispose());
 
+		// Tạo popup menu
+		JPopupMenu popupPanel = new JPopupMenu();
+//		gridPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		// Danh sách nội dung của từng ô (50 ô)
+		String[] cellContents = {
+		    "Tiện ích", "Tiện ích", "Twin Room", "Twin Room", "Triple Room",
+		    "Giường ngủ", "1 giường đơn", "2 giường đơn", "2 giường đơn", "<html><br>1 giường đôi +<br> 1 giường đơn<br>hoặc 3 giường đơn</html>",
+		    "Wifi miễn phí", "✔️", "✔️", "✔️", "✔️",
+		    "TV màn hình phẳng", "✔️", "✔️", "✔️", "✔️",
+		    "Tủ lạnh mini", "✔️", "✔️", "✔️", "✔️",
+		    "Tủ lạnh", "✔️", "", "", "",
+		    "Két an toàn", "", "✔️", "✔️", "✔️",
+		    "Bồn tắm", "", "", "✔️", "✔️",
+		    "Máy sấy tóc", "", "✔️", "✔️", "✔️",
+		    "Bàn làm việc", "✔️", "✔️", "✔️", "✔️",
+		    "Bình siêu tốc", "", "✔️", "✔️", "✔️",
+		    "Ghế sofa", "", "", "✔️", "✔️",
+		    "Tủ", "✔️", "✔️", "✔️", "✔️",
+		    "Gương", "✔️", "✔️", "✔️", "✔️",
+		    "Thảm", "✔️", "✔️", "✔️", "✔️",
+		    "Minibar", "", "", "", "✔️",
+		    "Dụng cụ bếp", "", "✔️", "✔️", "✔️",
+		};
+		int numCols = 5;
+		int numRows = 17;
+		int totalCells = numCols * numRows;
+
+		JPanel gridPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+
+		for (int i = 0; i < totalCells; i++) {
+		    String text = i < cellContents.length ? cellContents[i] : "";
+		    JLabel cell = new JLabel("<html>" + text + "</html>", SwingConstants.CENTER);
+		    cell.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		    cell.setHorizontalAlignment(SwingConstants.CENTER);
+		    cell.setVerticalAlignment(SwingConstants.CENTER);
+
+		    gbc.gridx = i % numCols;
+		    gbc.gridy = i / numCols;
+		    int width;
+		    int height;
+
+		    if (gbc.gridx >= 1 && gbc.gridx <= 3) {
+		        width = 60; // Cột 2, 3, 4
+		    } else {
+		        width = 120; // Cột 1 và 5
+		    }
+
+		    // === Xác định chiều cao theo hàng ===
+		    if (gbc.gridy == 1) {
+		        height = 80; // Hàng thứ 2
+		    } else {
+		        height = 30; // Các hàng khác
+		    }
+	
+		    // ✅ Đây chính là dòng anh/chị hỏi: thêm ô vào đúng vị trí
+		    gridPanel.add(cell, gbc);
+		}
+		// Thêm bảng vào popup
+		popupPanel.add(gridPanel);
+
+		// Nút mới (nút cài đặt)
+		JButton suggestButton = new JButton("⚙");
+		suggestButton.setFont(new Font("Arial", Font.BOLD, 12)); // nhỏ hơn nút X
+		suggestButton.setForeground(Color.BLACK);
+		suggestButton.setBackground(Color.WHITE);
+		suggestButton.setFocusPainted(false);
+		suggestButton.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
+		suggestButton.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseEntered(MouseEvent e) {
+		        popupPanel.show(suggestButton, 0, suggestButton.getHeight());
+		    }
+
+		    @Override
+		    public void mouseExited(MouseEvent e) {
+		        // Delay để cho phép chuột đi vào popupPanel
+		        Timer timer = new Timer(200, new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent evt) {
+		                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		                Point mouseLocation = pointerInfo.getLocation();
+		                SwingUtilities.convertPointFromScreen(mouseLocation, popupPanel);
+
+		                if (!popupPanel.getBounds().contains(mouseLocation)) {
+		                    popupPanel.setVisible(false);
+		                }
+		            }
+		        });
+		        timer.setRepeats(false);
+		        timer.start();
+		    }
+		});
+
+
+		// Panel phụ bên phải để chứa cả hai nút
+		JPanel rightButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		rightButtonsPanel.setBackground(Color.WHITE);
+		rightButtonsPanel.add(suggestButton);
+		rightButtonsPanel.add(closeButton);
+
+		// ⚠️ THÊM tiêu đề vào bên trái trước khi thêm nút bên phải
 		titleClosePanel.add(titleLabel, BorderLayout.WEST);
-		titleClosePanel.add(closeButton, BorderLayout.EAST);
+		titleClosePanel.add(rightButtonsPanel, BorderLayout.EAST);
+
 		// tạo nút chưa 3 nút==================================phần 2 của header==============================
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-		buttonPanel.setBackground(Color.ORANGE);
+		buttonPanel.setBackground(Color.WHITE);
 		buttonPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1* 0.2), (int) (headerHeight * 0.78) ));
 
 		// ========== Tạo 3 nút với viền
@@ -171,7 +313,7 @@ public class DatPhong_GUI extends JDialog {
 		// Nút theo ngày
 		JButton theoNgayButton = new JButton("Theo ngày");
 		theoNgayButton.setFont(new Font("Arial", Font.BOLD, 14));
-		theoNgayButton.setBackground(Color.WHITE);
+		theoNgayButton.setBackground(Color.GREEN);
 		theoNgayButton.setFocusPainted(false);
 		theoNgayButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
 		theoNgayButton.setPreferredSize(buttonSize);
@@ -202,34 +344,78 @@ public class DatPhong_GUI extends JDialog {
 		buttonPanel.add(theoGioButton);
 		buttonPanel.add(theoNgayButton);
 		buttonPanel.add(theoDemButton);
+
 		theoGioButton.addActionListener(e -> {
-			loadGiaoDienTheoGio();
-			updateButtonStyles(theoGioButton, theoNgayButton, theoDemButton);
-			loaiDon = "Theo giờ";
-			
+		    updateButtonStyles(theoGioButton, theoNgayButton, theoDemButton);
+		    loaiDon = "Theo giờ";
+
+		    // Làm tròn giờ hiện tại lên giờ chẵn tiếp theo
+		    now = LocalTime.now().withSecond(0).withNano(0);
+		    roundedHour = now.getMinute() > 0 ? now.plusHours(1).withMinute(0) : now;
+
+		    // Cập nhật giờ nhận vào checkInButton
+		    String roundedTimeStr = roundedHour.format(DateTimeFormatter.ofPattern("HH:mm"));
+		    checkInButton.setFixedTime(roundedTimeStr);
+		    checkInButton.setSelectedDate(LocalDate.now());
+		    System.out.println("thời gina check in:"+ roundedHour);
+
+		    // ===== Cập nhật giờ trả sau 1 giờ =====
+		    LocalTime checkOutTime = roundedHour.plusHours(1);
+		    String checkOutTimeStr = checkOutTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+		    checkOutButton.setFixedTime(checkOutTimeStr); // ← Đặt lại giờ hiển thị
+		    checkOutButton.setSelectedDate(LocalDate.now()); // ← Giữ cùng ngày
+
+		    // Không cho người dùng chỉnh sửa ngày trả
+		    checkOutButton.setEnabled(false);
+
+		    // Hiển thị timePanel
+		    timePanel.setVisible(true);
+
+		    // Cập nhật lại giao diện
+		    setTopInfoLayoutForMode(loaiDon);
 		});
 
 		theoNgayButton.addActionListener(e -> {
-			try {
-				loadGiaoDienTheoNgay();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			updateButtonStyles(theoNgayButton, theoGioButton, theoDemButton);
-			loaiDon = "Theo ngày";
+		    updateButtonStyles(theoNgayButton, theoGioButton, theoDemButton);
+		    loaiDon = "Theo ngày";
+		    
+		    // Đặt lại giờ nhận mặc định
+		    checkInButton.setFixedTime("14:00");
+
+		    // Cho chỉnh sửa lại ngày trả
+		    checkOutButton.setEnabled(true);
+		    checkOutButton.setBackground(Color.WHITE);
+
+		    // Cập nhật lại ngày trả phòng = ngày nhận + 1 và giờ = 12:00
+		    LocalDate inDate = checkInButton.getSelectedDate();
+		    checkOutButton.setSelectedDate(inDate.plusDays(1));
+		    checkOutButton.setFixedTime("12:00");
+
+		    // Ẩn timePanel vì không dùng trong mode "Theo ngày"
+		    timePanel.setVisible(false);
+
+		    // Cập nhật giao diện
+		    setTopInfoLayoutForMode(loaiDon);
 		});
 
 		theoDemButton.addActionListener(e -> {
-			try {
-				loadGiaoDienTheoDem();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			updateButtonStyles(theoDemButton, theoGioButton, theoNgayButton);
-			loaiDon = "Theo đêm";
+		    updateButtonStyles(theoDemButton, theoGioButton, theoNgayButton);
+		    loaiDon = "Theo đêm";
+		    
+		    checkInButton.setFixedTime("14:00");
+
+		    checkOutButton.setEnabled(true);
+		    checkOutButton.setBackground(Color.WHITE);
+
+		    // Cập nhật lại ngày trả phòng = ngày nhận + 1 và giờ = 12:00
+		    LocalDate inDate = checkInButton.getSelectedDate();
+		    checkOutButton.setSelectedDate(inDate.plusDays(1));
+		    checkOutButton.setFixedTime("12:00");
+
+		    timePanel.setVisible(false);
+		    setTopInfoLayoutForMode(loaiDon);
 		});
+
 
 		// =============Panel chứa các thông tin ngày và khách==========phần 3 của header=====================
 		// infoPanel chính
@@ -237,79 +423,195 @@ public class DatPhong_GUI extends JDialog {
 		infoPanel.setLayout(new BorderLayout());
 		infoPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1* 0.8),  (int) (headerHeight * 0.78)));
 		infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-		infoPanel.setBackground(Color.BLUE);
+		infoPanel.setBackground(Color.WHITE);
 
 		// ========== Panel trên: chứa ngày nhận, ngày trả và số khách ==========
-		JPanel topInfoPanel = new JPanel(new GridLayout(1, 3, 5, 5));
-		topInfoPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1* 0.8),  (int) (headerHeight * 0.39))); // Chiếm khoảng nửa infoPanel
-		topInfoPanel.setBackground(Color.BLUE);
+		timePanel = new JPanel(new BorderLayout());
+		topInfoPanel = new JPanel(); // KHỞI TẠO PANEL trước khi dùng
+		topInfoPanel.setLayout(new BoxLayout(topInfoPanel, BoxLayout.X_AXIS));
 
+		topInfoPanel.setPreferredSize(new Dimension((int)(screenWidthTrang1* 0.8),  (int) (headerHeight * 0.39))); // Chiếm khoảng nửa infoPanel
+		topInfoPanel.setBackground(Color.WHITE);
+		int topWidth = topInfoPanel.getPreferredSize().width; 
+		int topHeight = topInfoPanel.getPreferredSize().height;
 		// Ngày nhận phòng
-		JPanel checkInPanel = new JPanel(new BorderLayout());
+		checkInPanel = new JPanel(new BorderLayout());
 		checkInPanel.setBackground(Color.WHITE);
 		JLabel checkInLabel = new JLabel("Ngày nhận phòng");
 		checkInLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		checkInPanel.add(checkInLabel, BorderLayout.NORTH);
 		JPanel checkInWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkInWrapper.setBackground(Color.WHITE);
-		datePickerCheckIn = createDatePicker(LocalDate.now());
-		checkInWrapper.add(datePickerCheckIn);
-		checkInPanel.add(checkInWrapper, BorderLayout.CENTER);
+		checkInButton = new CustomDateButton(LocalDate.now(), "14:00", selectedDate -> {
+		    todayTimestamp = Timestamp.valueOf(selectedDate.atStartOfDay());
 
+		    if (selectedDate.equals(LocalDate.now())) {
+		        now = LocalTime.now().withSecond(0).withNano(0);
+		        LocalTime rounded = now.getMinute() > 0 ? now.plusHours(1).withMinute(0) : now;
+		        checkInButton.setFixedTime(rounded.format(DateTimeFormatter.ofPattern("HH:mm")));
+		        checkOutButton.setFixedTime(rounded.plusHours(1).format(DateTimeFormatter.ofPattern("HH:mm")));
+
+		        // Cập nhật lại biến toàn cục
+		        roundedHour = rounded;
+
+		    } else {
+		        checkInButton.setFixedTime("00:00");
+		        checkOutButton.setFixedTime("01:00");
+
+		        // Nếu không phải hôm nay thì đặt roundedHour = 00:00
+		        roundedHour = LocalTime.of(0, 0);
+		    }
+
+		    checkOutButton.setSelectedDate(selectedDate);
+		});
+
+
+		checkInWrapper.add(checkInButton);
+		checkInPanel.add(checkInWrapper, BorderLayout.CENTER);
+		
+		
+		//tạo button giờ
+		CustomTimeButton timeButton = new CustomTimeButton((selectedTime, duration) -> {
+		    System.out.println("Giờ nhận: " + selectedTime);
+		    System.out.println("Số giờ sử dụng: " + duration);
+		});
+		// Tạo panel chứa nút giờ (ẩn mặc định)
+		timePanel.setBackground(Color.WHITE);
+		JLabel timeLabel = new JLabel("Giờ");
+		timeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		timePanel.add(timeLabel, BorderLayout.NORTH);
+
+		JPanel timeWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		timeWrapper.setBackground(Color.WHITE);
+		timeWrapper.add(timeButton);
+		timePanel.add(timeWrapper, BorderLayout.CENTER);
+
+		timePanel.setVisible(false); // Ẩn mặc định
+
+
+		
 		// Ngày trả phòng
-		JPanel checkOutPanel = new JPanel(new BorderLayout());
+		checkOutPanel = new JPanel(new BorderLayout());
 		checkOutPanel.setBackground(Color.WHITE);
 		JLabel checkOutLabel = new JLabel("Ngày trả phòng");
 		checkOutLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		checkOutPanel.add(checkOutLabel, BorderLayout.NORTH);
 		JPanel checkOutWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		checkOutWrapper.setBackground(Color.WHITE);
-		datePickerCheckOut = createDatePicker(LocalDate.now().plusDays(1));
-		checkOutWrapper.add(datePickerCheckOut);
+		checkOutButton = new CustomDateButton(LocalDate.now().plusDays(1), "12:00", selectedDate -> {
+		    tomorrowTimestamp = Timestamp.valueOf(selectedDate.atStartOfDay());
+		});
+		checkOutWrapper.add(checkOutButton);
 		checkOutPanel.add(checkOutWrapper, BorderLayout.CENTER);
 
+		System.out.println("Ngày nhận (hiển thị): " + checkInButton.getText());
+		System.out.println("Ngày trả (hiển thị): " + checkOutButton.getText());
+
+
 		// Số lượng khách
-		JPanel guestPanel = new JPanel(new BorderLayout());
+		guestPanel = new JPanel(new BorderLayout());
 		guestPanel.setBackground(Color.WHITE);
 		JLabel guestLabel = new JLabel("Số lượng khách");
 		guestLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		guestLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		guestPanel.add(guestLabel, BorderLayout.NORTH);
+		
+		JLabel guestCountLabel = new JLabel("0");
+		guestCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		guestCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		guestCountLabel.setPreferredSize(new Dimension(30, 25));
+		
+		JButton plusButton = new JButton("+");
+		plusButton.setFont(new Font("Arial", Font.BOLD, 14));
+		plusButton.setPreferredSize(new Dimension(45, 25));
+		plusButton.addActionListener(e -> {
+		    soKhach++;
+		    guestCountLabel.setText(String.valueOf(soKhach));
+		});
 		JPanel guestControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 		guestControlPanel.setBackground(Color.WHITE);
 		JButton minusButton = new JButton("-");
 		minusButton.setFont(new Font("Arial", Font.BOLD, 14));
 		minusButton.setPreferredSize(new Dimension(45, 25));
-		JLabel guestCountLabel = new JLabel("0");
-		guestCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		guestCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		guestCountLabel.setPreferredSize(new Dimension(30, 25));
-		JButton plusButton = new JButton("+");
-		plusButton.setFont(new Font("Arial", Font.BOLD, 14));
-		plusButton.setPreferredSize(new Dimension(45, 25));
+		minusButton.addActionListener(e -> {
+		    if (soKhach > 0) {
+		        soKhach--;
+		        guestCountLabel.setText(String.valueOf(soKhach));
+		    }
+		});
 		guestControlPanel.add(minusButton);
 		guestControlPanel.add(guestCountLabel);
 		guestControlPanel.add(plusButton);
 		guestPanel.add(guestControlPanel, BorderLayout.CENTER);
+		
+		// Kiểu đặt phòng
+		bookingTypePanel = new JPanel(new BorderLayout());
+		bookingTypePanel.setBackground(Color.WHITE);
 
+		// Tiêu đề
+		JLabel bookingTypeLabel = new JLabel("Kiểu đặt");
+		bookingTypeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		bookingTypeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		bookingTypePanel.add(bookingTypeLabel, BorderLayout.NORTH);
+
+		// ComboBox
+		String[] bookingTypes = { "Trực tiếp", "Gián tiếp" };
+		JComboBox<String> bookingTypeComboBox = new JComboBox<>(bookingTypes);
+		bookingTypeComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+		JPanel comboBoxWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		bookingTypeComboBox.setPreferredSize(new Dimension(90, bookingTypeComboBox.getPreferredSize().height));
+		comboBoxWrapper.setBackground(Color.WHITE);
+		comboBoxWrapper.add(bookingTypeComboBox);
+		bookingTypePanel.add(comboBoxWrapper, BorderLayout.CENTER);
+
+		checkInPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));     // 30%
+		timePanel.setPreferredSize(new Dimension((int)(topWidth * 0.15), topHeight));       // 15%
+		checkOutPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));   // 25%
+		guestPanel.setPreferredSize(new Dimension((int)(topWidth * 0.2), topHeight));      // 15%
+		bookingTypePanel.setPreferredSize(new Dimension((int)(topWidth * 0.15), topHeight));// 15%
 		// Thêm các panel vào topInfoPanel
 		topInfoPanel.add(checkInPanel);
+
 		topInfoPanel.add(checkOutPanel);
 		topInfoPanel.add(guestPanel);
+		topInfoPanel.add(bookingTypePanel);
+
 
 		// ========== Panel dưới: chứa 6 checkbox ==========
 		JPanel bottomInfoPanel = new JPanel();
-		bottomInfoPanel.setLayout(new GridLayout(2, 3, 10, 10)); // 2 dòng 3 cột, cách nhau 10px
-		bottomInfoPanel.setBackground(Color.CYAN);
+		// Đổi layout của bottomInfoPanel
+		bottomInfoPanel.setLayout(new BorderLayout());
+		bottomInfoPanel.setBackground(Color.WHITE);
 		bottomInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
-		
-		// Tạo 6 checkbox
+
+		// Panel chứa checkbox (70%)
+		JPanel checkboxPanel = new JPanel(new GridLayout(2, 3, 10, 10)); // giữ nguyên 2 dòng 3 cột
+		checkboxPanel.setBackground(Color.WHITE);
 		for (int i = 0; i < tienIchPhong.length; i++) {
 		    JCheckBox checkBox = new JCheckBox(tienIchPhong[i]);
 		    checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
-		    bottomInfoPanel.add(checkBox);
+		    checkBox.setBackground(Color.WHITE);
+		    checkboxPanel.add(checkBox);
 		}
+
+		// Panel chứa nút "Tìm kiếm" (30%)
+		JPanel searchPanel = new JPanel(new GridBagLayout()); // để căn giữa nút
+		searchPanel.setBackground(Color.WHITE);
+		JButton searchButton = new JButton("Tìm kiếm");
+		searchButton.setFont(new Font("Arial", Font.BOLD, 16));
+		searchButton.setPreferredSize(new Dimension(120, 40));
+		searchPanel.add(searchButton);
+
+
+		// Thiết lập kích thước tương đối
+		int bottomWidth = (int)(screenWidthTrang1 * 0.8);
+		checkboxPanel.setPreferredSize(new Dimension((int)(bottomWidth * 0.7), 0));
+		searchPanel.setPreferredSize(new Dimension((int)(bottomWidth * 0.3), 0));
+
+		// Thêm vào bottomInfoPanel
+		bottomInfoPanel.add(checkboxPanel, BorderLayout.WEST);
+		bottomInfoPanel.add(searchPanel, BorderLayout.EAST);
+
 
 		// Thêm top và bottom vào infoPanel
 		infoPanel.add(topInfoPanel, BorderLayout.NORTH);
@@ -332,23 +634,27 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel = new JPanel(new BorderLayout());
 		centerPanel.setBackground(Color.WHITE);
 		centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
-
-//        // Load mặc định khi khởi tạo
-//        try {
-//			loadGiaoDienTheoNgay();
-//		} catch (SQLException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		loadGiaoDienTheoNgay();
 
 		// =============================== Footer=============================================
-		JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel footerPanel = new JPanel(new BorderLayout()); // ← Dùng BorderLayout thay vì FlowLayout
 		footerPanel.setBackground(Color.WHITE);
 		footerPanel.setPreferredSize(new Dimension(screenWidthTrang1, footerHeight));
+		// ===== Panel trái: Tổng tiền =====
+		tongTienLabel = new JLabel("Tổng tiền: 0 VNĐ");
+		tongTienLabel.setFont(new Font("Arial", Font.BOLD, 16));
+		tongTienLabel.setForeground(Color.BLACK);	
+		tongTienLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0)); // top, left, bottom, right
 
+
+		JPanel leftFooterPanel = new JPanel(new BorderLayout());
+		leftFooterPanel.setBackground(Color.WHITE);
+		leftFooterPanel.add(tongTienLabel, BorderLayout.CENTER); // tự canh giữa dọc
+		
+		// ===== Panel phải: Nút xác nhận =====
 		JButton confirmButton = new JButton("Xác nhận");
 		confirmButton.setFont(new Font("Arial", Font.BOLD, 14));
-		confirmButton.setForeground(Color.BLACK);
+		confirmButton.setForeground(Color.WHITE);
 		confirmButton.setBackground(new Color(0, 180, 0)); // Màu xanh lá
 		confirmButton.setFocusPainted(false);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
@@ -407,8 +713,12 @@ public class DatPhong_GUI extends JDialog {
 			mainPanel.add(trang2, "Trang2");
 			cardLayout.show(mainPanel, "Trang2");
 		});
-
-		footerPanel.add(confirmButton);
+		JPanel rightFooterPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		rightFooterPanel.setBackground(Color.WHITE);
+		rightFooterPanel.add(confirmButton);
+		// ===== Gắn 2 panel vào footerPanel =====
+		footerPanel.add(leftFooterPanel, BorderLayout.WEST);
+		footerPanel.add(rightFooterPanel, BorderLayout.EAST);
 
 		// ============end===============Thêm các phần vào panel chọn phòng========================
 		chonPhongPanel.add(headerPanel, BorderLayout.NORTH);
@@ -429,85 +739,257 @@ public class DatPhong_GUI extends JDialog {
 			btn.setBackground(Color.WHITE); // Các nút còn lại sẽ về màu trắng
 		}
 	}
+	
+	private void setTopInfoLayoutForMode(String mode) {
+	    topInfoPanel.removeAll(); // Xóa các panel cũ
+
+	    int topWidth = topInfoPanel.getPreferredSize().width;
+	    int topHeight = topInfoPanel.getPreferredSize().height;
+
+	    if ("Theo giờ".equals(mode)) {
+	        // Thiết lập kích thước theo tỷ lệ 25-15-25-20-15
+	        checkInPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));
+	        timePanel.setPreferredSize(new Dimension((int)(topWidth * 0.12), topHeight));
+	        checkOutPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));
+	        guestPanel.setPreferredSize(new Dimension((int)(topWidth * 0.28), topHeight));
+	        bookingTypePanel.setPreferredSize(new Dimension((int)(topWidth * 0.15), topHeight));
+
+	        // Thêm đủ 5 panel
+	        topInfoPanel.add(checkInPanel);
+	        topInfoPanel.add(timePanel);
+	        topInfoPanel.add(checkOutPanel);
+	        topInfoPanel.add(guestPanel);
+	        topInfoPanel.add(bookingTypePanel);
+
+	        timePanel.setVisible(true); // hiển thị panel Giờ
+	    } else {
+	        // Thiết lập lại tỷ lệ khi không có timePanel: 30-25-25-20
+	        checkInPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));
+	        checkOutPanel.setPreferredSize(new Dimension((int)(topWidth * 0.25), topHeight));
+	        guestPanel.setPreferredSize(new Dimension((int)(topWidth * 0.3), topHeight));
+	        bookingTypePanel.setPreferredSize(new Dimension((int)(topWidth * 0.2), topHeight));
+
+	        topInfoPanel.add(checkInPanel);
+	        topInfoPanel.add(checkOutPanel);
+	        topInfoPanel.add(guestPanel);
+	        topInfoPanel.add(bookingTypePanel);
+
+	        timePanel.setVisible(false);
+	    }
+
+	    topInfoPanel.revalidate();
+	    topInfoPanel.repaint();
+	}
+
+
 
 	//==============Hàm tạo DatePicker==============
-	private JDatePickerImpl createDatePicker(LocalDate defaultDate) {
+	public class CustomDateButton extends JButton {
+	    private LocalDate selectedDate;
+	    private String fixedTime;
+	    private Consumer<LocalDate> onDateChanged;
 
-		UtilDateModel model = new UtilDateModel();
-	    model.setDate(defaultDate.getYear(), defaultDate.getMonthValue() - 1, defaultDate.getDayOfMonth());
-	    model.setSelected(true);
-	    
-	    Properties p = new Properties();
-	    p.put("text.today", "Today");
-	    p.put("text.month", "Month");
-	    p.put("text.year", "Year");
+	    public CustomDateButton(LocalDate defaultDate, String fixedTime, Consumer<LocalDate> onDateChanged) {
+	        super(fixedTime + " - " + defaultDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	        this.selectedDate = defaultDate;
+	        this.fixedTime = fixedTime;
+	        this.onDateChanged = onDateChanged;
 
-	    JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-	    JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+	        setBackground(Color.WHITE);
+	        setFocusPainted(false);
+	        setFont(new Font("Arial", Font.PLAIN, 14));
 
-		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-
-		// Xóa viền của DatePicker
-		datePicker.setBorder(BorderFactory.createEmptyBorder());
-		
-		
-		// Tùy chỉnh giao diện
-		try {
-			// Lấy JTextField (thường là component thứ 1)
-			if (datePicker.getComponentCount() > 1) {
-				Component textFieldComponent = datePicker.getComponent(1);
-				if (textFieldComponent instanceof JTextField) {
-					JTextField textField = (JTextField) textFieldComponent;
-					textField.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5)); // Xóa khoảng trắng dưới
-					textField.setBackground(Color.WHITE);
-					textField.setEditable(false); // Ngăn chỉnh sửa trực tiếp
-				}
-			}
-
-			// Lấy JButton (thường là component thứ 0)
-			if (datePicker.getComponentCount() > 0) {
-				Component buttonComponent = datePicker.getComponent(1);
-				if (buttonComponent instanceof JButton) {
-					JButton button = (JButton) buttonComponent;
-					button.setText("");
-					// kích thước của button chọn time
-					int ngang = 25;
-					int cao = 30;
-					button.setPreferredSize(new Dimension(cao, ngang));
-					ImageIcon icon = new ImageIcon("img/HinhAnhGiaoDienChinh/lich.png");
-					Image scaledImage = icon.getImage().getScaledInstance(cao, ngang, Image.SCALE_SMOOTH);
-					ImageIcon resizedIcon = new ImageIcon(scaledImage);
-					button.setIcon(resizedIcon);
-
-				}
-			}
-
-		} catch (Exception e) {
-			System.err.println("Không thể tùy chỉnh date picker: " + e.getMessage());
-		}
-
-		return datePicker;
-	}
-	
-	//==============Hàm tạo fomat lại Ngày nhận trả==============
-	public class DateLabelFormatter extends AbstractFormatter {
-	    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'thg' M, yyyy");
-
-	    @Override
-	    public Object stringToValue(String text) throws ParseException {
-	        return LocalDate.parse(text, formatter);
+	        addActionListener(e -> showDatePickerPopup());
 	    }
 
-	    @Override
-	    public String valueToString(Object value) throws ParseException {
-	        if (value != null) {
-	            Calendar cal = (Calendar) value;
-	            LocalDate date = cal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	            return date.format(formatter);
+	    private void showDatePickerPopup() {
+	        UtilDateModel model = new UtilDateModel();
+	        model.setDate(selectedDate.getYear(), selectedDate.getMonthValue() - 1, selectedDate.getDayOfMonth());
+	        model.setSelected(true);
+
+	        Properties p = new Properties();
+	        p.put("text.today", "Today");
+	        p.put("text.month", "Month");
+	        p.put("text.year", "Year");
+
+	        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+	        JPopupMenu popup = new JPopupMenu();
+	        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+	        popup.setLayout(new BorderLayout());
+	        popup.add(datePanel, BorderLayout.CENTER);
+	        popup.show(this, 0, this.getHeight());
+
+	        datePanel.addActionListener(event -> {
+	            Date selected = (Date) model.getValue();
+	            if (selected != null) {
+	                selectedDate = selected.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	                setText(fixedTime + " - " + selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+	                if (onDateChanged != null) {
+	                    onDateChanged.accept(selectedDate); // Cập nhật biến ngoài
+	                }
+
+	                popup.setVisible(false);
+	            }
+	        });
+	    }
+
+	    public LocalDate getSelectedDate() {
+	        return selectedDate;
+	    }
+
+	    public void setSelectedDate(LocalDate date) {
+	        this.selectedDate = date;
+	        setText(fixedTime + " - " + selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	        if (onDateChanged != null) {
+	            onDateChanged.accept(date); // cập nhật lại bên ngoài nếu set thủ công
 	        }
-	        return "";
 	    }
+	    public void setFixedTime(String newTime) {
+	        this.fixedTime = newTime;
+	        setText(fixedTime + " - " + selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	    }
+
 	}
+
+	public class CustomTimeButton extends JButton {
+	    private LocalTime selectedTime;
+
+	    private int selectedDuration;
+	    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+	    private final BiConsumer<LocalTime, Integer> onTimeConfirmed;
+
+	    public CustomTimeButton(BiConsumer<LocalTime, Integer> onTimeConfirmed) {
+	        super("1 giờ");
+	        this.onTimeConfirmed = onTimeConfirmed;
+	        this.selectedTime = todayTimestamp.toLocalDateTime().toLocalTime().withSecond(0).withNano(0);
+	        this.selectedDuration = 1;
+
+	        setBackground(Color.WHITE);
+	        setFocusPainted(false);
+	        setFont(new Font("Arial", Font.PLAIN, 14));
+
+	        addActionListener(e -> showTimePopup());
+	    }
+	    private void showTimePopup() {
+	        Window window = SwingUtilities.getWindowAncestor(this);
+	        JDialog dialog = new JDialog(window, "Chọn giờ", Dialog.ModalityType.APPLICATION_MODAL);
+	        dialog.setLayout(new GridBagLayout());
+	        dialog.setSize(300, 180);
+	        dialog.setResizable(false);
+	        dialog.setLocationRelativeTo(this);
+
+	        GridBagConstraints gbc = new GridBagConstraints();
+	        gbc.insets = new Insets(10, 10, 10, 10);
+	        gbc.anchor = GridBagConstraints.WEST;
+
+	        // Giờ hiện tại → làm tròn lên giờ chẵn tiếp theo
+	        LocalTime localCopy = roundedHour;
+	        System.out.println("Giờ mới: " + localCopy);
+	        // Nếu vượt quá 23:00 thì không làm gì cả
+	        if (localCopy.isAfter(LocalTime.of(23, 0))) {
+	            JOptionPane.showMessageDialog(this, "Không còn khung giờ khả dụng hôm nay.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+	            return;
+	        }
+	        System.out.println("now"+now);
+	        System.out.println("localCopy"+localCopy);
+	        // Danh sách giờ từ startHour đến 23:00
+	        List<String> formattedTimes = new ArrayList<>();
+	        while (localCopy.isBefore(LocalTime.of(23, 00))) {
+	            formattedTimes.add(localCopy.format(formatter));
+	            localCopy = localCopy.plusHours(1);
+	        }
+	        if (localCopy.isBefore(LocalTime.of(23,30))) {
+	            formattedTimes.add("23:00");
+	        }
+	        System.out.println("time"+formattedTimes);
+	        JComboBox<String> timeCombo = new JComboBox<>(formattedTimes.toArray(new String[0]));
+
+	        
+	        // Chọn giá trị nếu hợp lệ
+	        String selectedFormatted = selectedTime.format(formatter);
+	        if (formattedTimes.contains(selectedFormatted)) {
+	            timeCombo.setSelectedItem(selectedFormatted);
+	        } else {
+	            timeCombo.setSelectedIndex(0); // fallback an toàn
+	        }
+
+	        JComboBox<Integer> durationCombo = new JComboBox<>();
+	        for (int i = 1; i <= 10; i++) {
+	            durationCombo.addItem(i);
+	        }
+	        durationCombo.setSelectedItem(selectedDuration);
+
+	        // Label
+	        gbc.gridx = 0; gbc.gridy = 0;
+	        dialog.add(new JLabel("Giờ nhận phòng:"), gbc);
+	        gbc.gridx = 1;
+	        dialog.add(timeCombo, gbc);
+
+	        gbc.gridx = 0; gbc.gridy = 1;
+	        dialog.add(new JLabel("Số giờ sử dụng:"), gbc);
+	        gbc.gridx = 1;
+	        dialog.add(durationCombo, gbc);
+
+	        JButton confirmButton = new JButton("Áp dụng");
+	        confirmButton.addActionListener(e -> {
+	            try {
+	                selectedTime = LocalTime.parse((String) timeCombo.getSelectedItem(), formatter);
+	                selectedDuration = (Integer) durationCombo.getSelectedItem();
+	                updateButtonText();
+
+	                if (onTimeConfirmed != null) {
+	                    onTimeConfirmed.accept(selectedTime, selectedDuration);
+	                }
+
+	                // --- Cập nhật giờ nhận phòng trên checkInButton ---
+	                String selectedTimeStr = selectedTime.format(formatter);
+	                checkInButton.setFixedTime(selectedTimeStr);
+
+	                // --- Tính giờ trả ---
+	                LocalTime checkOutTime = selectedTime.plusHours(selectedDuration);
+	                String checkOutTimeStr = checkOutTime.format(formatter);
+
+	                // --- Nếu giờ trả vượt quá 23:59, tăng ngày ---
+	                LocalDate currentCheckInDate = checkInButton.getSelectedDate();
+	                LocalDate newCheckOutDate = checkOutTime.isBefore(selectedTime) ? currentCheckInDate.plusDays(1) : currentCheckInDate;
+
+	                checkOutButton.setFixedTime(checkOutTimeStr);
+	                checkOutButton.setSelectedDate(newCheckOutDate);
+
+	            } catch (Exception ex) {
+	                JOptionPane.showMessageDialog(this, "Lỗi chọn giờ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            } finally {
+	                dialog.dispose();
+	            }
+	        });
+
+
+	        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
+	        dialog.add(confirmButton, gbc);
+
+	        dialog.setVisible(true);
+	    }
+
+
+	    private void updateButtonText() {
+	        setText(selectedDuration + " giờ");
+	    }
+
+	    public LocalTime getSelectedTime() {
+	        return selectedTime;
+	    }
+
+	    public int getSelectedDuration() {
+	        return selectedDuration;
+	    }
+	    public void setSelectedTime(LocalTime time) {
+	        this.selectedTime = time;
+	        updateButtonText();
+	    }
+
+	}
+
 	
 	//==============Hàm tạo từng row phòng==============
 	private JPanel createRoomRow(String roomName, int roomPrice, int soPhongTrong, JLabel[] totalLabels,
@@ -563,8 +1045,9 @@ public class DatPhong_GUI extends JDialog {
 			if (qty > 0) {
 				qty--;
 				quantityField.setText(String.valueOf(qty));
-				roomQuantities[index] = qty; // Lưu số lượng đã chọn
+				roomQuantities[index] = qty;
 				updateTotal(totalLabel, qty, roomPrice);
+				capNhatTongTien(); // ← Gọi cập nhật tổng tiền
 			}
 		});
 
@@ -573,13 +1056,29 @@ public class DatPhong_GUI extends JDialog {
 			if (qty < soPhongTrong) {
 				qty++;
 				quantityField.setText(String.valueOf(qty));
-				roomQuantities[index] = qty; // Lưu số lượng đã chọn
+				roomQuantities[index] = qty;
 				updateTotal(totalLabel, qty, roomPrice);
+				capNhatTongTien(); // ← Gọi cập nhật tổng tiền
 			}
 		});
 
+
 		return rowPanel;
+		
 	}
+	private void capNhatTongTien() {
+	    long tongTien = 0;
+	    for (JLabel label : totalLabels) {
+	        if (label != null) {
+	            String text = label.getText().replaceAll("[^\\d]", ""); // Xóa ký tự không phải số
+	            if (!text.isEmpty()) {
+	                tongTien += Long.parseLong(text);
+	            }
+	        }
+	    }
+	    tongTienLabel.setText("Tổng tiền: " + String.format("%,d", tongTien) + " VNĐ");
+	}
+
 
 	//==============Hàm cập nhật tiền sau khi chọn phòng==============
 	private void updateTotal(JLabel totalLabel, int qty, int roomPrice) {
@@ -594,10 +1093,7 @@ public class DatPhong_GUI extends JDialog {
 	}
 
 	//==============LOAD TRANG THEO NGÀY(TRANG 1)==============
-	private void loadGiaoDienTheoNgay() throws SQLException {
-		System.out.println("mở giao diện theo ngày");
-		centerPanel.removeAll();
-
+	private void loadGiaoDienTheoNgay() {
 		// ======= Header Gợi ý phòng ========
 		JPanel headerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		headerContainer.setPreferredSize(new Dimension(screenWidthTrang1, 60));
@@ -607,7 +1103,7 @@ public class DatPhong_GUI extends JDialog {
 		headerPanel1.setBackground(new Color(144, 238, 144));
 		headerPanel1.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.95), 40));
 		headerContainer.add(headerPanel1);
-		String[] headers = { "Gợi ý phòng", "Giá", "Số lượng", "Tổng cộng" };
+		String[] headers = { "Gợi ý phòng", "Giá", "Số lượng", "Thành tiền" };
 		for (String text : headers) {
 			JLabel label = new JLabel(text, SwingConstants.CENTER);
 			label.setFont(new Font("Arial", Font.BOLD, 14));
@@ -622,7 +1118,7 @@ public class DatPhong_GUI extends JDialog {
 		roomQuantities = new int[roomNames.length]; // <- Mảng này sẽ được cập nhật trong createRoomRow()
 
 		// Khai báo mảng JLabel để lưu "Tổng cộng" cho từng loại phòng
-		JLabel[] totalLabels = new JLabel[roomNames.length];
+		totalLabels = new JLabel[roomNames.length];
 
 		// Panel chứa các hàng
 		JPanel contentPanel = new JPanel();
@@ -631,116 +1127,55 @@ public class DatPhong_GUI extends JDialog {
 		contentPanel.setBackground(Color.WHITE);
 		// -----------------------------------------------------------------------------------------------------------
 		// ===== Double Room =====}
-		JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
-		contentPanel.add(rowPanelDouble);
-		contentPanel.add(Box.createVerticalStrut(10));
-
-		// ===== Single Room =====
-		JPanel rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single"), totalLabels, roomQuantities, 1);
-		contentPanel.add(rowPanelSingle);
-		contentPanel.add(Box.createVerticalStrut(10));
-
-		// ===== Twin Room =====
-		JPanel rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin"), totalLabels, roomQuantities, 2);
-		contentPanel.add(rowPanelTwin);
-		contentPanel.add(Box.createVerticalStrut(10));
-
-		// ===== Triple Room =====
-		JPanel rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple"), totalLabels, roomQuantities, 3);
-		contentPanel.add(rowPanelTriple);
-
-		// Thêm header và nội dung vào centerPanel
-		centerPanel.add(headerContainer, BorderLayout.NORTH);
-		centerPanel.add(contentPanel, BorderLayout.CENTER);
-
-		// Cập nhật lại UI
-		centerPanel.revalidate();
-		centerPanel.repaint();
-	}
-
-	//==============LOAD TRANG THEO GIỜ(TRANG 2)==============
-	private void loadGiaoDienTheoGio() {
-		centerPanel.removeAll();
-
-		JLabel label = new JLabel("Giao diện đặt theo GIỜ", SwingConstants.CENTER);
-		label.setFont(new Font("Arial", Font.BOLD, 24));
-		centerPanel.add(label, BorderLayout.CENTER);
-
-		centerPanel.revalidate();
-		centerPanel.repaint();
-	}
-
-	//==============LOAD TRANG THEO ĐÊM(TRANG 3)==============
-	private void loadGiaoDienTheoDem() throws SQLException {
-		System.out.println("mở giao diện theo đêm");
-		centerPanel.removeAll();
-
-		// ======= Header Gợi ý phòng ========
-		JPanel headerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		headerContainer.setPreferredSize(new Dimension(screenWidthTrang1, 60));
-		headerContainer.setBackground(Color.WHITE);
-
-		JPanel headerPanel1 = new JPanel(new GridLayout(1, 4));
-		headerPanel1.setBackground(new Color(144, 238, 144));
-		headerPanel1.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.95), 40));
-		headerContainer.add(headerPanel1);
-		String[] headers = { "Gợi ý phòng", "Giá", "Số lượng", "Tổng cộng" };
-		for (String text : headers) {
-			JLabel label = new JLabel(text, SwingConstants.CENTER);
-			label.setFont(new Font("Arial", Font.BOLD, 14));
-			headerPanel1.add(label);
+		JPanel rowPanelDouble = null;
+		try {
+			rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]),
+					chitietdondatphongdao.countSoPhongTrong(todayTimestamp, tomorrowTimestamp, "double"), totalLabels, roomQuantities, 0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		// Danh sách loại phòng
-		// ======== Tạo bảng nội dung bên dưới ========
-		String[] roomNames = { "Double Room", "Single Room", "Twin Room", "Triple Room" };
-
-		// ==== Tạo mảng lưu số lượng phòng được chọn ====
-		roomQuantities = new int[roomNames.length]; // <- Mảng này sẽ được cập nhật trong createRoomRow()
-
-		// Khai báo mảng JLabel để lưu "Tổng cộng" cho từng loại phòng
-		JLabel[] totalLabels = new JLabel[roomNames.length];
-
-		// Panel chứa các hàng
-		JPanel contentPanel = new JPanel();
-		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-		contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); // top, left, bottom, right
-		contentPanel.setBackground(Color.WHITE);
-		// -----------------------------------------------------------------------------------------------------------
-		// ===== Double Room =====}
-		JPanel rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.GetPriceToDay(roomNames[0]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
 		contentPanel.add(rowPanelDouble);
 		contentPanel.add(Box.createVerticalStrut(10));
 
 		// ===== Single Room =====
-		JPanel rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single"), totalLabels, roomQuantities, 1);
+		JPanel rowPanelSingle = null;
+		try {
+			rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.GetPriceToDay(roomNames[1]),
+					chitietdondatphongdao.countSoPhongTrong(todayTimestamp, tomorrowTimestamp, "single"), totalLabels, roomQuantities, 1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		contentPanel.add(rowPanelSingle);
 		contentPanel.add(Box.createVerticalStrut(10));
 
 		// ===== Twin Room =====
-		JPanel rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin"), totalLabels, roomQuantities, 2);
+		JPanel rowPanelTwin = null;
+		try {
+			rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.GetPriceToDay(roomNames[2]),
+					chitietdondatphongdao.countSoPhongTrong(todayTimestamp, tomorrowTimestamp, "twin"), totalLabels, roomQuantities, 2);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		contentPanel.add(rowPanelTwin);
 		contentPanel.add(Box.createVerticalStrut(10));
 
 		// ===== Triple Room =====
-		JPanel rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]),
-				chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple"), totalLabels, roomQuantities, 3);
+		JPanel rowPanelTriple = null;
+		try {
+			rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.GetPriceToDay(roomNames[3]),
+					chitietdondatphongdao.countSoPhongTrong(todayTimestamp, tomorrowTimestamp, "triple"), totalLabels, roomQuantities, 3);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		contentPanel.add(rowPanelTriple);
 
 		// Thêm header và nội dung vào centerPanel
 		centerPanel.add(headerContainer, BorderLayout.NORTH);
 		centerPanel.add(contentPanel, BorderLayout.CENTER);
-
-		// Cập nhật lại UI
-		centerPanel.revalidate();
-		centerPanel.repaint();
 	}
 
 	//==============TAO TRANG XÁC NHẬN PHÒNG(TRANG 2)==============
@@ -756,7 +1191,7 @@ public class DatPhong_GUI extends JDialog {
 
 		// ====== Panel chia panel thành 3 phần ======
 		JPanel chonPhongPanel = new JPanel(new BorderLayout());
-		chonPhongPanel.setBackground(Color.BLUE);
+		chonPhongPanel.setBackground(Color.WHITE);
 		chonPhongPanel.setPreferredSize(new Dimension(300, 800));
 
 		// =========================================== Header
@@ -799,8 +1234,7 @@ public class DatPhong_GUI extends JDialog {
 		titleClosePanel.add(donDatPhongLabel, BorderLayout.CENTER);
 		titleClosePanel.add(closeButton, BorderLayout.EAST);
 		headerPanel.add(titleClosePanel, BorderLayout.NORTH);
-		// =============================== Center
-		// =============================================================
+		// =============================== Center===================
 		int[] soLuongPhong = { roomQuantities[0], roomQuantities[1], roomQuantities[2], roomQuantities[3] };
 		String[] roomTypes = { "Double Room", "Single Room", "Twin Room", "Triple Room" };
 		
