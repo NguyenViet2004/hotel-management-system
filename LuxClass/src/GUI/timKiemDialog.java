@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -26,8 +27,9 @@ public class timKiemDialog extends JDialog {
 	 */
 
 	public static void main(String[] args) {
-	    try {
-	        timKiemDialog dialog = new timKiemDialog();
+	    try {	    	
+	    	JFrame aFrame= new JFrame();
+	        timKiemDialog dialog = new timKiemDialog(aFrame);
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	        dialog.setVisible(true);
 	    } catch (Exception e) {
@@ -39,14 +41,14 @@ public class timKiemDialog extends JDialog {
 	 * Create the dialog.
 	 */
 
-	public timKiemDialog() {
+	public timKiemDialog(JFrame parent) {
 	    setUndecorated(true); // ✅ Phải là dòng đầu tiên
 	    getContentPane().setLayout(null);
 	    contentPanel.setLayout(new FlowLayout());
 	    contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 	    BackgroundPanel backgroundPanel = new BackgroundPanel("img/HinhAnhGiaoDienChinh/nenDangNhap.jpg"); 
 	    setContentPane(backgroundPanel); 
-	    JPanel timKiem = new panel_timKiem();
+	    JPanel timKiem = new panel_timKiem(parent);
 	    getContentPane().add(timKiem);
 
 	    Border border = BorderFactory.createLineBorder(Color.BLACK, 3);

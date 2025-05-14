@@ -39,7 +39,8 @@ public class panel_timKiem extends JPanel {
 	private String[] columnNames = {"Mã phòng"};
 	private JTable table_DonDatPhong;
 
-	public panel_timKiem() {
+	public panel_timKiem(JFrame parent) {
+		
 		setBackground(Color.WHITE);
 		setLayout(null);
 		setBorder(new LineBorder(Color.black, 2, true));
@@ -184,6 +185,7 @@ public class panel_timKiem extends JPanel {
 		                EventQueue.invokeLater(() -> {
 		                    donDatPhong chiTiet= new donDatPhong(ddp);
 		                    chiTiet.setVisible(true);
+		                    parent.dispose();
 		                });
 		            }
 		        } else if (!tenKH.isEmpty() && !sdt1.isEmpty()) {
@@ -245,6 +247,7 @@ public class panel_timKiem extends JPanel {
 		                    donDatPhong chiTiet= new donDatPhong(ddp);
 //		                    chiTiet = new donDatPhong(ddp);
 		                    chiTiet.setVisible(true);
+		                    parent.dispose();
 		                });
 		            }
 		        }
