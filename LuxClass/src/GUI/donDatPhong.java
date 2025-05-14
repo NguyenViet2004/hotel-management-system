@@ -168,6 +168,22 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		undo.setContentAreaFilled(false);
 		undo.setBorderPainted(false);
 		undo.setFocusPainted(false);
+		undo.addActionListener(new ActionListener() {
+			
+			@Override
+			 public void actionPerformed(ActionEvent e) {
+		        if (hoaDonCT.isVisible()) {
+		            // Nếu hóa đơn chi tiết đang hiển thị thì ẩn đi, hiển thị body
+		            hoaDonCT.setVisible(false);
+		            body.setVisible(true);
+		        } else {
+		            // Nếu body đang hiển thị, quay lại giao diện quản lý đơn đặt phòng
+		            dispose(); // đóng frame hiện tại
+		            QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
+					frame.setVisible(true);
+		        }
+		    }
+		});
 		Header.add(undo);
 
 		JButton Home = new JButton("");
