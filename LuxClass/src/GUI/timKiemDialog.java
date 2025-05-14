@@ -3,8 +3,11 @@ package GUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -21,33 +24,53 @@ public class timKiemDialog extends JDialog {
 	/**
 	 * Launch the application.
 	 */
+
 	public static void main(String[] args) {
-		try {
-			timKiemDialog dialog = new timKiemDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setUndecorated(true);
-			dialog.setLocationRelativeTo(null);
-			dialog.setSize(929, 629);
-			dialog.setResizable(false);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    try {
+	        timKiemDialog dialog = new timKiemDialog();
+	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	        dialog.setVisible(true);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	/**
 	 * Create the dialog.
 	 */
+
 	public timKiemDialog() {
-		setBounds(100, 100, 900, 717);
-		getContentPane().setLayout(null);
-		contentPanel.setLayout(new FlowLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setSize(929, 629);
-		JPanel timKiem= new panel_timKiem();
-		timKiem.setBounds(0, 0, 929, 629); 
-		getContentPane().add(timKiem);  
-        Border border = BorderFactory.createLineBorder(Color.BLACK, 3); // Tạo viền đen, dày 2 pixel
-        getRootPane().setBorder(border);
+	    setUndecorated(true); // ✅ Phải là dòng đầu tiên
+	    getContentPane().setLayout(null);
+	    contentPanel.setLayout(new FlowLayout());
+	    contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+	    BackgroundPanel backgroundPanel = new BackgroundPanel("img/HinhAnhGiaoDienChinh/nenDangNhap.jpg"); 
+	    setContentPane(backgroundPanel); 
+	    JPanel timKiem = new panel_timKiem();
+	    getContentPane().add(timKiem);
+
+	    Border border = BorderFactory.createLineBorder(Color.BLACK, 3);
+	    getRootPane().setBorder(border);
+
+	    setSize(929, 629);
+	    setLocationRelativeTo(null);
+	    setResizable(false);
+	}
+
+	class BackgroundPanel extends JPanel {
+	    private Image backgroundImage;
+
+	    public BackgroundPanel(String imagePath) {
+	        this.backgroundImage = new ImageIcon(imagePath).getImage();
+	        setLayout(null); // bạn muốn layout tự định vị trí
 	    }
+
+	    @Override
+	    protected void paintComponent(Graphics g) {
+	        super.paintComponent(g);
+	        // Vẽ ảnh full kích thước panel
+	        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+	    }
+	}
+
 }
