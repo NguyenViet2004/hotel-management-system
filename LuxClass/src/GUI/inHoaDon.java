@@ -3,9 +3,11 @@ package GUI;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -163,7 +165,7 @@ public class inHoaDon {
         bangChinh.addCell(bangPhong);
         
         // Ghi chú thuế
-        PdfPCell oGhiChuThue = new PdfPCell(new Phrase("(Đã bao gồm thuế GTGT 10%)", fontGhiChu));
+        PdfPCell oGhiChuThue = new PdfPCell(new Phrase("(Đã bao gồm thuế GTGT)", fontGhiChu));
         oGhiChuThue.setBorder(Rectangle.NO_BORDER);
         oGhiChuThue.setPaddingBottom(5f);
         bangChinh.addCell(oGhiChuThue);
@@ -193,32 +195,6 @@ public class inHoaDon {
         
         bangChinh.addCell(bangTongCong);
         
-        // --- MÃ QR THANH TOÁN ---
-        if (qrCodeLabel != null) {
-            try {
-                // Chuyển đổi JLabel thành hình ảnh
-                BufferedImage bufferedImage = new BufferedImage(
-                    qrCodeLabel.getWidth(), 
-                    qrCodeLabel.getHeight(), 
-                    BufferedImage.TYPE_INT_RGB
-                );
-                qrCodeLabel.paint(bufferedImage.getGraphics());
-                
-                // Chuyển đổi BufferedImage thành Image của iText
-                Image qrImage = Image.getInstance(bufferedImage, null);
-                qrImage.scaleToFit(150, 150); // Điều chỉnh kích thước
-                
-                PdfPCell oQR = new PdfPCell(qrImage, true);
-                oQR.setBorder(Rectangle.NO_BORDER);
-                oQR.setHorizontalAlignment(Element.ALIGN_CENTER);
-                oQR.setPaddingTop(10f);
-                bangChinh.addCell(oQR);
-            } catch (Exception e) {
-                PdfPCell oLoiQR = new PdfPCell(new Phrase("", fontGhiChu));
-                oLoiQR.setBorder(Rectangle.NO_BORDER);
-                bangChinh.addCell(oLoiQR);
-            }
-        }
         
         // --- FOOTER ---
         Paragraph doanChanTrang = new Paragraph();
@@ -234,6 +210,15 @@ public class inHoaDon {
         
         taiLieu.add(bangChinh);
         taiLieu.close();
+        
+      if (Desktop.isDesktopSupported()) {
+      try {
+          File file = new File(duongDanLuuFile);
+          Desktop.getDesktop().browse(file.toURI()); // Gọi lệnh in
+      } catch (IOException ex) {
+          ex.printStackTrace();
+      }
+  }
     }
     
     // Các phương thức hỗ trợ

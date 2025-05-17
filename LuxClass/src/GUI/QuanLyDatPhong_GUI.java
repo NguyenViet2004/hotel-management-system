@@ -594,7 +594,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		}
 		
 		if(e.getSource() == btnTra) {
-			timKiemDialog dialog = new timKiemDialog();
+			timKiemDialog dialog = new timKiemDialog(this);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setUndecorated(true);
 			dialog.setLocationRelativeTo(null);

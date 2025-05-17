@@ -9,11 +9,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import TraPhong_CuaXien.donDatPhong;
 import dao_CuaXien.DonDatPhong_DAO;
 import dao_CuaXien.Phong_DAO;
 import entity_CuaXien.DonDatPhong;
 import entity_CuaXien.Phong;
+import GUI.donDatPhong;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,6 +21,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
+import java.util.stream.Collectors;
 public class panel_timKiem extends JPanel {
 	private JFrame frame;
 	private static final long serialVersionUID = 1L;
@@ -38,11 +39,12 @@ public class panel_timKiem extends JPanel {
 	private String[] columnNames = {"Mã phòng"};
 	private JTable table_DonDatPhong;
 
-	public panel_timKiem() {
+	public panel_timKiem(JFrame parent) {
+		
 		setBackground(Color.WHITE);
 		setLayout(null);
 		setBorder(new LineBorder(Color.black, 2, true));
-
+		setBounds(0, 0, 929, 629); 
 		JLabel lblNewLabel = new JLabel("Tìm kiếm đơn đặt phòng");
 		lblNewLabel.setBounds(304, 21, 323, 38);
 		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 30));
@@ -63,9 +65,10 @@ public class panel_timKiem extends JPanel {
 		panel_TimTheoMaPhong.setBorder(new LineBorder(Color.black, 2, true));
 		panel_TimTheoMaPhong.setBounds(197, 117, 517, 194);
 		panel_TimTheoMaPhong.setLayout(null);
+		panel_TimTheoMaPhong.setVisible(false);
 		add(panel_TimTheoMaPhong);
 
-		maPhong = new JTextField("Nhập mã phòng:");
+		maPhong = new JTextField("Nhập số phòng");
 		maPhong.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		maPhong.setBounds(22, 83, 257, 30);
 		maPhong.setColumns(10);
@@ -77,7 +80,7 @@ public class panel_timKiem extends JPanel {
 		maPhong.addFocusListener(new java.awt.event.FocusAdapter() {
 		    @Override
 		    public void focusGained(java.awt.event.FocusEvent e) {
-		        if (maPhong.getText().equals("Nhập mã phòng:")) {
+		        if (maPhong.getText().equals("Nhập số phòng:")) {
 		            maPhong.setText("");
 		            maPhong.setForeground(Color.BLACK);
 		        }
@@ -86,7 +89,7 @@ public class panel_timKiem extends JPanel {
 		    @Override
 		    public void focusLost(java.awt.event.FocusEvent e) {
 		        if (maPhong.getText().isEmpty()) {
-		            maPhong.setText("Nhập mã phòng:");
+		            maPhong.setText("Nhập số phòng:");
 		            maPhong.setForeground(Color.GRAY);
 		        }
 		    }
@@ -136,7 +139,7 @@ public class panel_timKiem extends JPanel {
 		panel_TimTheoKhachHang.setBounds(197, 136, 517, 194);
 		add(panel_TimTheoKhachHang);
 		panel_TimTheoKhachHang.setLayout(null);
-		panel_TimTheoKhachHang.setVisible(false);
+		panel_TimTheoKhachHang.setVisible(true);
 				
 		JLabel lblNewLabel_11 = new JLabel("Họ và tên:");
 		lblNewLabel_11.setFont(new Font("Times New Roman", Font.BOLD, 18));
@@ -164,14 +167,30 @@ public class panel_timKiem extends JPanel {
 		timKiem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		        String soPhong = maPhong.getText().trim();
-		        String tenKH = hoVaTen.getText().trim();
+		        String tenKH = hoVaTen.getText();
 		        String sdt1 = sdt.getText().trim();
-
+                if(soPhong.equals("Nhập số phòng")) {
+                	soPhong="";
+                }
 		        if (!soPhong.isEmpty()) {
-		            loadDonDatPhongTheoSoPhong(soPhong);
+		            DonDatPhong_DAO dao = new DonDatPhong_DAO();
+		    	    DonDatPhong ddp = dao.getDonDatPhongTheoMaPhong(soPhong);
+		    	    if (ddp != null) {
+		                // Tắt cửa sổ hiện tại nếu là JDialog hoặc JFrame
+		                Window window = SwingUtilities.getWindowAncestor(table_DonDatPhong);
+		                if (window != null) {
+		                    window.dispose(); // Tắt cửa sổ chứa bảng
+		                }
+
+		                EventQueue.invokeLater(() -> {
+		                    donDatPhong chiTiet= new donDatPhong(ddp);
+		                    chiTiet.setVisible(true);
+		                    parent.dispose();
+		                });
+		            }
 		        } else if (!tenKH.isEmpty() && !sdt1.isEmpty()) {
 		            loadDonDatPhongTheoTenVaSDT(tenKH, sdt1);
-		        } else {
+		        } else if (tenKH == null || tenKH.trim().isEmpty() || sdt == null || sdt.getText().isEmpty()) {
 		            JOptionPane.showMessageDialog(null, "Vui lòng nhập số phòng hoặc tên + số điện thoại khách hàng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
 		        }
 		    }
@@ -196,7 +215,7 @@ public class panel_timKiem extends JPanel {
 			new Object[][] {
 			},
 			new String[] {
-				"M\u00E3 \u0111\u01A1n \u0111\u1EB7t ph\u00F2ng", "H\u1ECD v\u00E0 t\u00EAn kh\u00E1ch h\u00E0ng", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i"
+				"M\u00E3 \u0111\u01A1n \u0111\u1EB7t ph\u00F2ng", "Tên khách", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i", "Số phòng"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
@@ -225,8 +244,10 @@ public class panel_timKiem extends JPanel {
 		                }
 
 		                EventQueue.invokeLater(() -> {
-		                    donDatPhong chiTiet = new donDatPhong(ddp);
+		                    donDatPhong chiTiet= new donDatPhong(ddp);
+//		                    chiTiet = new donDatPhong(ddp);
 		                    chiTiet.setVisible(true);
+		                    parent.dispose();
 		                });
 		            }
 		        }
@@ -265,13 +286,13 @@ public class panel_timKiem extends JPanel {
 //		btnTmKimTheo.setBounds(450, 69, 231, 38);
 //		add(btnTmKimTheo);
 		
-		JButton timTheoMaPhong = new RoundedButton("Tìm theo mã phòng", 10, 0, 0, 10);
+		JButton timTheoMaPhong = new RoundedButton("Tìm theo số phòng", 10, 0, 0, 10);
 		timTheoMaPhong.setBounds(226, 69, 231, 38);
 		add(timTheoMaPhong);
 		timTheoMaPhong.setFocusPainted(false);
 	    timTheoMaPhong.setForeground(new Color(255, 255, 255));
 		timTheoMaPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		timTheoMaPhong.setBackground(new Color(33, 150, 243));
+		timTheoMaPhong.setBackground(new Color(255, 255, 255));
 				
 		JButton timTheoKhachHang = new RoundedButton("Tìm theo khách hàng", 0, 10, 10, 0);
 		timTheoKhachHang.setBounds(450, 69, 231, 38);
@@ -279,7 +300,7 @@ public class panel_timKiem extends JPanel {
 		timTheoKhachHang.setFocusPainted(false);
 		timTheoKhachHang.setForeground(new Color(255, 255, 255));
 		timTheoKhachHang.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		timTheoKhachHang.setBackground(new Color(255, 255, 255));
+		timTheoKhachHang.setBackground(new Color(33, 150, 243));
 		
 		timTheoKhachHang.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -291,6 +312,7 @@ public class panel_timKiem extends JPanel {
 				panel_TimTheoKhachHang.setVisible(true);
 				maPhong.setText("");
 				((DefaultTableModel) table_DonDatPhong.getModel()).setRowCount(0);
+				setBounds(0, 0, 929, 629);
 			}
 		});
 				
@@ -305,6 +327,8 @@ public class panel_timKiem extends JPanel {
 				hoVaTen.setText("");
 				sdt.setText("");
 				((DefaultTableModel) table_DonDatPhong.getModel()).setRowCount(0);
+				setBounds(0, 0, 929, 371); 
+				
 			}
 		});
 
@@ -380,45 +404,50 @@ public class panel_timKiem extends JPanel {
 	        model.addRow(row);
 	    }
 	}
-	private void loadDonDatPhongTheoSoPhong(String soPhong) {
-	    DonDatPhong_DAO dao = new DonDatPhong_DAO();
-	    List<DonDatPhong> danhSach = dao.getDonDatPhongTheoMaPhong(soPhong);
-
-	    DefaultTableModel model = (DefaultTableModel) table_DonDatPhong.getModel();
-	    model.setRowCount(0); // Xóa dữ liệu cũ
-
-	    if (danhSach.isEmpty()) {
-	        JOptionPane.showMessageDialog(this, "Không tìm thấy đơn đặt phòng cho số phòng: " + soPhong, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-	        return;
-	    }
-
-	    for (DonDatPhong ddp : danhSach) {
-	        model.addRow(new Object[] {
-	            ddp.getMaDonDatPhong(),
-	            ddp.getKhachHang().getHoTen(),
-	            ddp.getKhachHang().getSdt(),
-	            ddp.getTrangThai()
-	        });
-	    }
-	}
+//	private void loadDonDatPhongTheoSoPhong(String soPhong) {
+//	    DonDatPhong_DAO dao = new DonDatPhong_DAO();
+//	    List<DonDatPhong> danhSach = dao.getDonDatPhongTheoMaPhong(soPhong);
+//
+//	    DefaultTableModel model = (DefaultTableModel) table_DonDatPhong.getModel();
+//	    model.setRowCount(0); // Xóa dữ liệu cũ
+//
+//	    if (danhSach.isEmpty()) {
+//	        JOptionPane.showMessageDialog(this, "Không tìm thấy đơn đặt phòng cho số phòng: " + soPhong, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+//	        return;
+//	    }
+//
+//	    for (DonDatPhong ddp : danhSach) {
+//	        model.addRow(new Object[] {
+//	            ddp.getMaDonDatPhong(),
+//	            ddp.getKhachHang().getHoTen(),
+//	            ddp.getKhachHang().getSdt(),
+//	            ddp.getTrangThai()
+//	        });
+//	    }
+//	}
 	private void loadDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
 	    DonDatPhong_DAO dao = new DonDatPhong_DAO();
 	    List<DonDatPhong> danhSach = dao.getDonDatPhongTheoTenVaSDT(tenKH, sdt);
 
 	    DefaultTableModel model = (DefaultTableModel) table_DonDatPhong.getModel();
 	    model.setRowCount(0); // Xóa dữ liệu cũ
-
+        
+	    Phong_DAO phong_DAO= new Phong_DAO();
+	    
 	    if (danhSach.isEmpty()) {
 	        JOptionPane.showMessageDialog(this, "Không tìm thấy đơn đặt phòng cho khách hàng: " + tenKH + ", SDT: " + sdt, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 	        return;
 	    }
 
 	    for (DonDatPhong ddp : danhSach) {
+	    	List<Phong> phong= phong_DAO.getPhongTheoMaDonDatPhong(ddp.getMaDonDatPhong());
+	    	String maPhongStr = phong.stream().map(Phong::getSoPhong) .collect(Collectors.joining(", "));
 	        model.addRow(new Object[] {
 	            ddp.getMaDonDatPhong(),
 	            ddp.getKhachHang().getHoTen(),
 	            ddp.getKhachHang().getSdt(),
-	            ddp.getTrangThai()
+	            ddp.getTrangThai(),
+	            maPhongStr
 	        });
 	    }
 	}
