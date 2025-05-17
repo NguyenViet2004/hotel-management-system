@@ -17,7 +17,7 @@ CREATE TABLE Phong (
     soPhong VARCHAR(20) PRIMARY KEY,         -- Số phòng (mã phòng, khóa chính)
     trangThai NVARCHAR(50) NOT NULL,         -- Trạng thái phòng (VD: Trống, Đã đặt, Đang sử dụng)
     loaiPhong VARCHAR(20) NOT NULL,          -- Mã loại phòng (khóa ngoại từ bảng LoaiPhong)
-	moTa NVARCHAR(200) NOT NULL,
+	moTa NVARCHAR(200),
     CONSTRAINT FK_Phong_LoaiPhong FOREIGN KEY (loaiPhong) REFERENCES LoaiPhong(maLoaiPhong)
 );
 go
@@ -74,7 +74,7 @@ CREATE TABLE DonDatPhong (
 	thoiGianCoc DATETIME NOT NULL,          -- Ngày đặt cọc
     maNV VARCHAR(20) NOT NULL,              -- Mã nhân viên xử lý đơn (khóa ngoại)
     loaiDon NVARCHAR(50) NOT NULL,          -- Loại đơn (hỗ trợ tiếng Việt)
-	trangThai NVARCHAR(50) NOT NULL         -- trạng thái đơn đặt phòng
+	trangThai NVARCHAR(50) NOT NULL,         -- trạng thái đơn đặt phòng
     CONSTRAINT FK_DonDatPhong_KhachHang FOREIGN KEY (maKH) REFERENCES KhachHang(maKH),
     CONSTRAINT FK_DonDatPhong_NhanVien FOREIGN KEY (maNV) REFERENCES NhanVien(maNV)
 );
@@ -113,6 +113,47 @@ CREATE TABLE ChiTietPhieuDichVu (
     FOREIGN KEY (maPhieuDichVu) REFERENCES PhieuDichVu(maPhieuDichVu),
     FOREIGN KEY (maDichVu) REFERENCES DichVu(maDV)
 );
+go
+INSERT INTO LoaiPhong (maLoaiPhong, tenLoai, soLuong, dienTich, giaTheoGio, giaTheoNgay, giaTheoDem, phuThuQuaGio)
+VALUES 
+    ('single', N'Single Room', 8, 30, 150000, 800000, 700000, 100000),
+    ('twin', N'Twin Room', 7, 50, 200000, 1200000, 1100000, 150000),
+    ('double', N'Double Room', 10, 45, 250000, 1000000, 900000, 200000),
+    ('triple', N'Triple Room', 6, 50, 300000, 1400000, 1300000, 250000);
+go
+INSERT INTO Phong (soPhong, trangThai, loaiPhong, moTa)
+VALUES 
+    -- Single Room (8 phòng)
+    ('P101', N'Trống', 'single', NULL), ('P102', N'Trống', 'single', NULL),
+    ('P201', N'Trống', 'single', NULL), ('P202', N'Trống', 'single', NULL),
+    ('P301', N'Trống', 'single', NULL), ('P302', N'Trống', 'single', NULL),
+    ('P401', N'Trống', 'single', NULL), ('P402', N'Trống', 'single', NULL),
+
+    -- Twin Room (7 phòng)
+    ('P103', N'Trống', 'twin', NULL), ('P203', N'Trống', 'twin', NULL),
+    ('P303', N'Trống', 'twin', NULL), ('P403', N'Trống', 'twin', NULL),
+    ('P501', N'Trống', 'twin', NULL), ('P601', N'Trống', 'twin', NULL),
+    ('P602', N'Trống', 'twin', NULL),
+
+    -- Double Room (10 phòng)
+    ('P104', N'Trống', 'double', NULL), ('P204', N'Trống', 'double', NULL),
+    ('P304', N'Trống', 'double', NULL), ('P404', N'Trống', 'double', NULL),
+    ('P502', N'Trống', 'double', NULL), ('P603', N'Trống', 'double', NULL),
+    ('P105', N'Trống', 'double', NULL), ('P205', N'Trống', 'double', NULL),
+    ('P305', N'Trống', 'double', NULL), ('P405', N'Trống', 'double', NULL),
+
+    -- Triple Room (6 phòng)
+    ('P106', N'Trống', 'triple', NULL), ('P206', N'Trống', 'triple', NULL),
+    ('P306', N'Trống', 'triple', NULL), ('P406', N'Trống', 'triple', NULL),
+    ('P503', N'Trống', 'triple', NULL), ('P504', N'Trống', 'triple', NULL);
+go
+INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
+VALUES 
+('2025LT001', N'Nguyễn Thị Xuyến', '1990-01-01', '0981234567', N'Hà Nội', '123456789012', N'Lễ tân', N'Sáng'),
+('2025KT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Kế toán', N'Chiều');
+go
+INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
+VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
 go
 
 
