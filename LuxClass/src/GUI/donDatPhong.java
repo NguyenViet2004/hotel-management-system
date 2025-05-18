@@ -16,6 +16,7 @@ import dao_CuaXien.KhuyenMai_DAO;
 import dao_CuaXien.LoaiPhong_DAO;
 import dao_CuaXien.Phong_DAO;
 import dao_CuaXien.phieuDichVu_DAO;
+import entity_CuaXien.ChiTietApDung;
 import entity_CuaXien.DichVu;
 import entity_CuaXien.DonDatPhong;
 import entity_CuaXien.KhachHang;
@@ -1659,6 +1660,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				double tienCoc = Double.parseDouble(tienCoc1.getText());
 				double thanhTien = Double.parseDouble(thanhTien1.getText());
 //			              setPhong
+				
+
 				List<String> maPhongs = layDanhSachMaPhong(table1);
 				Phong_DAO phong_DAO = new Phong_DAO();
 				for (String ma : maPhongs) {
@@ -1670,7 +1673,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				// Kiểm tra trước khi set trạng thái đơn đặt phòng
 				DonDatPhong_DAO ddDatPhong_DAO = new DonDatPhong_DAO();
 				String maDon = maHoaDon1.getText();
-
+				ChiTietApDung ctapdung=new ChiTietApDung(maDon, (String) khuyenMai.getSelectedItem(), (float) thanhTien);
 				if (ddDatPhong_DAO.coTheCapNhatTrangThai(maDon)) {
 					ddDatPhong_DAO.setTrangThaiDonDatPhong(maDon, "Đã thanh toán");
 				}
@@ -1833,9 +1836,9 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 				            }
 				        }
-				        System.out.println("Phần trăm giảm: " + phanTramGiam);
-				        System.out.println("Tổng chi phí: " + tong);
-				        System.out.println("Tiền cọc: " + tienCoc);
+//				        System.out.println("Phần trăm giảm: " + phanTramGiam);
+//				        System.out.println("Tổng chi phí: " + tong);
+//				        System.out.println("Tiền cọc: " + tienCoc);
 
 				        // Xử lý tính thành tiền nếu cần
 				        double tileGiam = Double.parseDouble(phanTramGiam.replace("%", "")) / 100.0;
