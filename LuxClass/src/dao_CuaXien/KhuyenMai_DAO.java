@@ -2,6 +2,7 @@ package dao_CuaXien;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,54 @@ public class KhuyenMai_DAO {
 
         return list;
     }
+    
+    public List<KhuyenMai> getKhuyenMaiTheoNgay(LocalDate ngayNhan, LocalDate ngayTra, double tongThanhToan) {
+        List<KhuyenMai> list = new ArrayList<>();
+        String sql = """
+            SELECT *
+            FROM   KhuyenMai
+            WHERE  ? BETWEEN ngayBatDau AND ngayKetThuc
+        """;
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setDate(1, java.sql.Date.valueOf(ngayTra));
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String ma       = rs.getString("maKhuyenMai");
+                    String ten      = rs.getString("tenKhuyenMai");
+                    String loai     = rs.getString("loaiKhuyenMai");
+                    double giaTri   = rs.getDouble("giaTriKhuyenMai");
+                    LocalDate ngayBD= rs.getDate("ngayBatDau").toLocalDate();
+                    LocalDate ngayKT= rs.getDate("ngayKetThuc").toLocalDate();
+                    double dieuKien = rs.getDouble("dieuKienApDung");
+                    String trangThai= rs.getString("trangThai");
+
+                    boolean hopLe = false;
+                    if (loai.equalsIgnoreCase("Khuyến mãi theo dịp lễ")) {
+                        hopLe = tongThanhToan >= dieuKien;
+                    } else if (loai.equalsIgnoreCase("Khuyến mãi theo số ngày khách ở")) {
+                        long soNgayO = ChronoUnit.DAYS.between(ngayNhan, ngayTra);
+                        hopLe = soNgayO >= dieuKien;
+                    }
+
+                    if (hopLe) {
+                        list.add(new KhuyenMai(
+                                ma, ten, loai, giaTri,
+                                ngayBD, ngayKT, dieuKien, trangThai));
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
     public void capNhatTrangThaiKhuyenMaiHetHan() {
         String sql = "UPDATE KhuyenMai SET trangThai = 'Đã dừng' WHERE ngayKetThuc < ? AND trangThai != 'Đã dừng'";
         
