@@ -106,51 +106,56 @@ public class ChiTietDonDatPhong_Dao {
 		return soLuong;
 	}
 
-	public int GetPriceToDay(String tenLoaiPhong) {
-		int giaTheoNgay = 0;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+	public int getGiaTheoKieu(String tenLoaiPhong, String kieuDat) {
+	    int gia = 0;
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
 
-		try {
-			String sql = "SELECT giaTheoNgay FROM LoaiPhong WHERE tenLoai = ?";
-			stmt = connection.prepareStatement(sql);
-			stmt.setNString(1, tenLoaiPhong);
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				giaTheoNgay = rs.getInt("giaTheoNgay");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return giaTheoNgay;
+	    try {
+	        String sql = "SELECT giaTheoGio, giaTheoNgay, giaTheoDem FROM LoaiPhong WHERE tenLoai = ?";
+	        stmt = connection.prepareStatement(sql);
+	        stmt.setNString(1, tenLoaiPhong);
+	        rs = stmt.executeQuery();
+
+	        if (rs.next()) {
+	            switch (kieuDat.toLowerCase()) {
+	                case "theo giờ":
+	                    gia = rs.getInt("giaTheoGio");
+	                    break;
+	                case "theo ngày":
+	                    gia = rs.getInt("giaTheoNgay");
+	                    break;
+	                case "theo đêm":
+	                    gia = rs.getInt("giaTheoDem");
+	                    break;
+	                default:
+	                    System.err.println("Kiểu đặt phòng không hợp lệ: " + kieuDat);
+	                    break;
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return gia;
 	}
+
 
 	public List<String> layDanhSachPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong)
 			throws SQLException {
 		List<String> danhSachPhong = new ArrayList<>();
-
-		System.out.println("Đến ngày : " + denNgay);
-		System.out.println("Từ ngày : " + tuNgay);
 		LocalDateTime tuNgay14h = tuNgay.toLocalDateTime().toLocalDate().atTime(14, 0);
 		LocalDateTime denNgay12h = denNgay.toLocalDateTime().toLocalDate().atTime(12, 0);
-
-		System.out.println("Đến ngày timestamp : " + tuNgay14h);
-		System.out.println("Từ ngày tuNgayTimestamp: " + denNgay12h);
+		
 		Timestamp tuNgayTimestamp = Timestamp.valueOf(tuNgay14h);
 		Timestamp denNgayTimestamp = Timestamp.valueOf(denNgay12h);
-
-		System.out.println("Loại phòng: " + loaiPhong);
-		System.out.println("Đến ngày 12h: " + denNgayTimestamp);
-		System.out.println("Từ ngày 14h: " + tuNgayTimestamp);
 
 		String sql = """
 				         SELECT soPhong
@@ -191,7 +196,7 @@ public class ChiTietDonDatPhong_Dao {
 
 	public int demSoLuongDonTrongNgay() {
 		int soLuongDon = 0;
-		String sql = "SELECT COUNT(*) AS SoLuongDon FROM DonDatPhong WHERE CONVERT(DATE, ngayNhanPhong) = CONVERT(DATE, GETDATE())";
+		String sql = "SELECT COUNT(*) AS SoLuongDon FROM DonDatPhong WHERE CONVERT(DATE, ngayDatPhong) = CONVERT(DATE, GETDATE())";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 
@@ -248,43 +253,32 @@ public class ChiTietDonDatPhong_Dao {
 		return khachHang;
 	}
 
-	public boolean themDonDatPhong(String maDonDatPhong, String maKH, Timestamp ngayNhan, Timestamp ngayTra,
-			int soKhach, double tienCoc, String maNV, String loaiDon, String trangThai) {
+	public boolean themDonDatPhong(String maDonDatPhong, String maKH, Timestamp ngayDatPhong, Timestamp ngayNhan,
+			Timestamp ngayTra, int soKhach, double tienCoc, Timestamp thoiGianCoc, String maNV, String loaiDon,
+			String trangThai) {
 		boolean result = false;
 		PreparedStatement stmt = null;
 
 		try {
-			System.out.println("Đến ngày 1: " + ngayTra);
-			System.out.println("Từ ngày 1: " + ngayNhan);
-			// Chuyển Timestamp sang LocalDateTime
-			LocalDateTime nhanPhong = ngayNhan.toLocalDateTime().toLocalDate().atTime(14, 0);
-			LocalDateTime traPhong = ngayTra.toLocalDateTime().toLocalDate().atTime(12, 0);
-			System.out.println("Đến ngày timestamp 1: " + traPhong);
-			System.out.println("Từ ngày tuNgayTimestamp 1: " + nhanPhong);
-			// Chuyển lại Timestamp
-			Timestamp newNgayNhan = Timestamp.valueOf(nhanPhong);
-			Timestamp newNgayTra = Timestamp.valueOf(traPhong);
-			System.out.println("Đến ngày 12h 1: " + newNgayTra);
-			System.out.println("Từ ngày 14h 1: " + newNgayNhan);
+			String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong, "
+					+ "soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai) "
+					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-			// Thêm cột trangThai vào câu lệnh SQL
-			String sql = "INSERT INTO DonDatPhong (maDonDatPhong, maKH, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, maNV, loaiDon, trangThai) "
-					+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, maDonDatPhong);
 			stmt.setString(2, maKH);
-			stmt.setTimestamp(3, newNgayNhan);
-			stmt.setTimestamp(4, newNgayTra);
-			stmt.setInt(5, soKhach);
-			stmt.setDouble(6, tienCoc);
-			stmt.setString(7, maNV);
-			stmt.setNString(8, loaiDon);
-			stmt.setNString(9, trangThai); // thêm dòng này để set giá trị trạng thái
+			stmt.setTimestamp(3, ngayDatPhong);
+			stmt.setTimestamp(4, ngayNhan);
+			stmt.setTimestamp(5, ngayTra);
+			stmt.setInt(6, soKhach);
+			stmt.setDouble(7, tienCoc);
+			stmt.setTimestamp(8, thoiGianCoc);
+			stmt.setString(9, maNV);
+			stmt.setNString(10, loaiDon);
+			stmt.setNString(11, trangThai);
 
 			int rowsInserted = stmt.executeUpdate();
-			if (rowsInserted > 0) {
-				result = true;
-			}
+			result = rowsInserted > 0;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -298,6 +292,7 @@ public class ChiTietDonDatPhong_Dao {
 
 		return result;
 	}
+
 
 	public boolean themChiTietDonDatPhong(String maDonDatPhong, String soPhong) {
 		boolean result = false;
