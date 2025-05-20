@@ -12,7 +12,7 @@ import entity_CuaXien.DonDatPhong;
 public class ChiPhiPhatSinh_DAO {
 
     public boolean themChiPhiPhatSinh(ChiPhiPhatSinh chiPhi) {
-        String sql = "INSERT INTO ChiPhiPhatSinh (maChiPhi, chiPhiTBHong, soGioThem, maDonDatPhong, moTa) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiPhiPhatSinh (maChiPhi, chiPhiTBHong, soGioOQuaGio, maDonDatPhong, moTa) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = ConnectDB.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 

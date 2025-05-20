@@ -174,12 +174,13 @@ public class panel_timKiem extends JPanel {
                 }
 		        if (!soPhong.isEmpty()) {
 		            DonDatPhong_DAO dao = new DonDatPhong_DAO();
-		    	    DonDatPhong ddp = dao.getDonDatPhongTheoMaPhong(soPhong);
+		            System.out.println(soPhong);
+		    	    DonDatPhong ddp = dao.getDonDatPhongTheoMaP(soPhong);
 		    	    if (ddp != null) {
 		                // Tắt cửa sổ hiện tại nếu là JDialog hoặc JFrame
 		                Window window = SwingUtilities.getWindowAncestor(table_DonDatPhong);
 		                if (window != null) {
-		                    window.dispose(); // Tắt cửa sổ chứa bảng
+		                    window.dispose();
 		                }
 
 		                EventQueue.invokeLater(() -> {

@@ -176,6 +176,28 @@ INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
 VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
 go
 
-
+USE QuanLyKhachSan;
+go
+CREATE TABLE KhuyenMai (
+    maKhuyenMai VARCHAR(20) PRIMARY KEY,  
+    tenKhuyenMai NVARCHAR(50) NOT NULL,         
+    loaiKhuyenMai NVARCHAR(50) NOT NULL,                
+    giaTriKhuyenMai FLOAT,                        
+    ngayBatDau DATETIME NOT NULL,    
+    ngayKetThuc DATETIME NOT NULL,   
+    dieuKienApDung FLOAT NOT NULL,
+	trangThai NVARCHAR(20) NOT NULL
+);
+USE QuanLyKhachSan;
+go
+CREATE TABLE ChiTietApDung (
+    maDonDatPhong VARCHAR(20) NOT NULL,   -- Mã đơn đặt phòng (khóa ngoại)
+    maKhuyenMai VARCHAR(20) NOT NULL,     -- Mã khuyến mãi (khóa ngoại)
+    tongThanhToanSauApDung Float NOT NULL,
+    PRIMARY KEY (maDonDatPhong, maKhuyenMai),  -- Khóa chính kết hợp
+    CONSTRAINT FK_ChiTietApDung_DonDatPhong FOREIGN KEY (maDonDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
+    CONSTRAINT FK_ChiTietApDung_KhuyenMai FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai)
+);
+GO
 
 

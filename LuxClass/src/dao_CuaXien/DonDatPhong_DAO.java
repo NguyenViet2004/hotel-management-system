@@ -18,60 +18,8 @@ public class DonDatPhong_DAO {
 		// TODO Auto-generated constructor stub
 		danhSach= new ArrayList<>();
 	}
-//    public List<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
-//        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
-//                   + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
-//                   + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
-//                   + "FROM DonDatPhong ddp "
-//                   + "JOIN ChiTietDonDatPhong ct ON ddp.maDonDatPhong = ct.maDonDatPhong "
-//                   + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
-//                   + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-//                   + "WHERE ct.soPhong = ? AND ddp.trangThai = N'Chưa thanh toán'";
-//
-//        Connection conn = ConnectDB.getConnection();
-//        PreparedStatement stmt=null;
-//        try {
-//          stmt = conn.prepareStatement(sql);
-//          stmt.setString(1, soPhong);
-//          ResultSet rs = stmt.executeQuery();
-//	        while (rs.next()) {
-//	            KhachHang kh = new KhachHang(
-//	                rs.getString("maKH"),
-//	                rs.getString("tenKH"),
-//	                rs.getString("sdtKH"),
-//	                rs.getString("soCCCD"),
-//	                rs.getString("email")
-//	            );
-//	            NhanVien nv = new NhanVien(
-//	                rs.getString("maNV"),
-//	                rs.getString("tenNV"),
-//	                rs.getDate("ngaySinh").toLocalDate(),
-//	                rs.getString("sdtNV"),
-//	                rs.getString("diaChi"),
-//	                rs.getString("cccdNV"),
-//	                rs.getString("chucVu"),
-//	                rs.getString("caLamViec")
-//	            );
-//	            DonDatPhong ddp = new DonDatPhong(
-//	                rs.getString("maDonDatPhong"),
-//	                kh,
-//	                rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
-//	                rs.getTimestamp("ngayTraPhong").toLocalDateTime(),
-//	                rs.getInt("soKhach"),
-//	                rs.getDouble("tienCoc"),
-//	                nv,
-//	                rs.getString("loaiDon"),
-//	                rs.getString("trangThai")
-//	            );
-//	            danhSach.add(ddp);
-//	        }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return danhSach;
-//    }
-    public DonDatPhong getDonDatPhongTheoMaPhong(String soPhong) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
+    public List<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
                    + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
                    + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
                    + "FROM DonDatPhong ddp "
@@ -81,11 +29,61 @@ public class DonDatPhong_DAO {
                    + "WHERE ct.soPhong = ? AND ddp.trangThai = N'Chưa thanh toán'";
 
         Connection conn = ConnectDB.getConnection();
-        PreparedStatement stmt = null;
-        DonDatPhong ddp = null;
-
+        PreparedStatement stmt=null;
         try {
-            stmt = conn.prepareStatement(sql);
+          stmt = conn.prepareStatement(sql);
+          stmt.setString(1, soPhong);
+          ResultSet rs = stmt.executeQuery();
+	        while (rs.next()) {
+	        	KhachHang kh = new KhachHang(
+	        	        rs.getString("maKH"),
+	        	        rs.getString("tenKH"),
+	        	        rs.getString("sdtKH"),
+	        	        rs.getString("soCCCD"),
+	        	        rs.getString("email")
+	        	    );
+	            NhanVien nv = new NhanVien(
+	                rs.getString("maNV"),
+	                rs.getString("tenNV"),
+	                rs.getDate("ngaySinh").toLocalDate(),
+	                rs.getString("sdtNV"),
+	                rs.getString("diaChi"),
+	                rs.getString("cccdNV"),
+	                rs.getString("chucVu"),
+	                rs.getString("caLamViec")
+	            );
+	            DonDatPhong ddp = new DonDatPhong(
+	                rs.getString("maDonDatPhong"),
+	                kh,
+	                rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
+	                rs.getTimestamp("ngayTraPhong").toLocalDateTime(),
+	                rs.getInt("soKhach"),
+	                rs.getDouble("tienCoc"),
+	                nv,
+	                rs.getString("loaiDon"),
+	                rs.getString("trangThai")
+	            );
+	            danhSach.add(ddp);
+	        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return danhSach;
+    }
+    public DonDatPhong getDonDatPhongTheoMaP(String soPhong) {
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
+                   + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
+                   + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
+                   + "FROM DonDatPhong ddp "
+                   + "JOIN ChiTietDonDatPhong ct ON ddp.maDonDatPhong = ct.maDonDatPhong "
+                   + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
+                   + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
+                   + "WHERE ct.soPhong = ? AND ddp.trangThai = N'Chưa thanh toán'";
+
+        try (
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
             stmt.setString(1, soPhong);
             ResultSet rs = stmt.executeQuery();
 
@@ -109,7 +107,7 @@ public class DonDatPhong_DAO {
                     rs.getString("caLamViec")
                 );
 
-                ddp = new DonDatPhong(
+                return new DonDatPhong(
                     rs.getString("maDonDatPhong"),
                     kh,
                     rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
@@ -121,23 +119,21 @@ public class DonDatPhong_DAO {
                     rs.getString("trangThai")
                 );
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return ddp;
+        return null; // Nếu không tìm thấy
     }
 
     public List<DonDatPhong> getDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
-                + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
-                + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
-                + "FROM DonDatPhong ddp "
-//                + "JOIN ChiTietDonDatPhong ct ON ddp.maDonDatPhong = ct.maDonDatPhong "
-                + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
-                + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-                + "WHERE (kh.hoTen LIKE ? OR kh.sdt = ?) AND ddp.trangThai = N'Chưa thanh toán'";
+        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email,"
+                   + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
+                   + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
+                   + "FROM DonDatPhong ddp "
+                   + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
+                   + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
+                   + "WHERE (kh.hoTen LIKE ? OR kh.sdt = ?) AND ddp.trangThai = N'Chưa thanh toán'";
 
         try{
         	Connection connection = ConnectDB.getConnection();
@@ -147,12 +143,12 @@ public class DonDatPhong_DAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     KhachHang kh = new KhachHang(
-                        rs.getString("maKH"),
-                        rs.getString("tenKH"),
-                        rs.getString("sdtKH"),
-                        rs.getString("soCCCD"),
-                        rs.getString("email")
-                    );
+                            rs.getString("maKH"),
+                            rs.getString("tenKH"),
+                            rs.getString("sdtKH"),
+                            rs.getString("soCCCD"),
+                            rs.getString("email")
+                        );
                     NhanVien nv = new NhanVien(
                         rs.getString("maNV"),
                         rs.getString("tenNV"),
@@ -183,13 +179,13 @@ public class DonDatPhong_DAO {
         return danhSach;
     }
     public DonDatPhong getDonDatPhongTheoMa(String maDon) {
-        String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
-                   + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
-                   + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
-                   + "FROM DonDatPhong ddp "
-                   + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
-                   + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-                   + "WHERE ddp.maDonDatPhong = ?";
+    	String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
+    	           + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
+    	           + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
+    	           + "FROM DonDatPhong ddp "
+    	           + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
+    	           + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
+    	           + "WHERE ddp.maDonDatPhong = ?";
 
         try {
             Connection connection = ConnectDB.getConnection();
@@ -197,13 +193,13 @@ public class DonDatPhong_DAO {
             stmt.setString(1, maDon);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    KhachHang kh = new KhachHang(
-                        rs.getString("maKH"),
-                        rs.getString("tenKH"),
-                        rs.getString("sdtKH"),
-                        rs.getString("soCCCD"),
-                        rs.getString("email")
-                    );
+                	KhachHang kh = new KhachHang(
+                	        rs.getString("maKH"),
+                	        rs.getString("tenKH"),
+                	        rs.getString("sdtKH"),
+                	        rs.getString("soCCCD"),
+                	        rs.getString("email")
+                	    );
                     NhanVien nv = new NhanVien(
                         rs.getString("maNV"),
                         rs.getString("tenNV"),
@@ -275,3 +271,5 @@ public class DonDatPhong_DAO {
 
 
 }
+
+

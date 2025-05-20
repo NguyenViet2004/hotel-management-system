@@ -64,7 +64,7 @@ public class Phong_DAO {
                     "WHERE ctd.maDonDatPhong = ? AND p.trangThai = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maDonDatPhong);
-            stmt.setString(2, "Đã đặt"); 
+            stmt.setString(2, "Đang ở"); 
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -152,7 +152,7 @@ public class Phong_DAO {
             PreparedStatement stmt = conn.prepareStatement(sql)
         ) {
             stmt.setString(1, "Chưa thanh toán");
-            stmt.setString(2, "Đã đặt");   
+            stmt.setString(2, "Đang ở");   
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     // Dữ liệu phòng
