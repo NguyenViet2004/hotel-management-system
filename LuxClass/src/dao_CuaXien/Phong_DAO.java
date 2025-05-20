@@ -64,7 +64,7 @@ public class Phong_DAO {
                     "WHERE ctd.maDonDatPhong = ? AND p.trangThai = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maDonDatPhong);
-            stmt.setString(2, "Đã đặt"); 
+            stmt.setString(2, "Đang ở"); 
             rs = stmt.executeQuery();
 
             while (rs.next()) {
