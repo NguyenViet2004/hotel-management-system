@@ -40,7 +40,7 @@ public class GiaoDienChinh {
     private Timer timerSlideShow;
     private ArrayList<String> imagePaths;
     private int currentIndex = 0;
-    private final String imageFolderPath = "HinhNen";
+    private final String imageFolderPath = "img/HinhAnhGiaoDienChinh/HinhNen";
     private JPopupMenu quanLyCaPopupMenu;
     private Color defaultMenuItemBackground;
     private Color hoverBackgroundColor = new Color(91, 249, 33); // Màu xanh lá
@@ -93,248 +93,204 @@ public class GiaoDienChinh {
      * Initialize the contents of the frame.
      */
     private void initialize() {
+        // Tỷ lệ thiết kế gốc
+        final float BASE_WIDTH = 1536f;
+        final float BASE_HEIGHT = 816f;
+
         // Lấy kích thước màn hình thực tế
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
         GraphicsConfiguration gc = gd.getDefaultConfiguration();
-
-        // Lấy kích thước màn hình thực sự (bao gồm cả taskbar)
         Rectangle screenBounds = gc.getBounds();
         Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(gc);
-
-        // Tính kích thước thực tế trừ đi taskbar
         int screenWidth = screenBounds.width - (screenInsets.left + screenInsets.right);
         int screenHeight = screenBounds.height - (screenInsets.top + screenInsets.bottom);
 
-        // Tính toán kích thước JFrame
-        int frameWidth = (int) (screenWidth);  
-        int frameHeight = (int) (screenHeight); 
-        frame = new JFrame();
-        frame.setBackground(new Color(255, 255, 255));
-        frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\logo.png"));
-        frame.setBounds(100, 100, frameWidth, frameHeight); 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
-        frame.setLocationRelativeTo(null); // Hiển thị ở giữa màn hình (nếu không phải toàn màn hình)
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Đặt trạng thái phóng to toàn màn hình
+        // Scale helper
+        class Scaler {
+            float base;
+            int actual;
+            Scaler(float base, int actual) {
+                this.base = base;
+                this.actual = actual;
+            }
+            int apply(float value) {
+                return Math.round(value * actual / base);
+            }
+        }
+        Scaler w = new Scaler(BASE_WIDTH, screenWidth);
+        Scaler h = new Scaler(BASE_HEIGHT, screenHeight);
 
+        frame = new JFrame();
+        frame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/HinhAnhGiaoDienChinh/logo.png"));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.getContentPane().setLayout(null);
 
         JPanel Header = new JPanel();
-        Header.setBounds(0, 0, (int) frameWidth, (int) (frameHeight*0.12));
-        Header.setBackground(new Color(255, 255, 255));
-        frame.getContentPane().add(Header);
+        Header.setBounds(0, 0, screenWidth, h.apply(100));
+        Header.setBackground(Color.WHITE);
         Header.setLayout(null);
-        Header.setBorder(new LineBorder(Color.black));
+        Header.setBorder(new LineBorder(Color.BLACK));
+        frame.getContentPane().add(Header);
 
-        JLabel lblLoGo = new JLabel("");
-        ImageIcon originalIcon = new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\logo.png");
-        Image image = originalIcon.getImage().getScaledInstance(88, 88, Image.SCALE_SMOOTH);
-        ImageIcon logoIcon = new ImageIcon(image);
-        lblLoGo.setIcon(logoIcon);
-        lblLoGo.setBounds(5, 5, 88, 88);
+        JLabel lblLoGo = new JLabel();
+        ImageIcon originalIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/logo.png");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(w.apply(88), h.apply(88), Image.SCALE_SMOOTH);
+        lblLoGo.setIcon(new ImageIcon(scaledImage));
+        lblLoGo.setBounds(w.apply(5), h.apply(5), w.apply(88), h.apply(88));
         Header.add(lblLoGo);
 
-        JButton help = new JButton("help");
-        help.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\help.png"));
-        help.setBounds(1342, 20, 50, 50);
-        help.setContentAreaFilled(false); // Tắt nền
+        JButton help = new JButton();
+        help.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/help.png"));
+        help.setBounds(w.apply(1342), h.apply(20), w.apply(50), h.apply(50));
+        help.setContentAreaFilled(false);
         help.setBorderPainted(false);
         Header.add(help);
 
         JLabel lblNewLabel_1 = new JLabel("New label");
-        lblNewLabel_1.setBounds(1466, 29, 45, 13);
+        lblNewLabel_1.setBounds(w.apply(1466), h.apply(29), w.apply(45), h.apply(13));
         Header.add(lblNewLabel_1);
 
         JLabel lblNewLabel_2 = new JLabel("New label");
-        lblNewLabel_2.setBounds(1466, 74, 45, 13);
+        lblNewLabel_2.setBounds(w.apply(1466), h.apply(74), w.apply(45), h.apply(13));
         Header.add(lblNewLabel_2);
 
         JPanel Body = new JPanel();
-        Body.setBounds(0, 96,(int) frameWidth,(int) (frameHeight*0.86));
+        Body.setBounds(0, Header.getHeight(), screenWidth, screenHeight - Header.getHeight());
         Body.setBackground(new Color(226, 219, 219));
-        frame.getContentPane().add(Body);
         Body.setLayout(null);
+        frame.getContentPane().add(Body);
 
         JPanel Menupanel = new CustomRoundedPanel(15, 15, 15, 15);
-        Menupanel.setBackground(new Color(255, 255, 255));
-        Menupanel.setBounds(5, 5,(int) (frameWidth*0.216), (int) (frameHeight*0.74));
+        Menupanel.setBackground(Color.WHITE);
+        Menupanel.setBounds(w.apply(5), h.apply(5), w.apply(330), h.apply(600));
         Menupanel.setBorder(new RoundedBorder(20));
-        Body.add(Menupanel);
         Menupanel.setLayout(null);
+        Body.add(Menupanel);
 
-        // Tạo và thêm các JMenuItem và JLabel (cho "Quản lý ca")
-        JMenuItem QuanLyDatPhong = createMenuItem("Quản lý đặt phòng", 20, 10, 285, 60);
+        JMenuItem QuanLyDatPhong = createMenuItem("Quản lý đặt phòng", w.apply(20), h.apply(10), w.apply(285), h.apply(60));
         Menupanel.add(QuanLyDatPhong);
 
-        JMenuItem QuanLyKhachHang = createMenuItem("Quản lý khách hàng", 20, 70, 285, 60);
+        JMenuItem QuanLyKhachHang = createMenuItem("Quản lý khách hàng", w.apply(20), h.apply(70), w.apply(285), h.apply(60));
         Menupanel.add(QuanLyKhachHang);
 
-        JMenuItem QuanLyDatDichVu = createMenuItem("Quản lý đặt dịch vụ", 20, 140, 285, 60);
+        JMenuItem QuanLyDatDichVu = createMenuItem("Quản lý đặt dịch vụ", w.apply(20), h.apply(140), w.apply(285), h.apply(60));
         Menupanel.add(QuanLyDatDichVu);
 
-        JLabel lblQuanLyCa = createMenuLabel("Quản lý ca", 30, 210, 248, 60);
+        JLabel lblQuanLyCa = createMenuLabel("Quản lý ca", w.apply(30), h.apply(210), w.apply(248), h.apply(60));
         Menupanel.add(lblQuanLyCa);
 
         JPanel DongHoPannel = new JPanel();
-        DongHoPannel.setBackground(new Color(255, 255, 255));
-        DongHoPannel.setBounds(10, 483, 305, 99);
-        Menupanel.add(DongHoPannel);
+        DongHoPannel.setBackground(Color.WHITE);
+        DongHoPannel.setBounds(w.apply(10), h.apply(483), w.apply(305), h.apply(99));
         DongHoPannel.setLayout(null);
+        Menupanel.add(DongHoPannel);
 
-        JLabel Calendar = new JLabel("");
-        Calendar.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\lich.png"));
-        Calendar.setBounds(28, 10, 45, 34);
+        JLabel Calendar = new JLabel();
+        Calendar.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/lich.png"));
+        Calendar.setBounds(w.apply(28), h.apply(10), w.apply(45), h.apply(34));
         DongHoPannel.add(Calendar);
 
-        JLabel DongHo = new JLabel("");
-        DongHo.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\o'clock.png"));
-        DongHo.setBounds(30, 54, 45, 35);
+        JLabel DongHo = new JLabel();
+        DongHo.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/o'clock.png"));
+        DongHo.setBounds(w.apply(30), h.apply(54), w.apply(45), h.apply(35));
         DongHoPannel.add(DongHo);
 
-        ngaythangnam = new JLabel("20/05/2004"); // Khởi tạo JLabel
-        ngaythangnam.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        ngaythangnam.setBounds(94, 10, 173, 34);
+        ngaythangnam = new JLabel("20/05/2004");
+        ngaythangnam.setFont(new Font("Times New Roman", Font.BOLD, h.apply(28)));
+        ngaythangnam.setBounds(w.apply(94), h.apply(10), w.apply(173), h.apply(34));
         DongHoPannel.add(ngaythangnam);
 
-        giophutgiay = new JLabel("10:21:13"); // Khởi tạo JLabel
-        giophutgiay.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        giophutgiay.setBounds(94, 54, 183, 35);
+        giophutgiay = new JLabel("10:21:13");
+        giophutgiay.setFont(new Font("Times New Roman", Font.BOLD, h.apply(28)));
+        giophutgiay.setBounds(w.apply(94), h.apply(54), w.apply(183), h.apply(35));
         DongHoPannel.add(giophutgiay);
 
-        // Tạo JPopupMenu cho "Quản lý ca"
-        quanLyCaPopupMenu = new JPopupMenu();
-        JMenuItem NhanCa = createPopupMenuItem("Nhận ca");
-        quanLyCaPopupMenu.add(NhanCa);
-
-        JMenuItem GiaoCa = createPopupMenuItem("Giao ca");
-        quanLyCaPopupMenu.add(GiaoCa);
-
-        lblQuanLyCa.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                quanLyCaPopupMenu.show(lblQuanLyCa, 130, lblQuanLyCa.getHeight());
-            }
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                lblQuanLyCa.setBackground(hoverBackgroundColor);
-                lblQuanLyCa.setForeground(hoverForegroundColor);
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                lblQuanLyCa.setBackground(defaultMenuItemBackground);
-                lblQuanLyCa.setForeground(Color.BLACK); // Hoặc màu chữ mặc định của bạn
-            }
-        });
-        defaultMenuItemBackground = lblQuanLyCa.getBackground(); // Lưu màu nền mặc định
-
-        hinhKhachSanpannel = new CustomRoundedPanel(15, 15, 15, 15);;
-        hinhKhachSanpannel.setBackground(new Color(255, 255, 255));
-        hinhKhachSanpannel.setBounds(350, 5, (int) (frameWidth*0.77), (int) (frameHeight*0.841));
+        JPanel hinhKhachSanpannel = new CustomRoundedPanel(15, 15, 15, 15);
+        hinhKhachSanpannel.setBackground(Color.WHITE);
+        hinhKhachSanpannel.setBounds(w.apply(350), h.apply(5), w.apply(1170), h.apply(685));
         hinhKhachSanpannel.setBorder(new RoundedBorder(20));
+        hinhKhachSanpannel.setLayout(null);
         Body.add(hinhKhachSanpannel);
 
-        loadImagesFromFolder();
-        hinhKhachSanpannel.setLayout(null);
-
         HinhAnhNen = new JLabel();
-        HinhAnhNen.setIcon(null);
-        HinhAnhNen.setBounds(5, 5,(int) (frameWidth*0.763), (int) (frameHeight*0.832));
+        HinhAnhNen.setBounds(w.apply(5), h.apply(5), w.apply(1160), h.apply(675));
         hinhKhachSanpannel.add(HinhAnhNen);
-        updateImage();
+        loadImagesFromFolder();
 
-        btnPrev = new JButton("");
-        btnPrev.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\prev.png"));
-        btnPrev.setBounds(10, 309, 50, 73);
+        btnPrev = new JButton();
+        btnPrev.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/prev.png"));
+        btnPrev.setBounds(w.apply(10), h.apply(309), w.apply(50), h.apply(73));
         btnPrev.setContentAreaFilled(false);
         btnPrev.setBorderPainted(false);
         btnPrev.setOpaque(false);
         hinhKhachSanpannel.add(btnPrev);
         hinhKhachSanpannel.setComponentZOrder(btnPrev, 0);
-        btnPrev.addActionListener(e -> showPreviousImage());
 
-        btnNext = new JButton("");
-        btnNext.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\next .png"));
-        btnNext.setBounds(1123, 309, 50, 73);
+        btnNext = new JButton();
+        btnNext.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/next .png"));
+        btnNext.setBounds(w.apply(1123), h.apply(309), w.apply(50), h.apply(73));
         btnNext.setContentAreaFilled(false);
         btnNext.setBorderPainted(false);
         btnNext.setOpaque(false);
         hinhKhachSanpannel.add(btnNext);
         hinhKhachSanpannel.setComponentZOrder(btnNext, 0);
-     // Ẩn hai nút khi khởi tạo
+
         btnPrev.setVisible(false);
         btnNext.setVisible(false);
 
-        // Thêm MouseListener cho btnPrev
         btnPrev.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseEntered(MouseEvent e) {
                 btnPrev.setVisible(true);
             }
-
-            @Override
             public void mouseExited(MouseEvent e) {
                 btnPrev.setVisible(false);
             }
         });
 
-        // Thêm MouseListener cho btnNext
         btnNext.addMouseListener(new MouseAdapter() {
-            @Override
             public void mouseEntered(MouseEvent e) {
                 btnNext.setVisible(true);
             }
-
-            @Override
             public void mouseExited(MouseEvent e) {
                 btnNext.setVisible(false);
             }
         });
+
         hinhKhachSanpannel.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
             public void mouseMoved(MouseEvent e) {
-                // Lấy vị trí chuột tương đối so với panel
-                int mouseX = e.getX();
-                int mouseY = e.getY();
-
-                // Lấy tọa độ của nút bấm trong panel
-                Rectangle boundsPrev = btnPrev.getBounds();
-                Rectangle boundsNext = btnNext.getBounds();
-
-                // Kiểm tra nếu chuột nằm trong vùng của button
-                boolean isOverPrev = boundsPrev.contains(mouseX, mouseY);
-                boolean isOverNext = boundsNext.contains(mouseX, mouseY);
-
-                // Hiển thị hoặc ẩn button
+                boolean isOverPrev = btnPrev.getBounds().contains(e.getPoint());
+                boolean isOverNext = btnNext.getBounds().contains(e.getPoint());
                 btnPrev.setVisible(isOverPrev);
                 btnNext.setVisible(isOverNext);
             }
         });
 
-
-        JPanel DangSuatpanel = new CustomRoundedPanel(15, 15, 15, 15);;
-        DangSuatpanel.setBackground(new Color(255, 255, 255));
-        DangSuatpanel.setBounds(5, 610,(int) (frameWidth*0.215), (int) (frameHeight*0.1));
-        DangSuatpanel.setBorder(new RoundedBorder(20));;
-        Body.add(DangSuatpanel);
+        JPanel DangSuatpanel = new CustomRoundedPanel(15, 15, 15, 15);
+        DangSuatpanel.setBackground(Color.WHITE);
+        DangSuatpanel.setBounds(w.apply(5), h.apply(610), w.apply(330), h.apply(80));
+        DangSuatpanel.setBorder(new RoundedBorder(20));
         DangSuatpanel.setLayout(null);
-        
+        Body.add(DangSuatpanel);
+
         JButton DangSuat = new JButton("Đăng Suất");
-        DangSuat.setBounds(30, 10, 285, 59);
-        DangSuatpanel.add(DangSuat);
-        DangSuat.setIcon(new ImageIcon("C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\Phat_trien_ung_dung\\Test\\BaiCuaXien\\src\\HinhAnhGiaoDienChinh\\exit.png"));
+        DangSuat.setBounds(w.apply(30), h.apply(10), w.apply(285), h.apply(59));
+        DangSuat.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/exit.png"));
         DangSuat.setHorizontalAlignment(SwingConstants.LEFT);
-        DangSuat.setToolTipText("");
-        DangSuat.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        DangSuat.setBackground(new Color(255, 255, 255));
+        DangSuat.setFont(new Font("Times New Roman", Font.BOLD, h.apply(28)));
+        DangSuat.setBackground(Color.WHITE);
         DangSuat.setBorderPainted(false);
         DangSuat.setOpaque(false);
+        DangSuatpanel.add(DangSuat);
 
-
+        btnPrev.addActionListener(e -> showPreviousImage());
         btnNext.addActionListener(e -> showNextImage());
 
-        timerSlideShow = new Timer(3000, e -> showNextImage());
+        timerSlideShow = new Timer(2000, e -> showNextImage());
         timerSlideShow.start();
     }
+
 
     // Hàm tạo JMenuItem với thuộc tính và thêm MouseListener cho hiệu ứng hover
     private JMenuItem createMenuItem(String text, int x, int y, int width, int height) {
