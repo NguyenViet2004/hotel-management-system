@@ -134,7 +134,7 @@ public class KhachHang_Dao {
 
         try {
             Connection connection = ConnectDB.getConnection();
-
+            System.out.println("ngayhientai:"+ngayHienTai);
             // Đếm số khách hàng đăng ký trong ngày để tạo số thứ tự
             String demSql = "SELECT COUNT(*) AS tongSoKhach FROM KhachHang WHERE maKH LIKE ?";
             stmt = connection.prepareStatement(demSql);
@@ -153,7 +153,7 @@ public class KhachHang_Dao {
 
             // Tạo mã khách hàng: KH + DDMMYYYY + 4 chữ số tự động tăng
             String maKH = "KH" + ngayHienTai + String.format("%04d", soLuongKhach);
-
+            System.out.println("mã khách hàng:"+maKH);
             // Thêm khách hàng vào CSDL
             String insertSql = "INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES (?, ?, ?, ?, ?)";
             stmt = connection.prepareStatement(insertSql);
@@ -205,6 +205,7 @@ public class KhachHang_Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("thông tin khách hàng được lấy lại theo sdt:"+kh);
         return kh;
     }
 
