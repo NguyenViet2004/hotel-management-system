@@ -124,48 +124,48 @@ go
 INSERT INTO Phong (soPhong, trangThai, loaiPhong, moTa) VALUES
 	-- Tổ hợp 1: Chỉ Ban công
 	('P101', N'Trống', 'single', N'Ban công'),
-	('P201', N'Trống', 'single', N'Ban công'),
-	('P301', N'Trống', 'double', N'Ban công'),
+	('P201', N'Trống', 'double', N'Ban công'),
+	('P301', N'Trống', 'twin', N'Ban công'),
 	('P401', N'Trống', 'triple', N'Ban công'),
 
 	-- Tổ hợp 2: Chỉ View biển
 	('P102', N'Trống', 'single', N'View biển'),
 	('P202', N'Trống', 'double', N'View biển'),
-	('P302', N'Trống', 'triple', N'View biển'),
-	('P403', N'Trống', 'double', N'View biển'),
+	('P302', N'Trống', 'twin', N'View biển'),
+	('P402', N'Trống', 'triple', N'View biển'),
 
 	-- Tổ hợp 3: Chỉ Hút thuốc
 	('P103', N'Trống', 'single', N'Phòng hút thuốc'),
-	('P203', N'Trống', 'twin', N'Phòng hút thuốc'),
-	('P303', N'Trống', 'double', N'Phòng hút thuốc'),
-	('P402', N'Trống', 'triple', N'Phòng hút thuốc'),
+	('P203', N'Trống', 'double', N'Phòng hút thuốc'),
+	('P303', N'Trống', 'twin', N'Phòng hút thuốc'),
+	('P403', N'Trống', 'triple', N'Phòng hút thuốc'),
 
 	-- Tổ hợp 4: Ban công + View biển
-	('P104', N'Trống', 'double', N'Ban công, View biển'),
-	('P204', N'Trống', 'twin', N'Ban công, View biển'),
-	('P304', N'Trống', 'triple', N'Ban công, View biển'),
-	('P404', N'Trống', 'double', N'Ban công, View biển'),
+	('P104', N'Trống', 'single', N'Ban công, View biển'),
+	('P204', N'Trống', 'double', N'Ban công, View biển'),
+	('P304', N'Trống', 'twin', N'Ban công, View biển'),
+	('P404', N'Trống', 'triple', N'Ban công, View biển'),
 
 	-- Tổ hợp 5: Ban công + Hút thuốc
-	('P105', N'Trống', 'double', N'Ban công, Phòng hút thuốc'),
-	('P205', N'Trống', 'single', N'Ban công, Phòng hút thuốc'),
-	('P305', N'Trống', 'triple', N'Ban công, Phòng hút thuốc'),
-	('P405', N'Trống', 'twin', N'Ban công, Phòng hút thuốc'),
+	('P105', N'Trống', 'single', N'Ban công, Phòng hút thuốc'),
+	('P205', N'Trống', 'double', N'Ban công, Phòng hút thuốc'),
+	('P305', N'Trống', 'twin', N'Ban công, Phòng hút thuốc'),
+	('P405', N'Trống', 'triple', N'Ban công, Phòng hút thuốc'),
 
 	-- Tổ hợp 6: View biển + Hút thuốc
-	('P106', N'Trống', 'double', N'View biển, Phòng hút thuốc'),
-	('P206', N'Trống', 'twin', N'View biển, Phòng hút thuốc'),
-	('P306', N'Trống', 'single', N'View biển, Phòng hút thuốc'),
-	('P406', N'Trống', 'double', N'View biển, Phòng hút thuốc'),
+	('P106', N'Trống', 'single', N'View biển, Phòng hút thuốc'),
+	('P206', N'Trống', 'double', N'View biển, Phòng hút thuốc'),
+	('P306', N'Trống', 'twin', N'View biển, Phòng hút thuốc'),
+	('P406', N'Trống', 'triple', N'View biển, Phòng hút thuốc'),
 
 	-- Tổ hợp 7: Ban công + View biển + Hút thuốc
-	('P501', N'Trống', 'twin', N'Ban công, View biển, Phòng hút thuốc'),
-	('P502', N'Trống', 'double', N'Ban công, View biển, Phòng hút thuốc'),
-	('P503', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc'),
-	('P504', N'Trống', 'twin', N'Ban công, View biển, Phòng hút thuốc'),
-	('P601', N'Trống', 'twin', N'Ban công, View biển, Phòng hút thuốc'),
-	('P602', N'Trống', 'double', N'Ban công, View biển, Phòng hút thuốc'),
-	('P603', N'Trống', 'single', N'Ban công, View biển, Phòng hút thuốc');
+	('P501', N'Trống', 'single', N'Ban công, View biển, Phòng hút thuốc'),
+	('P502', N'Trống', 'single', N'Ban công, View biển, Phòng hút thuốc'),
+	('P503', N'Trống', 'double', N'Ban công, View biển, Phòng hút thuốc'),
+	('P504', N'Trống', 'double', N'Ban công, View biển, Phòng hút thuốc'),
+	('P505', N'Trống', 'double', N'Ban công, View biển, Phòng hút thuốc'),
+	('P506', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc'),
+	('P507', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc');
 go
 INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
 VALUES 
