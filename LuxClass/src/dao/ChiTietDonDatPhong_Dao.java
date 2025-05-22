@@ -68,43 +68,72 @@ public class ChiTietDonDatPhong_Dao {
 	}
 
 
-	public int countSoPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong) throws SQLException {
-		int soLuong = 0;
+	public int countSoPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong, String moTa) throws SQLException {
+	    int soLuong = 0;
 
-		// Lấy LocalDate từ Timestamp rồi set giờ
-		LocalDateTime tuNgay14h = tuNgay.toLocalDateTime().toLocalDate().atTime(14, 0);
-		LocalDateTime denNgay12h = denNgay.toLocalDateTime().toLocalDate().atTime(12, 0);
+	    // Chuẩn hóa giờ: nhận lúc 14h, trả lúc 12h
+	    LocalDateTime tuNgay14h = tuNgay.toLocalDateTime().toLocalDate().atTime(14, 0);
+	    LocalDateTime denNgay12h = denNgay.toLocalDateTime().toLocalDate().atTime(12, 0);
 
-		Timestamp tuNgayTimestamp = Timestamp.valueOf(tuNgay14h);
-		Timestamp denNgayTimestamp = Timestamp.valueOf(denNgay12h);
+	    Timestamp tuNgayTimestamp = Timestamp.valueOf(tuNgay14h);
+	    Timestamp denNgayTimestamp = Timestamp.valueOf(denNgay12h);
 
-		String sql = """
-				    SELECT COUNT(*) AS SoPhongTrong
-				    FROM Phong
-				    WHERE loaiPhong = ?
-				      AND soPhong NOT IN (
-				        SELECT CT.soPhong
-				        FROM ChiTietDonDatPhong CT
-				        JOIN DonDatPhong DDP ON CT.maDonDatPhong = DDP.maDonDatPhong
-				        WHERE
-				            DDP.ngayNhanPhong < ?
-				            AND DDP.ngayTraPhong > ?
-				      )
-				""";
+	    // Chọn SQL phù hợp tùy theo moTa
+	    String sql;
+	    if (moTa == null || moTa.trim().isEmpty()) {
+	        sql = """
+	            SELECT COUNT(*) AS SoPhongTrong
+	            FROM Phong
+	            WHERE loaiPhong = ?
+	              AND soPhong NOT IN (
+	                  SELECT CT.soPhong
+	                  FROM ChiTietDonDatPhong CT
+	                  JOIN DonDatPhong DDP ON CT.maDonDatPhong = DDP.maDonDatPhong
+	                  WHERE
+	                      DDP.ngayNhanPhong < ?
+	                      AND DDP.ngayTraPhong > ?
+	              )
+	        """;
+	    } else {
+	        sql = """
+	            SELECT COUNT(*) AS SoPhongTrong
+	            FROM Phong
+	            WHERE loaiPhong = ?
+	              AND moTa = ?
+	              AND soPhong NOT IN (
+	                  SELECT CT.soPhong
+	                  FROM ChiTietDonDatPhong CT
+	                  JOIN DonDatPhong DDP ON CT.maDonDatPhong = DDP.maDonDatPhong
+	                  WHERE
+	                      DDP.ngayNhanPhong < ?
+	                      AND DDP.ngayTraPhong > ?
+	              )
+	        """;
+	    }
 
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-			stmt.setString(1, loaiPhong);
-			stmt.setTimestamp(2, denNgayTimestamp); // ngày nhận < 12:00 ngày kết thúc
-			stmt.setTimestamp(3, tuNgayTimestamp); // ngày trả > 14:00 ngày bắt đầu
+	    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+	        stmt.setString(1, loaiPhong);
 
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				soLuong = rs.getInt("SoPhongTrong");
-			}
-		}
+	        if (moTa == null || moTa.trim().isEmpty()) {
+	            stmt.setTimestamp(2, denNgayTimestamp);
+	            stmt.setTimestamp(3, tuNgayTimestamp);
+	        } else {
+	            stmt.setString(2, moTa);
+	            stmt.setTimestamp(3, denNgayTimestamp);
+	            stmt.setTimestamp(4, tuNgayTimestamp);
+	        }
 
-		return soLuong;
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                soLuong = rs.getInt("SoPhongTrong");
+	            }
+	        }
+	    }
+
+	    return soLuong;
 	}
+
+
 
 	public int getGiaTheoKieu(String tenLoaiPhong, String kieuDat) {
 	    int gia = 0;
