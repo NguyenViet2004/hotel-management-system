@@ -91,7 +91,7 @@ public class DatPhong_GUI extends JDialog {
 	private String maNhanVien = "2025LT001";
 	private String maDon;
 	private String loaiDon = "Theo ngày";
-	private String trangThai = "Chưa thanh toán";
+	private String trangThai;
 	private int soKhach;
 
 	//	biến xử lý thời gian đặt phòng
@@ -108,7 +108,6 @@ public class DatPhong_GUI extends JDialog {
 	private Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
 	private Timestamp hanChotCoc = Timestamp.valueOf(LocalDateTime.now().plusHours(3));
 
-
 	//biến thông tin tổng tiền
 	private JLabel tongTienLabel;
 	private JLabel[] totalLabels;
@@ -118,6 +117,8 @@ public class DatPhong_GUI extends JDialog {
 	private long tongTien;
 	
 	private long tienCoc;
+	
+	private String moTa;
 
 	//==============TRANG CHÍNH GUI==============
 	public DatPhong_GUI(JFrame parentFrame) {
@@ -645,7 +646,7 @@ public class DatPhong_GUI extends JDialog {
 		searchPanel.add(searchButton);
 
 		searchButton.addActionListener(e -> {
-			String moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
+			moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
 			System.out.println(">> moTa để truy vấn SQL: " + moTa);
 
 			
@@ -1243,7 +1244,7 @@ public class DatPhong_GUI extends JDialog {
 		JPanel rowPanelDouble = null;
 		try {
 			rowPanelDouble = createRoomRow("Double Room", chitietdondatphongdao.getGiaTheoKieu(roomNames[0],loaiDon),
-					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double"), totalLabels, roomQuantities, 0);
+					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "double",moTa), totalLabels, roomQuantities, 0);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1255,7 +1256,7 @@ public class DatPhong_GUI extends JDialog {
 		JPanel rowPanelSingle = null;
 		try {
 			rowPanelSingle = createRoomRow("Single Room", chitietdondatphongdao.getGiaTheoKieu(roomNames[1],loaiDon),
-					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single"), totalLabels, roomQuantities, 1);
+					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "single",moTa), totalLabels, roomQuantities, 1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1267,7 +1268,7 @@ public class DatPhong_GUI extends JDialog {
 		JPanel rowPanelTwin = null;
 		try {
 			rowPanelTwin = createRoomRow("Twin Room", chitietdondatphongdao.getGiaTheoKieu(roomNames[2],loaiDon),
-					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin"), totalLabels, roomQuantities, 2);
+					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "twin",moTa), totalLabels, roomQuantities, 2);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1279,7 +1280,7 @@ public class DatPhong_GUI extends JDialog {
 		JPanel rowPanelTriple = null;
 		try {
 			rowPanelTriple = createRoomRow("Triple Room", chitietdondatphongdao.getGiaTheoKieu(roomNames[3],loaiDon),
-					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple"), totalLabels, roomQuantities, 3);
+					chitietdondatphongdao.countSoPhongTrong(tuNgay, denNgay, "triple",moTa), totalLabels, roomQuantities, 3);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1645,8 +1646,7 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
 		centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
-		// ======================= Top Panel: Thông tin khách hàng mới
-		// =======================================
+		// ======================= Top Panel: Thông tin khách hàng mới=====================
 		JLabel lblKhachMoi = new JLabel("Nhập thông tin khách hàng");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 20));
 		JPanel topPanel = new JPanel();
@@ -1790,8 +1790,8 @@ public class DatPhong_GUI extends JDialog {
 				String soCccd = txtCccd.getText().trim();
 
 				// Kiểm tra đủ thông tin
-				if (hoTen.isEmpty() || sdtMoi.isEmpty() || soCccd.isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin khách hàng mới!");
+				if (hoTen.isEmpty() || sdtMoi.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin khách hàng!");
 					return;
 				}else {
 					// Kiểm tra regex
@@ -1807,9 +1807,23 @@ public class DatPhong_GUI extends JDialog {
 						JOptionPane.showMessageDialog(null, "Email không hợp lệ!");
 						return;
 					}
-					if (!soCccd.matches(regexCccd)) {
-						JOptionPane.showMessageDialog(null, "Căn cước công dăn hoặc hộ chiếu không hợp lệ!");
-						return;
+					// Xử lý kiểm tra CCCD theo kiểu đặt
+					if (kieuDat.equals("Trực tiếp")) {
+						// Bắt buộc nhập và hợp lệ
+						if (soCccd.isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Vui lòng nhập căn cước công dân hoặc hộ chiếu!");
+							return;
+						}
+						if (!soCccd.matches(regexCccd)) {
+							JOptionPane.showMessageDialog(null, "Căn cước công dân hoặc hộ chiếu không hợp lệ!");
+							return;
+						}
+					} else {
+						// Gián tiếp: Nếu có nhập thì mới kiểm tra định dạng
+						if (!soCccd.isEmpty() && !soCccd.matches(regexCccd)) {
+							JOptionPane.showMessageDialog(null, "Căn cước công dân hoặc hộ chiếu không hợp lệ!");
+							return;
+						}
 					}
 				}
 				
@@ -1832,6 +1846,13 @@ public class DatPhong_GUI extends JDialog {
 					}
 				}
 				kh = chitietdondatphongdao.timKhachHangTheoSDT(sdtMoi);
+
+		        // Gán trạng thái dựa theo kiểu đặt
+		        if (kieuDat.equals("Trực tiếp")) {
+		            trangThai = "Chưa thanh toán";
+		        } else if (kieuDat.equals("Gián tiếp")) {
+		            trangThai = "Đã đặt";
+		        }
 				//thêm đơn đặt phòng
 		        System.out.println("===== THÔNG TIN ĐƠN ĐẶT PHÒNG =====");
 		        System.out.println("Mã đơn: " + maDon);
