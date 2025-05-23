@@ -71,13 +71,6 @@ public class ChiTietDonDatPhong_Dao {
 	public int countSoPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong, String moTa) throws SQLException {
 	    int soLuong = 0;
 
-	    // Chuẩn hóa giờ: nhận lúc 14h, trả lúc 12h
-	    LocalDateTime tuNgay14h = tuNgay.toLocalDateTime().toLocalDate().atTime(14, 0);
-	    LocalDateTime denNgay12h = denNgay.toLocalDateTime().toLocalDate().atTime(12, 0);
-
-	    Timestamp tuNgayTimestamp = Timestamp.valueOf(tuNgay14h);
-	    Timestamp denNgayTimestamp = Timestamp.valueOf(denNgay12h);
-
 	    // Chọn SQL phù hợp tùy theo moTa
 	    String sql;
 	    if (moTa == null || moTa.trim().isEmpty()) {
@@ -115,12 +108,12 @@ public class ChiTietDonDatPhong_Dao {
 	        stmt.setString(1, loaiPhong);
 
 	        if (moTa == null || moTa.trim().isEmpty()) {
-	            stmt.setTimestamp(2, denNgayTimestamp);
-	            stmt.setTimestamp(3, tuNgayTimestamp);
+	            stmt.setTimestamp(2, denNgay);
+	            stmt.setTimestamp(3, tuNgay);
 	        } else {
 	            stmt.setString(2, moTa);
-	            stmt.setTimestamp(3, denNgayTimestamp);
-	            stmt.setTimestamp(4, tuNgayTimestamp);
+	            stmt.setTimestamp(3, denNgay);
+	            stmt.setTimestamp(4, tuNgay);
 	        }
 
 	        try (ResultSet rs = stmt.executeQuery()) {
@@ -180,11 +173,6 @@ public class ChiTietDonDatPhong_Dao {
 	public List<String> layDanhSachPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong)
 			throws SQLException {
 		List<String> danhSachPhong = new ArrayList<>();
-		LocalDateTime tuNgay14h = tuNgay.toLocalDateTime().toLocalDate().atTime(14, 0);
-		LocalDateTime denNgay12h = denNgay.toLocalDateTime().toLocalDate().atTime(12, 0);
-		
-		Timestamp tuNgayTimestamp = Timestamp.valueOf(tuNgay14h);
-		Timestamp denNgayTimestamp = Timestamp.valueOf(denNgay12h);
 
 		String sql = """
 				         SELECT soPhong
@@ -203,8 +191,8 @@ public class ChiTietDonDatPhong_Dao {
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
 			stmt.setString(1, loaiPhong);
-			stmt.setTimestamp(2, denNgayTimestamp);
-			stmt.setTimestamp(3, tuNgayTimestamp);
+			stmt.setTimestamp(2, denNgay);
+			stmt.setTimestamp(3, tuNgay);
 
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (!rs.isBeforeFirst()) {
