@@ -16,7 +16,7 @@ import entity_CuaXien.NhanVien;
 public class DonDatPhong_DAO {
 	List<DonDatPhong> danhSach;
 	public DonDatPhong_DAO() {
-		// TODO Auto-generated constructor stub//
+		// TODO Auto-generated constructor stub
 		danhSach= new ArrayList<>();
 	}
 	public List<DonDatPhong> getDonDatPhongDaThanhToan() {

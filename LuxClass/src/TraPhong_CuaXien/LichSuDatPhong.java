@@ -322,7 +322,6 @@ public class LichSuDatPhong extends JDialog {
 	        if (isPushed) {
 	            int row = table.getSelectedRow();
 	            if (row >= 0) {
-	                // Lấy dữ liệu từ bảng
 	                String maDon = table.getValueAt(row, 0).toString();
                     DonDatPhong_DAO dao= new DonDatPhong_DAO();
                     DonDatPhong ddp= dao.getDonDatPhongTheoMa(maDon);

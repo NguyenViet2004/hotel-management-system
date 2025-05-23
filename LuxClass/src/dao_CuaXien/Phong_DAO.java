@@ -100,8 +100,7 @@ public class Phong_DAO {
 
         return dsPhong;
     }
-    
-   // 
+
     public List<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
         List<Phong> dsPhong = new ArrayList<>();
         Connection con = null;

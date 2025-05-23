@@ -25,7 +25,6 @@ public class ThanhToanChiTiet extends JDialog {
 	private JTextField tongThanhToan;
 	private JTextField maGiam;
 	private JTextField ngayDatPhong;
-
 	public static void main(String[] args) {
 		try {
 			ThanhToanChiTiet dialog = new ThanhToanChiTiet();
