@@ -25,6 +25,7 @@ import entity.Phong;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -72,8 +73,6 @@ public class DatPhong_GUI extends JDialog {
 	//kích thước màn hình các trang
 	private int screenWidthTrang1;
 	private int screenHeightTrang1;
-	private int screenWidthTrang2;
-	private int screenHeightTrang2;
 
 	//lớp Dao
 	private Phong_Dao phongdao;
@@ -120,6 +119,12 @@ public class DatPhong_GUI extends JDialog {
 	
 	private String moTa;
 
+	JCheckBox cbBanCong = new JCheckBox(tienIchPhong[0]);
+	JCheckBox cbHutThuoc = new JCheckBox(tienIchPhong[1]);
+	JCheckBox cbViewBien = new JCheckBox(tienIchPhong[2]);
+	
+	ItemListener tienIchListener;
+
 	//==============TRANG CHÍNH GUI==============
 	public DatPhong_GUI(JFrame parentFrame) {
 		super(parentFrame, "Form Đặt Phòng", true); // true = modal dialog
@@ -139,15 +144,16 @@ public class DatPhong_GUI extends JDialog {
 		// Khởi tạo CardLayout
 		cardLayout = new CardLayout();
 		mainPanel = new JPanel(cardLayout);
-
+		JPanel trang1 = null;
 		// Thêm các trang
 		try {
-			mainPanel.add(taoTrangDatPhong(), "Trang1");
+			trang1 =taoTrangDatPhong();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		mainPanel.add(trang1, "Trang1");
+		mainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		cardLayout.show(mainPanel, "Trang1");
 
 		add(mainPanel);
@@ -171,15 +177,23 @@ public class DatPhong_GUI extends JDialog {
 
 		// ====== Panel chọn phòng ======
 		JPanel chonPhongPanel = new JPanel(new BorderLayout());
-		chonPhongPanel.setBackground(Color.WHITE);
 		chonPhongPanel.setPreferredSize(new Dimension(800, 300));
+		chonPhongPanel.setBackground(Color.RED);
+
 
 		// =========================================== Header==============================================
 		JPanel headerPanel = new JPanel(new BorderLayout());
-		headerPanel.setBackground(Color.WHITE); // Màu xám nhạt
+		headerPanel.setBackground(Color.RED); // Màu xám nhạt
 		headerPanel.setPreferredSize(new Dimension(screenWidthTrang1, headerHeight));
 
 		// ============== Panel chứa tiêu đề và nút đóng=================phần 1 của header===================
+		// Panel phụ bên phải để chứa cả hai nút
+		//panel chứa
+		JPanel rightButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		rightButtonsPanel.setBackground(Color.WHITE);
+        int rightButtonsPanelWidth = headerHeight;
+        int rightButtonsPanelHeight = headerHeight;
+		
 		JPanel titleClosePanel = new JPanel(new BorderLayout());
 		titleClosePanel.setBackground(Color.WHITE);
 		titleClosePanel.setPreferredSize(new Dimension(screenWidthTrang1, (int) (headerHeight * 0.22)));
@@ -261,10 +275,15 @@ public class DatPhong_GUI extends JDialog {
 		// Thêm bảng vào popup
 		popupPanel.add(gridPanel);
 
+		int btnWidth = (int) (rightButtonsPanelWidth * 0.12); // 0.1%
+        int btnHeight = (int) (rightButtonsPanelHeight * 0.13);  // 80%
+        System.out.println("fsfsdfsd:"+ btnWidth);
+        ImageIcon icon = new ImageIcon("img/HinhAnhGiaoDienChinh/icons8-info-100.png");
+		Image scaledImage = icon.getImage().getScaledInstance(btnWidth,btnHeight, Image.SCALE_SMOOTH);
+		ImageIcon imageIcon = new ImageIcon(scaledImage);
 		// Nút mới (nút cài đặt)
-		JButton suggestButton = new JButton("⚙");
+		JButton suggestButton = new JButton(imageIcon);
 		suggestButton.setFont(new Font("Arial", Font.BOLD, 12)); // nhỏ hơn nút X
-		suggestButton.setForeground(Color.BLACK);
 		suggestButton.setBackground(Color.WHITE);
 		suggestButton.setFocusPainted(false);
 		suggestButton.setBorder(BorderFactory.createEmptyBorder(0, 15, 15, 15));
@@ -294,10 +313,6 @@ public class DatPhong_GUI extends JDialog {
 		    }
 		});
 
-
-		// Panel phụ bên phải để chứa cả hai nút
-		JPanel rightButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-		rightButtonsPanel.setBackground(Color.WHITE);
 		rightButtonsPanel.add(suggestButton);
 		rightButtonsPanel.add(closeButton);
 
@@ -491,7 +506,21 @@ public class DatPhong_GUI extends JDialog {
 		        // Trả phòng là hôm sau
 		        checkOutButton.setSelectedDate(selectedDate.plusDays(1));
 		    }
-		    
+		    //tự động load phòng trống
+			moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
+			System.out.println(">> moTa để truy vấn SQL: " + moTa);
+			System.out.println(">> từ ngày: " + tuNgay);
+			System.out.println(">> đêbs ngày: " + denNgay);
+	        loadGiaoDienTheoNgay();
+	        // 2. Xóa giao diện trung tâm cũ nếu cần
+	        centerPanel.removeAll(); // Xoá hết component cũ
+
+	        // 3. Load lại giao diện
+	        loadGiaoDienTheoNgay();
+
+	        // 4. Cập nhật lại giao diện
+	        centerPanel.revalidate();
+	        centerPanel.repaint();
 		});
 
 
@@ -529,6 +558,19 @@ public class DatPhong_GUI extends JDialog {
 		checkOutWrapper.setBackground(Color.WHITE);
 		checkOutButton = new CustomDateButton(LocalDate.now().plusDays(1), "12:00", selectedDate -> {
 		    tomorrowTimestamp = Timestamp.valueOf(selectedDate.atStartOfDay());
+		    //tự động load phòng trống
+		    moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
+			System.out.println(">> moTa để truy vấn SQL: " + moTa);
+	        loadGiaoDienTheoNgay();
+	        // 2. Xóa giao diện trung tâm cũ nếu cần
+	        centerPanel.removeAll(); // Xoá hết component cũ
+
+	        // 3. Load lại giao diện
+	        loadGiaoDienTheoNgay();
+
+	        // 4. Cập nhật lại giao diện
+	        centerPanel.revalidate();
+	        centerPanel.repaint();
 		});
 		checkOutWrapper.add(checkOutButton);
 		checkOutPanel.add(checkOutWrapper, BorderLayout.CENTER);
@@ -615,10 +657,7 @@ public class DatPhong_GUI extends JDialog {
 		bottomInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		// Panel chứa checkbox (70%)
-		// Khởi tạo checkbox cụ thể từ chỉ số
-		JCheckBox cbBanCong = new JCheckBox(tienIchPhong[0]);
-		JCheckBox cbHutThuoc = new JCheckBox(tienIchPhong[1]);
-		JCheckBox cbViewBien = new JCheckBox(tienIchPhong[2]);
+
 
 		// Set font và background
 		cbBanCong.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -628,7 +667,24 @@ public class DatPhong_GUI extends JDialog {
 		cbBanCong.setBackground(Color.WHITE);
 		cbHutThuoc.setBackground(Color.WHITE);
 		cbViewBien.setBackground(Color.WHITE);
+		
 
+		tienIchListener = e -> {
+		    // 1. Cập nhật mô tả
+		    moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
+		    System.out.println(">> moTa để truy vấn SQL: " + moTa);
+		    System.out.println(">> từ ngày: " + tuNgay);
+		    System.out.println(">> đến ngày: " + denNgay);
+
+		    // 2. Xoá và load lại giao diện phòng
+		    centerPanel.removeAll(); // Xoá component cũ
+		    loadGiaoDienTheoNgay(); // Nạp lại giao diện phòng theo bộ lọc mới
+		    centerPanel.revalidate(); // Cập nhật bố cục
+		    centerPanel.repaint();    // Vẽ lại
+		};
+		cbBanCong.addItemListener(tienIchListener);
+		cbHutThuoc.addItemListener(tienIchListener);
+		cbViewBien.addItemListener(tienIchListener);
 		// Thêm vào panel
 		JPanel checkboxPanel = new JPanel(new GridLayout(2, 3, 10, 10));
 		checkboxPanel.setBackground(Color.WHITE);
@@ -637,65 +693,14 @@ public class DatPhong_GUI extends JDialog {
 		checkboxPanel.add(cbViewBien);
 		
 
-		// Panel chứa nút "Tìm kiếm" (30%)
-		JPanel searchPanel = new JPanel(new GridBagLayout()); // để căn giữa nút
-		searchPanel.setBackground(Color.WHITE);
-		JButton searchButton = new JButton("Tìm kiếm");
-		searchButton.setFont(new Font("Arial", Font.BOLD, 16));
-		searchButton.setPreferredSize(new Dimension(120, 40));
-		searchPanel.add(searchButton);
-
-		searchButton.addActionListener(e -> {
-			moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
-			System.out.println(">> moTa để truy vấn SQL: " + moTa);
-
-			
-			tuNgay = convertToTimestamp(checkInButton.getSelectedDate(), checkInButton.fixedTime);
-			denNgay = convertToTimestamp(checkOutButton.getSelectedDate(), checkOutButton.fixedTime);
-
-	        if (tuNgay == null || denNgay == null) {
-	            JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
-	            return; 
-	        }
-
-	        if (!tuNgay.before(denNgay)) {
-	            JOptionPane.showMessageDialog(null, "Ngày nhận phòng phải trước ngày trả phòng.", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
-	            return;
-	        }
-	        
-	        int soLuongKhach = Integer.parseInt(guestCountLabel.getText());
-	        if (soLuongKhach <= 0) {
-	            JOptionPane.showMessageDialog(null, "Số lượng khách phải lớn hơn 0.", "Lỗi số lượng", JOptionPane.ERROR_MESSAGE);
-	            return;
-	        }
-
-	        if (loaiDon == null) {
-	            JOptionPane.showMessageDialog(null, "Vui lòng chọn kiểu đơn phòng (Giờ / Ngày / Đêm).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
-	            return;
-	        }
-
-	        loadGiaoDienTheoNgay();
-	     // 2. Xóa giao diện trung tâm cũ nếu cần
-	        centerPanel.removeAll(); // Xoá hết component cũ
-
-	        // 3. Load lại giao diện
-	        loadGiaoDienTheoNgay();
-
-	        // 4. Cập nhật lại giao diện
-	        centerPanel.revalidate();
-	        centerPanel.repaint();
-			
-		});
-
 
 		// Thiết lập kích thước tương đối
 		int bottomWidth = (int)(screenWidthTrang1 * 0.8);
-		checkboxPanel.setPreferredSize(new Dimension((int)(bottomWidth * 0.7), 0));
-		searchPanel.setPreferredSize(new Dimension((int)(bottomWidth * 0.3), 0));
+		checkboxPanel.setPreferredSize(new Dimension((int)(bottomWidth * 1), 0));
+
 
 		// Thêm vào bottomInfoPanel
-		bottomInfoPanel.add(checkboxPanel, BorderLayout.WEST);
-		bottomInfoPanel.add(searchPanel, BorderLayout.EAST);
+		bottomInfoPanel.add(checkboxPanel, BorderLayout.CENTER);
 
 
 		// Thêm top và bottom vào infoPanel
@@ -747,10 +752,31 @@ public class DatPhong_GUI extends JDialog {
 		confirmButton.setFocusPainted(false);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
 		confirmButton.addActionListener(e -> {
-			//kiểm tra số lượng khách 
+
+	        tuNgay = convertToTimestamp(checkInButton.getSelectedDate(), checkInButton.fixedTime);
+			denNgay = convertToTimestamp(checkOutButton.getSelectedDate(), checkOutButton.fixedTime);
+
+	        if (tuNgay == null || denNgay == null) {
+	            JOptionPane.showMessageDialog(null, "Vui lòng chọn cả ngày nhận và ngày trả phòng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+	            return; 
+	        }
+
+	        if (!tuNgay.before(denNgay)) {
+	            JOptionPane.showMessageDialog(null, "Ngày nhận phòng phải trước ngày trả phòng.", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+	        if (tuNgay.before(currentTimestamp)) {
+	            JOptionPane.showMessageDialog(null, "Ngày nhận phòng không hợp lệ. Vui lòng chọn từ thời điểm hiện tại trở đi.", "Lỗi ngày nhận", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
 	        int soLuongKhach = Integer.parseInt(guestCountLabel.getText());
 	        if (soLuongKhach <= 0) {
 	            JOptionPane.showMessageDialog(null, "Số lượng khách phải lớn hơn 0.", "Lỗi số lượng", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        if (loaiDon == null) {
+	            JOptionPane.showMessageDialog(null, "Vui lòng chọn kiểu đơn phòng (Giờ / Ngày / Đêm).", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
 	            return;
 	        }
             
@@ -894,8 +920,6 @@ public class DatPhong_GUI extends JDialog {
 	    centerPanel.revalidate();
 	    centerPanel.repaint();
 	}
-
-
 
 	//==============Hàm tạo DatePicker==============
 	public class CustomDateButton extends JButton {
@@ -1104,12 +1128,11 @@ public class DatPhong_GUI extends JDialog {
 
 	}
 
-	
 	//==============Hàm tạo từng row phòng==============
 	private JPanel createRoomRow(String roomName, int roomPrice, int soPhongTrong, JLabel[] totalLabels,
 			int[] roomQuantities, int index) {
 		JPanel rowPanel = new JPanel(new GridLayout(1, 4));
-		rowPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.95), (int) (screenHeightTrang2 * 0.17)));
+		rowPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.95), (int) (screenHeightTrang1 * 0.17)));
 		rowPanel.setBackground(Color.decode("#EEEEEE"));
 		rowPanel.setBorder(new LineBorder(Color.decode("#D9D9D9"), 2));
 
@@ -1640,6 +1663,10 @@ public class DatPhong_GUI extends JDialog {
 
 		// =============================== Center
 		// =============================================================
+		System.out.println("=== Kích thước các trang ===");
+		System.out.println("Trang 1: " + screenWidthTrang1 + " x " + screenHeightTrang1);
+		
+
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout());
 		centerPanel.setBackground(Color.WHITE);
@@ -1650,7 +1677,7 @@ public class DatPhong_GUI extends JDialog {
 		JLabel lblKhachMoi = new JLabel("Nhập thông tin khách hàng");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 20));
 		JPanel topPanel = new JPanel();
-		topPanel.setBackground(Color.WHITE);
+		topPanel.setBackground(Color.RED);
 
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
@@ -1674,6 +1701,17 @@ public class DatPhong_GUI extends JDialog {
 		JLabel lblCccd = new JLabel("<html>Căn cước/hộ chiếu<font color='red'>*</font></html>");
 		lblCccd.setFont(new Font("Arial", Font.BOLD, cochu));
 		JTextField txtCccd = new JTextField();
+		
+		JLabel lblBuffet = new JLabel("Dịch vụ buffet");
+		lblBuffet.setFont(new Font("Arial", Font.BOLD, cochu));
+
+		JSpinner spnBuffet = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
+		spnBuffet.setFont(new Font("Arial", Font.PLAIN, cochu));
+		spnBuffet.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnBuffet.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnBuffet.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+
+
 
 		JLabel lblYeuCau = new JLabel("Yêu cầu đặc biệt");
 		lblYeuCau.setFont(new Font("Arial", Font.BOLD, cochu));
@@ -1685,9 +1723,9 @@ public class DatPhong_GUI extends JDialog {
 		chkXeDay.setFont(new Font("Arial", Font.BOLD, cochu));
 
 		JPanel chkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		chkPanel.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
-		chkPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
-		chkPanel.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.5), 40));
+		chkPanel.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
+		chkPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
+		chkPanel.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
 
 		chkPanel.setBackground(Color.WHITE);
 		chkPanel.add(chkNoi);
@@ -1700,10 +1738,10 @@ public class DatPhong_GUI extends JDialog {
 				.addGroup(layout.createSequentialGroup()
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(lblSDT)
 								.addComponent(lblHoTen).addComponent(lblEmail).addComponent(lblCccd)
-								.addComponent(lblYeuCau))
+								.addComponent(lblBuffet).addComponent(lblYeuCau))
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(txtSDT)
 								.addComponent(txtHoTen).addComponent(txtEmail).addComponent(txtCccd)
-								.addComponent(chkPanel))));
+								.addComponent(spnBuffet).addComponent(chkPanel))));
 
 		int khoangcach = 20;
 		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(lblKhachMoi).addGap(khoangcach)
@@ -1718,6 +1756,9 @@ public class DatPhong_GUI extends JDialog {
 				.addGap(khoangcach)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblCccd)
 						.addComponent(txtCccd))
+				.addGap(khoangcach)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblBuffet)
+						.addComponent(spnBuffet))
 				.addGap(khoangcach).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(lblYeuCau).addComponent(chkPanel)));
 		setTextFieldHeight(txtHoTen);
