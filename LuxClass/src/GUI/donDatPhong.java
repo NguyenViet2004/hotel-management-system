@@ -1790,7 +1790,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				Math.round(321f * frameWidth / 1536f), Math.round(28f * frameHeight / 816f));
 		khuyenMai.setBorder(BorderFactory.createEmptyBorder()); // Tắt viền
 		khuyenMai.setBackground(null); // Tắt màu nền
-		khuyenMai.setOpaque(false); // Làm comboBox trong suốt
+		khuyenMai.setOpaque(false); 
 		panel_2.add(khuyenMai);
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");

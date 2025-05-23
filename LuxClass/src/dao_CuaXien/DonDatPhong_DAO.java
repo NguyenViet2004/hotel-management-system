@@ -239,7 +239,7 @@ public class DonDatPhong_DAO {
             stmt.setString(2, maDonDatPhong);
 
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
+            return rowsAffected > 0; 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -255,7 +255,7 @@ public class DonDatPhong_DAO {
             stmt.setString(1, maDonDatPhong);
 
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; // trả về true nếu cập nhật thành công
+            return rowsAffected > 0; 
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

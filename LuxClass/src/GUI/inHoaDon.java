@@ -284,45 +284,45 @@ public class inHoaDon {
     }
     
 
-    public static void main(String[] args) {
-        try {
-            // Tạo dữ liệu mẫu
-            List<Object[]> danhSachPhong = new ArrayList<>();
-            danhSachPhong.add(new Object[]{"P101", "Deluxe", "2 ngày", 1500000, 3000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
-            JLabel qrCodeLabel = new JLabel();
-            // Gọi hàm tạo hóa đơn
-            
-            
-            
-            taoHoaDon(
-                "HD20230001", 
-                "15/06/2023", 
-                "Nguyễn Văn A", 
-                "0912345678", 
-                "10/06/2023", 
-                "12/06/2023", 
-                danhSachPhong, 
-                4000000, 
-                500000, 
-                200000, 
-                1000000, 
-                "SUMMER10", 
-                3700000, 
-                "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon.pdf"
-            );
-            
-            System.out.println("Đã tạo hóa đơn thành công!");
-        } catch (Exception e) {
-            System.err.println("Lỗi khi tạo hóa đơn:");
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try {
+//            // Tạo dữ liệu mẫu
+//            List<Object[]> danhSachPhong = new ArrayList<>();
+//            danhSachPhong.add(new Object[]{"P101", "Deluxe", "2 ngày", 1500000, 3000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            danhSachPhong.add(new Object[]{"P102", "Standard", "1 ngày", 1000000, 1000000});
+//            JLabel qrCodeLabel = new JLabel();
+//            // Gọi hàm tạo hóa đơn
+//            
+//            
+//            
+//            taoHoaDon(
+//                "HD20230001", 
+//                "15/06/2023", 
+//                "Nguyễn Văn A", 
+//                "0912345678", 
+//                "10/06/2023", 
+//                "12/06/2023", 
+//                danhSachPhong, 
+//                4000000, 
+//                500000, 
+//                200000, 
+//                1000000, 
+//                "SUMMER10", 
+//                3700000, 
+//                "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon.pdf"
+//            );
+//            
+//            System.out.println("Đã tạo hóa đơn thành công!");
+//        } catch (Exception e) {
+//            System.err.println("Lỗi khi tạo hóa đơn:");
+//            e.printStackTrace();
+//        }
+//    }
     
     
 }
