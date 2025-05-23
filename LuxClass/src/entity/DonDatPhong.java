@@ -23,11 +23,12 @@ public class DonDatPhong {
 	private String loaiDon;
 	private String trangThai;
 	private ArrayList<ChiTietDonDatPhong> chiTietPhong;
+
 	public DonDatPhong() {
 		// TODO - implement DonDatPhong.DonDatPhong
 
 	}
-	
+
 	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, LocalDateTime ngayNhanPhong,
 			LocalDateTime ngayTraPhong, int soKhach, double tienCoc, NhanVien nhanVien, String loaiDon,
 			String trangThai) {
@@ -42,12 +43,12 @@ public class DonDatPhong {
 		this.loaiDon = loaiDon;
 		this.trangThai = trangThai;
 	}
-	
+
 	public DonDatPhong(String maDonDatPhong) {
 		super();
 		this.maDonDatPhong = maDonDatPhong;
 	}
-	
+
 	public String getMaDonDatPhong() {
 		return maDonDatPhong;
 	}
@@ -121,61 +122,61 @@ public class DonDatPhong {
 	}
 
 	public ArrayList<ChiTietDonDatPhong> getChiTietPhong() {
-	    return chiTietPhong;
+		return chiTietPhong;
 	}
 
 	public void setChiTietPhong(ArrayList<ChiTietDonDatPhong> chiTietPhong) {
-	    this.chiTietPhong = chiTietPhong;
+		this.chiTietPhong = chiTietPhong;
 	}
 
 	public double tinhTienPhong() {
-	    ChiTietDonDatPhong_Dao chiTietDonDatPhong_Dao = new ChiTietDonDatPhong_Dao();
-	    chiTietPhong = chiTietDonDatPhong_Dao.getChiTietDonDatPhongTheoMaDon(maDonDatPhong);
+		ChiTietDonDatPhong_Dao chiTietDonDatPhong_Dao = new ChiTietDonDatPhong_Dao();
+		chiTietPhong = chiTietDonDatPhong_Dao.getChiTietDonDatPhongTheoMaDon(maDonDatPhong);
 
-	    Phong_Dao phong_Dao = new Phong_Dao();
-	    LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
+		Phong_Dao phong_Dao = new Phong_Dao();
+		LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
 
-	    double tongTien = 0;
-	    
-	    // Chuyển LocalDateTime thành Instant
-	    ZoneId zone = ZoneId.systemDefault(); // hoặc chọn zone cụ thể nếu cần
-	    Instant start = ngayNhanPhong.atZone(zone).toInstant();
-	    Instant end = ngayTraPhong.atZone(zone).toInstant();
-	    
-	    // Tính số giờ và số ngày (hoặc số đêm nếu cần)
-	    long soGio = Duration.between(start, end).toHours();  // Tổng số giờ
-	    long soNgay = Duration.between(start, end).toDays();  // Tổng số ngày
-	    long soDem = soNgay;  // Theo logic tính số đêm như số ngày
+		double tongTien = 0;
 
-	    // Nếu bạn cần làm tròn số ngày/đêm, tính lại như sau:
-	    if (Duration.between(start, end).toHours() > 12) {
-	        soNgay++;
-	    }
+		// Chuyển LocalDateTime thành Instant
+		ZoneId zone = ZoneId.systemDefault(); // hoặc chọn zone cụ thể nếu cần
+		Instant start = ngayNhanPhong.atZone(zone).toInstant();
+		Instant end = ngayTraPhong.atZone(zone).toInstant();
 
-	    // Vòng lặp xử lý các chi tiết phòng
-	    for (ChiTietDonDatPhong ct : chiTietPhong) {
-	        Phong phong = ct.getPhong();
-	        phong = phong_Dao.getPhongTheoMa(phong.getSoPhong());  // Lấy thông tin phòng
-	        LoaiPhong loaiPhong = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong());  // Lấy loại phòng
+		// Tính số giờ và số ngày (hoặc số đêm nếu cần)
+		long soGio = Duration.between(start, end).toHours(); // Tổng số giờ
+		long soNgay = Duration.between(start, end).toDays(); // Tổng số ngày
+		long soDem = soNgay; // Theo logic tính số đêm như số ngày
 
-	        // Tính tiền tùy theo loại đơn
-	        switch (loaiDon) {
-	            case "Theo giờ":
-	                tongTien += loaiPhong.getGiaTheoGio() * soGio;
-	                break;
-	            case "Theo ngày":
-	                tongTien += loaiPhong.getGiaTheoNgay() * soNgay;
-	                break;
-	            case "Theo đêm":
-	                tongTien += loaiPhong.getGiaTheoDem() * soDem;
-	                break;
-	            default:
-	                break;
-	        }
-	    }
-	    return tongTien;
+		// Nếu bạn cần làm tròn số ngày/đêm, tính lại như sau:
+		if (Duration.between(start, end).toHours() > 12) {
+			soNgay++;
+		}
+
+		// Vòng lặp xử lý các chi tiết phòng
+		for (ChiTietDonDatPhong ct : chiTietPhong) {
+			Phong phong = ct.getPhong();
+			phong = phong_Dao.getPhongTheoMa(phong.getSoPhong()); // Lấy thông tin phòng
+			LoaiPhong loaiPhong = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong()); // Lấy loại
+																											// phòng
+
+			// Tính tiền tùy theo loại đơn
+			switch (loaiDon) {
+			case "Theo giờ":
+				tongTien += loaiPhong.getGiaTheoGio() * soGio;
+				break;
+			case "Theo ngày":
+				tongTien += loaiPhong.getGiaTheoNgay() * soNgay;
+				break;
+			case "Theo đêm":
+				tongTien += loaiPhong.getGiaTheoDem() * soDem;
+				break;
+			default:
+				break;
+			}
+		}
+		return tongTien;
 	}
-
 
 	/**
 	 * 
@@ -190,42 +191,43 @@ public class DonDatPhong {
 		// TODO - implement DonDatPhong.tinhTongTien
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public void tinhTienCoc(LocalDateTime thoiGianDatPhong) {
-	    Duration duration = Duration.between(thoiGianDatPhong, ngayNhanPhong);
-	    long hoursBeforeCheckin = duration.toHours();
+		Duration duration = Duration.between(thoiGianDatPhong, ngayNhanPhong);
+		long hoursBeforeCheckin = duration.toHours();
 
-	    if (hoursBeforeCheckin >= 1) {
-	        // Đặt trước ít nhất 1 tiếng thì yêu cầu cọc
-	        this.tienCoc = tinhTienPhong() * 0.3;
-	        System.out.println("Khách đặt trước, cần đặt cọc: " + tienCoc);
-	    } else {
-	        this.tienCoc = 0;
-	        System.out.println("Khách đặt tại quầy, không cần đặt cọc.");
-	    }
+		if (hoursBeforeCheckin >= 1) {
+			// Đặt trước ít nhất 1 tiếng thì yêu cầu cọc
+			this.tienCoc = tinhTienPhong() * 0.3;
+			System.out.println("Khách đặt trước, cần đặt cọc: " + tienCoc);
+		} else {
+			this.tienCoc = 0;
+			System.out.println("Khách đặt tại quầy, không cần đặt cọc.");
+		}
 	}
-	
+
 	public double phiHuyPhong(LocalDateTime thoiGianDatPhong, LocalDateTime thoiGianHuy) {
-	    Duration durationDat = Duration.between(thoiGianDatPhong, ngayNhanPhong);
-	    long hoursBeforeCheckinAtDat = durationDat.toHours();
+		Duration durationDat = Duration.between(thoiGianDatPhong, ngayNhanPhong);
+		long hoursBeforeCheckinAtDat = durationDat.toHours();
 
-	    // Nếu đặt trực tiếp (gần giờ nhận phòng), miễn phí hủy
-	    if (hoursBeforeCheckinAtDat < 1) {
-	        return 0;
-	    }
+		// Nếu đặt trực tiếp (gần giờ nhận phòng), miễn phí hủy
+		if (hoursBeforeCheckinAtDat < 1) {
+			return 0;
+		}
 
-	    long gioTruoc = Duration.between(thoiGianHuy, ngayNhanPhong).toHours();
+		long gioTruoc = Duration.between(thoiGianHuy, ngayNhanPhong).toHours();
 
-	    if (gioTruoc >= 48) {
-	        return 0;
-	    } else if (gioTruoc >= 24) {
-	        return tienCoc * 0.5;
-	    } else {
-	        return tienCoc;
-	    }
+		if (gioTruoc >= 48) {
+			return 0;
+		} else if (gioTruoc >= 24) {
+			return tienCoc * 0.5;
+		} else {
+			return tienCoc;
+		}
 	}
+
 	public double tinhTienHoanCoc() {
 		return tienCoc - phiHuyPhong(ngayTraPhong, ngayNhanPhong);
 	}
-	
+
 }

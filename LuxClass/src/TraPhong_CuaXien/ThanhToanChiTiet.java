@@ -25,13 +25,13 @@ public class ThanhToanChiTiet extends JDialog {
 	private JTextField tongThanhToan;
 	private JTextField maGiam;
 	private JTextField ngayDatPhong;
+
 	public static void main(String[] args) {
 		try {
 			ThanhToanChiTiet dialog = new ThanhToanChiTiet();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setThongTinDatPhong("DP001", "Nguyễn Văn A", "0123456789",
-                    "P102, P102", "2025-05-20", "2025-05-22", "2025-05-25",
-                    "KM2025", "2,500,000 VND");
+			dialog.setThongTinDatPhong("DP001", "Nguyễn Văn A", "0123456789", "P102, P102", "2025-05-20", "2025-05-22",
+					"2025-05-25", "KM2025", "2,500,000 VND");
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();

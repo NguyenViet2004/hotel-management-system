@@ -82,7 +82,7 @@ public class LichSuDatPhong extends JDialog {
 			lblNewLabel.setBounds(412, 10, 241, 41);
 			contentPanel.add(lblNewLabel);
 		}
-		
+
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
 		panel.setBounds(10, 246, 1050, 343);
@@ -94,23 +94,18 @@ public class LichSuDatPhong extends JDialog {
 		lblCcnt.setFont(new Font("Times New Roman", Font.BOLD, 24));
 		lblCcnt.setBounds(342, 10, 350, 41);
 		panel.add(lblCcnt);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 63, 1030, 270);
 		panel.add(scrollPane);
-		
+
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null},
-			},
-			new String[] {
-				"M\u00E3 \u0111\u01A1n ", "H\u1ECD v\u00E0 t\u00EAn kh\u00E1ch h\u00E0ng", " S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Ng\u00E0y tr\u1EA3 ph\u00F2ng", "T\u1ED5ng ti\u1EC1n", ""
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				true, false, false, false, false, true
-			};
+		table.setModel(new DefaultTableModel(new Object[][] { { null, null, null, null, null, null }, },
+				new String[] { "M\u00E3 \u0111\u01A1n ", "H\u1ECD v\u00E0 t\u00EAn kh\u00E1ch h\u00E0ng",
+						" S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Ng\u00E0y tr\u1EA3 ph\u00F2ng", "T\u1ED5ng ti\u1EC1n",
+						"" }) {
+			boolean[] columnEditables = new boolean[] { true, false, false, false, false, true };
+
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
@@ -126,7 +121,7 @@ public class LichSuDatPhong extends JDialog {
 		table.getColumnModel().getColumn(5).setResizable(false);
 		table.getColumnModel().getColumn(5).setPreferredWidth(30);
 		table.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-		
+
 		table.setRowHeight(26);
 		table.setBackground(Color.WHITE);
 		table.setOpaque(false);
@@ -148,246 +143,240 @@ public class LichSuDatPhong extends JDialog {
 		table.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), table));
 
 		// Căn giữa header
-		DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+		DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader()
+				.getDefaultRenderer();
 		headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		scrollPane.setViewportView(table);
-		
+
 		JButton taiLai = new JButton("Tải lại");
 		taiLai.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		taiLai.setBackground(new Color(128, 255, 128));
 		taiLai.setBounds(933, 10, 107, 41);
 		taiLai.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		    	 DefaultTableModel model = (DefaultTableModel) table.getModel();
-		 	    model.setRowCount(0); // Xóa dữ liệu cũ
-		         DonDatPhong_DAO aDao= new DonDatPhong_DAO();
-		         List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan(); // Lấy danh sách đơn đã thanh toán
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.setRowCount(0); // Xóa dữ liệu cũ
+				DonDatPhong_DAO aDao = new DonDatPhong_DAO();
+				List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan(); // Lấy danh sách đơn đã thanh toán
 
-		 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-		 	    for (DonDatPhong ddp :  danhSach) {
-		 	        KhachHang kh = ddp.getKhachHang();
-		             String maDon= ddp.getMaDonDatPhong();
-		 	        String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
-		 	        String sdt = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
-		 	        String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
-		          
-		 	        double tongTien= 0.0;
-		             ChiTietApDung_DAO ctap= new ChiTietApDung_DAO();
-		             List<ChiTietApDung> apDungs= ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
-		             for (ChiTietApDung ct : apDungs) {
-		                 tongTien += ct.getTongThanhToanSauApDung();
-		             }
-		             DecimalFormat df = new DecimalFormat("#,###.##");
-		             String tongTienFormatted = df.format(tongTien);
-		 	        model.addRow(new Object[] {maDon, hoTen, sdt, ngayTra, tongTienFormatted, "Chi tiết" });
-		        }
-		    }
+				for (DonDatPhong ddp : danhSach) {
+					KhachHang kh = ddp.getKhachHang();
+					String maDon = ddp.getMaDonDatPhong();
+					String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
+					String sdt = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
+					String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
+
+					double tongTien = 0.0;
+					ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
+					List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
+					for (ChiTietApDung ct : apDungs) {
+						tongTien += ct.getTongThanhToanSauApDung();
+					}
+					DecimalFormat df = new DecimalFormat("#,###.##");
+					String tongTienFormatted = df.format(tongTien);
+					model.addRow(new Object[] { maDon, hoTen, sdt, ngayTra, tongTienFormatted, "Chi tiết" });
+				}
+			}
 		});
 
 		panel.add(taiLai);
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 255, 255));
 		panel_1.setBounds(10, 48, 538, 192);
 		contentPanel.add(panel_1);
 		panel_1.setLayout(null);
-		panel_1.setBorder(BorderFactory.createTitledBorder(
-			    BorderFactory.createLineBorder(Color.GRAY, 2),
-			    "Tìm kiếm đơn đặt phòng",
-			    TitledBorder.LEFT,
-			    TitledBorder.TOP,
-			    new Font("Arial", Font.BOLD, 16),
-			    Color.DARK_GRAY
-			));
+		panel_1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY, 2),
+				"Tìm kiếm đơn đặt phòng", TitledBorder.LEFT, TitledBorder.TOP, new Font("Arial", Font.BOLD, 16),
+				Color.DARK_GRAY));
 
-		
 		JLabel lblHVTn = new JLabel("Họ và tên:");
 		lblHVTn.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		lblHVTn.setBounds(25, 40, 130, 41);
 		panel_1.add(lblHVTn);
-		
+
 		JLabel lblSinThoi = new JLabel("Số điện thoại:");
 		lblSinThoi.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		lblSinThoi.setBounds(25, 91, 156, 41);
 		panel_1.add(lblSinThoi);
-		
+
 		hoVaTen = new JTextField();
 		hoVaTen.setFont(new Font("Times New Roman", Font.PLAIN, 22));
 		hoVaTen.setBounds(186, 40, 286, 34);
 		panel_1.add(hoVaTen);
 		hoVaTen.setColumns(10);
-		
+
 		SDT = new JTextField();
 		SDT.setFont(new Font("Times New Roman", Font.PLAIN, 22));
 		SDT.setColumns(10);
 		SDT.setBounds(186, 91, 286, 34);
 		panel_1.add(SDT);
-		
+
 		JButton tim = new JButton("Tìm");
 		tim.setBackground(new Color(128, 255, 128));
 		tim.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		tim.setBounds(398, 135, 74, 32);
-		
-		
+
 		tim.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        String ten = hoVaTen.getText().trim();
-		        String sdt = SDT.getText().trim();
+			public void actionPerformed(ActionEvent e) {
+				String ten = hoVaTen.getText().trim();
+				String sdt = SDT.getText().trim();
 
-		        // Kiểm tra nếu tên hoặc số điện thoại rỗng
-		        if (ten.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng nhập họ và tên.");
-		            hoVaTen.requestFocus();
-		            return;
-		        }
-		        if (sdt.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng nhập số điện thoại.");
-		            SDT.requestFocus();
-		            return;
-		        }
+				// Kiểm tra nếu tên hoặc số điện thoại rỗng
+				if (ten.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Vui lòng nhập họ và tên.");
+					hoVaTen.requestFocus();
+					return;
+				}
+				if (sdt.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Vui lòng nhập số điện thoại.");
+					SDT.requestFocus();
+					return;
+				}
 
-		        DonDatPhong_DAO dao = new DonDatPhong_DAO();
-		        List<DonDatPhong> danhSach = dao.getDonDatPhongDaThanhToanTheoTenVaSĐT(ten, sdt);
+				DonDatPhong_DAO dao = new DonDatPhong_DAO();
+				List<DonDatPhong> danhSach = dao.getDonDatPhongDaThanhToanTheoTenVaSĐT(ten, sdt);
 
-		        DefaultTableModel model = (DefaultTableModel) table.getModel();
-		        model.setRowCount(0); // Xóa dữ liệu cũ
+				DefaultTableModel model = (DefaultTableModel) table.getModel();
+				model.setRowCount(0); // Xóa dữ liệu cũ
 
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-		        for (DonDatPhong ddp : danhSach) {
-		            KhachHang kh = ddp.getKhachHang();
-		            String maDon = ddp.getMaDonDatPhong();
-		            String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
-		            String sdt1 = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
-		            String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
-		            double tongTien = 0.0;
-		            ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
-		            List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
-		            for (ChiTietApDung ct : apDungs) {
-		                tongTien += ct.getTongThanhToanSauApDung();
-		            }
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+				for (DonDatPhong ddp : danhSach) {
+					KhachHang kh = ddp.getKhachHang();
+					String maDon = ddp.getMaDonDatPhong();
+					String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
+					String sdt1 = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
+					String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
+					double tongTien = 0.0;
+					ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
+					List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
+					for (ChiTietApDung ct : apDungs) {
+						tongTien += ct.getTongThanhToanSauApDung();
+					}
 
-		            DecimalFormat df = new DecimalFormat("#,###.##");
-		            String tongTienFormatted = df.format(tongTien);
+					DecimalFormat df = new DecimalFormat("#,###.##");
+					String tongTienFormatted = df.format(tongTien);
 
-		            model.addRow(new Object[]{maDon, hoTen, sdt1, ngayTra, tongTienFormatted, "Chi tiết"});
-		        }
-		        hoVaTen.setText("");
-		        SDT.setText("");
-		    }
+					model.addRow(new Object[] { maDon, hoTen, sdt1, ngayTra, tongTienFormatted, "Chi tiết" });
+				}
+				hoVaTen.setText("");
+				SDT.setText("");
+			}
 		});
-
 
 		panel_1.add(tim);
 		loadDataToTable();
-	    setLocationRelativeTo(null);
-	    setResizable(false);
-	    
-		
+		setLocationRelativeTo(null);
+		setResizable(false);
+
 	}
+
 	class ButtonRenderer extends JButton implements TableCellRenderer {
-	    public ButtonRenderer() {
-	        setOpaque(true);
-	    }
+		public ButtonRenderer() {
+			setOpaque(true);
+		}
 
-	    public Component getTableCellRendererComponent(JTable table, Object value,
-	            boolean isSelected, boolean hasFocus, int row, int column) {
-	        setText((value == null) ? "Xem" : value.toString());
-	        return this;
-	    }
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText((value == null) ? "Xem" : value.toString());
+			return this;
+		}
 	}
+
 	class ButtonEditor extends DefaultCellEditor {
-	    private JButton button;
-	    private boolean isPushed;
-	    private JTable table;
+		private JButton button;
+		private boolean isPushed;
+		private JTable table;
 
-	    public ButtonEditor(JCheckBox checkBox, JTable table) {
-	        super(checkBox);
-	        this.table = table;
-	        button = new JButton();
-	        button.setOpaque(true);
-	        button.addActionListener(e -> fireEditingStopped());
-	    }
+		public ButtonEditor(JCheckBox checkBox, JTable table) {
+			super(checkBox);
+			this.table = table;
+			button = new JButton();
+			button.setOpaque(true);
+			button.addActionListener(e -> fireEditingStopped());
+		}
 
-	    @Override
-	    public Component getTableCellEditorComponent(JTable table, Object value,
-	            boolean isSelected, int row, int column) {
-	        button.setText((value == null) ? "Chi tiết" : value.toString());
-	        isPushed = true;
-	        return button;
-	    }
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			button.setText((value == null) ? "Chi tiết" : value.toString());
+			isPushed = true;
+			return button;
+		}
 
-	    @Override
-	    public Object getCellEditorValue() {
-	        if (isPushed) {
-	            int row = table.getSelectedRow();
-	            if (row >= 0) {
-	                String maDon = table.getValueAt(row, 0).toString();
-                    DonDatPhong_DAO dao= new DonDatPhong_DAO();
-                    DonDatPhong ddp= dao.getDonDatPhongTheoMa(maDon);
-	                ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
-	                Phong_DAO phong_DAO= new Phong_DAO();
-	                List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(maDon);
-	                
-	                
-	    	    	List<Phong> phong= phong_DAO.getPhongTheoMaDonDatPhong1(maDon);
-	    	    	String maPhongStr = phong.stream().map(Phong::getSoPhong) .collect(Collectors.joining(", "));
-	    	    	
-	    	    	
-	                StringBuilder dsMaKhuyenMai = new StringBuilder();
-	                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-	                String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
-	                String ngayDat = ddp.getNgayDatPhong() != null ? ddp.getNgayDatPhong().format(formatter) : "";
-	                String ngayNhan = ddp.getNgayNhanPhong() != null ? ddp.getNgayNhanPhong().format(formatter) : "";
-	                String tongTien = table.getValueAt(row, 4).toString();
-	                for (ChiTietApDung ct : apDungs) {
-	                    if (dsMaKhuyenMai.length() > 0) {
-	                        dsMaKhuyenMai.append(", ");
-	                    }
-	                    dsMaKhuyenMai.append(ct.getMaKhuyenMai());
-	                }
-	                String maKhuyenMaiGop = dsMaKhuyenMai.toString();
+		@Override
+		public Object getCellEditorValue() {
+			if (isPushed) {
+				int row = table.getSelectedRow();
+				if (row >= 0) {
+					String maDon = table.getValueAt(row, 0).toString();
+					DonDatPhong_DAO dao = new DonDatPhong_DAO();
+					DonDatPhong ddp = dao.getDonDatPhongTheoMa(maDon);
+					ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
+					Phong_DAO phong_DAO = new Phong_DAO();
+					List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(maDon);
 
-	                // Mở dialog chi tiết
-	                ThanhToanChiTiet dialog = new ThanhToanChiTiet();
-	                dialog.setThongTinDatPhong(maDon, ddp.getKhachHang().getHoTen(), ddp.getKhachHang().getSdt(), maPhongStr, ngayDat, ngayNhan, ngayTra, maKhuyenMaiGop, tongTien);
-	                dialog.setModal(true);
-	                dialog.setVisible(true);
-	            }
-	        }
-	        isPushed = false;
-	        return button.getText();
-	    }
+					List<Phong> phong = phong_DAO.getPhongTheoMaDonDatPhong1(maDon);
+					String maPhongStr = phong.stream().map(Phong::getSoPhong).collect(Collectors.joining(", "));
 
-	    @Override
-	    public boolean stopCellEditing() {
-	        isPushed = false;
-	        return super.stopCellEditing();
-	    }
+					StringBuilder dsMaKhuyenMai = new StringBuilder();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+					String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
+					String ngayDat = ddp.getNgayDatPhong() != null ? ddp.getNgayDatPhong().format(formatter) : "";
+					String ngayNhan = ddp.getNgayNhanPhong() != null ? ddp.getNgayNhanPhong().format(formatter) : "";
+					String tongTien = table.getValueAt(row, 4).toString();
+					for (ChiTietApDung ct : apDungs) {
+						if (dsMaKhuyenMai.length() > 0) {
+							dsMaKhuyenMai.append(", ");
+						}
+						dsMaKhuyenMai.append(ct.getMaKhuyenMai());
+					}
+					String maKhuyenMaiGop = dsMaKhuyenMai.toString();
+
+					// Mở dialog chi tiết
+					ThanhToanChiTiet dialog = new ThanhToanChiTiet();
+					dialog.setThongTinDatPhong(maDon, ddp.getKhachHang().getHoTen(), ddp.getKhachHang().getSdt(),
+							maPhongStr, ngayDat, ngayNhan, ngayTra, maKhuyenMaiGop, tongTien);
+					dialog.setModal(true);
+					dialog.setVisible(true);
+				}
+			}
+			isPushed = false;
+			return button.getText();
+		}
+
+		@Override
+		public boolean stopCellEditing() {
+			isPushed = false;
+			return super.stopCellEditing();
+		}
 	}
+
 	public void loadDataToTable() {
-	    DefaultTableModel model = (DefaultTableModel) table.getModel();
-	    model.setRowCount(0); // Xóa dữ liệu cũ
-        DonDatPhong_DAO aDao= new DonDatPhong_DAO();
-        List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan(); 
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		model.setRowCount(0); // Xóa dữ liệu cũ
+		DonDatPhong_DAO aDao = new DonDatPhong_DAO();
+		List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan();
 
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-	    for (DonDatPhong ddp :  danhSach) {
-	        KhachHang kh = ddp.getKhachHang();
-            String maDon= ddp.getMaDonDatPhong();
-	        String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
-	        String sdt = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
-	        String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
-	        double tongTien= 0.0;
-            ChiTietApDung_DAO ctap= new ChiTietApDung_DAO();
-            List<ChiTietApDung> apDungs= ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
-            for (ChiTietApDung ct : apDungs) {
-                tongTien += ct.getTongThanhToanSauApDung();
-            }
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            String tongTienFormatted = df.format(tongTien);
-	        model.addRow(new Object[] {maDon, hoTen, sdt, ngayTra, tongTienFormatted, "Chi tiết" });
-	    }
+		for (DonDatPhong ddp : danhSach) {
+			KhachHang kh = ddp.getKhachHang();
+			String maDon = ddp.getMaDonDatPhong();
+			String hoTen = (kh != null && kh.getHoTen() != null) ? kh.getHoTen() : "";
+			String sdt = (kh != null && kh.getSdt() != null) ? kh.getSdt() : "";
+			String ngayTra = ddp.getNgayTraPhong() != null ? ddp.getNgayTraPhong().format(formatter) : "";
+			double tongTien = 0.0;
+			ChiTietApDung_DAO ctap = new ChiTietApDung_DAO();
+			List<ChiTietApDung> apDungs = ctap.getDanhSachChiTietApDungTheoMaDon(ddp.getMaDonDatPhong());
+			for (ChiTietApDung ct : apDungs) {
+				tongTien += ct.getTongThanhToanSauApDung();
+			}
+			DecimalFormat df = new DecimalFormat("#,###.##");
+			String tongTienFormatted = df.format(tongTien);
+			model.addRow(new Object[] { maDon, hoTen, sdt, ngayTra, tongTienFormatted, "Chi tiết" });
+		}
 	}
 }
