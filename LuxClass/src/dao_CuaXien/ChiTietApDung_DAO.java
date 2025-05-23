@@ -10,8 +10,7 @@ import entity_CuaXien.DonDatPhong;
 import entity_CuaXien.KhuyenMai;
 
 public class ChiTietApDung_DAO {
-
-
+//
 	public boolean addChiTietApDung(ChiTietApDung cta) {
 	    String sqlCheck = "SELECT tongThanhToanSauApDung FROM ChiTietApDung WHERE maDonDatPhong = ? AND maKhuyenMai = ?";
 	    String sqlInsert = "INSERT INTO ChiTietApDung (maDonDatPhong, maKhuyenMai, tongThanhToanSauApDung) VALUES (?, ?, ?)";

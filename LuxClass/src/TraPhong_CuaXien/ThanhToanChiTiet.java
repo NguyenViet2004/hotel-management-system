@@ -26,9 +26,6 @@ public class ThanhToanChiTiet extends JDialog {
 	private JTextField maGiam;
 	private JTextField ngayDatPhong;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
 			ThanhToanChiTiet dialog = new ThanhToanChiTiet();
@@ -42,9 +39,6 @@ public class ThanhToanChiTiet extends JDialog {
 		}
 	}
 
-	/**
-	 * Create the dialog.
-	 */
 	public ThanhToanChiTiet() {
 		setBounds(100, 100, 627, 616);
 		getContentPane().setLayout(new BorderLayout());

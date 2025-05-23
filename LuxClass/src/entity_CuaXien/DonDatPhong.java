@@ -34,7 +34,7 @@ public class DonDatPhong {
 		this.loaiDon = loaiDon;
 		this.trangThai = trangThai;
 	}
-	
+//	
 	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, LocalDateTime ngayDatPhong,
 			LocalDateTime ngayNhanPhong, LocalDateTime ngayTraPhong, int soKhach, double tienCoc, NhanVien nhanVien,
 			String loaiDon, String trangThai) {

@@ -370,7 +370,7 @@ public class LichSuDatPhong extends JDialog {
 	    DefaultTableModel model = (DefaultTableModel) table.getModel();
 	    model.setRowCount(0); // Xóa dữ liệu cũ
         DonDatPhong_DAO aDao= new DonDatPhong_DAO();
-        List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan(); // Lấy danh sách đơn đã thanh toán
+        List<DonDatPhong> danhSach = aDao.getDonDatPhongDaThanhToan(); 
 
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
