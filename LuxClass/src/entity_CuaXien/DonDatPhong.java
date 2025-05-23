@@ -6,6 +6,7 @@ public class DonDatPhong {
 
 	private String maDonDatPhong;
 	private KhachHang khachHang;
+	private LocalDateTime ngayDatPhong;
 	private LocalDateTime ngayNhanPhong;
 	private LocalDateTime ngayTraPhong;
 	private int soKhach;
@@ -34,6 +35,22 @@ public class DonDatPhong {
 		this.trangThai = trangThai;
 	}
 	
+	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, LocalDateTime ngayDatPhong,
+			LocalDateTime ngayNhanPhong, LocalDateTime ngayTraPhong, int soKhach, double tienCoc, NhanVien nhanVien,
+			String loaiDon, String trangThai) {
+		super();
+		this.maDonDatPhong = maDonDatPhong;
+		this.khachHang = khachHang;
+		this.ngayDatPhong = ngayDatPhong;
+		this.ngayNhanPhong = ngayNhanPhong;
+		this.ngayTraPhong = ngayTraPhong;
+		this.soKhach = soKhach;
+		this.tienCoc = tienCoc;
+		this.nhanVien = nhanVien;
+		this.loaiDon = loaiDon;
+		this.trangThai = trangThai;
+	}
+
 	public DonDatPhong(String maDonDatPhong) {
 		super();
 		this.maDonDatPhong = maDonDatPhong;
@@ -114,6 +131,15 @@ public class DonDatPhong {
 	public double tinhTienPhong() {
 		// TODO - implement DonDatPhong.tinhTienPhong
 		throw new UnsupportedOperationException();
+	}
+
+	
+	public LocalDateTime getNgayDatPhong() {
+		return ngayDatPhong;
+	}
+
+	public void setNgayDatPhong(LocalDateTime ngayDatPhong) {
+		this.ngayDatPhong = ngayDatPhong;
 	}
 
 	/**

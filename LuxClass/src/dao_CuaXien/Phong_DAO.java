@@ -100,6 +100,58 @@ public class Phong_DAO {
 
         return dsPhong;
     }
+    
+    
+    public List<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
+        List<Phong> dsPhong = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con =  ConnectDB.getConnection();
+            String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " +
+                    "FROM Phong p " +
+                    "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong " +
+                    "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " +
+                    "WHERE ctd.maDonDatPhong = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maDonDatPhong);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                // Dữ liệu phòng
+                String soPhong = rs.getString("soPhong");
+                String trangThai = rs.getString("trangThai");
+                String mota= rs.getString("moTa");
+
+                // Dữ liệu loại phòng đầy đủ
+                String maLoai = rs.getString("maLoaiPhong");
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaGio = rs.getDouble("giaTheoGio");
+                double giaNgay = rs.getDouble("giaTheoNgay");
+                double giaDem = rs.getDouble("giaTheoDem");
+                double phuThu = rs.getDouble("phuThuQuaGio");
+
+                // Tạo LoaiPhong
+                LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+
+                // Tạo Phong
+                Phong p = new Phong(soPhong, trangThai, lp, mota);
+                dsPhong.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // hoặc log lỗi
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {}
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {}
+            try { if (con != null) con.close(); } catch (SQLException e) {}
+        }
+
+        return dsPhong;
+    }
     public Phong getPhongBySoPhong(String soPhong) {
         Phong phong = null;
         String sql = "SELECT p.soPhong, p.trangThai, p.moTa, lp.maLoaiPhong, lp.tenLoaiPhong, lp.donGia " +

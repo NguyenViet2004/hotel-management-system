@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,129 @@ public class DonDatPhong_DAO {
 		// TODO Auto-generated constructor stub
 		danhSach= new ArrayList<>();
 	}
+	public List<DonDatPhong> getDonDatPhongDaThanhToan() {
+	    List<DonDatPhong> danhSach = new ArrayList<>();
+
+	    String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
+	            + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
+	            + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
+	            + "FROM DonDatPhong ddp "
+	            + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
+	            + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
+	            + "WHERE ddp.trangThai = N'Đã thanh toán'";
+
+
+	    try (
+	        Connection conn = ConnectDB.getConnection();
+	        PreparedStatement stmt = conn.prepareStatement(sql);
+	        ResultSet rs = stmt.executeQuery()
+	    ) {
+	        while (rs.next()) {
+	            KhachHang kh = new KhachHang(
+	                rs.getString("maKH"),
+	                rs.getString("tenKH"),
+	                rs.getString("sdtKH"),
+	                rs.getString("soCCCD"),
+	                rs.getString("email")
+	            );
+
+	            NhanVien nv = new NhanVien(
+	                rs.getString("maNV"),
+	                rs.getString("tenNV"),
+	                rs.getDate("ngaySinh").toLocalDate(),
+	                rs.getString("sdtNV"),
+	                rs.getString("diaChi"),
+	                rs.getString("cccdNV"),
+	                rs.getString("chucVu"),
+	                rs.getString("caLamViec")
+	            );
+
+	            DonDatPhong ddp = new DonDatPhong(
+	                rs.getString("maDonDatPhong"),
+	                kh,
+	                rs.getTimestamp("ngayDatPhong").toLocalDateTime(),
+	                rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
+	                rs.getTimestamp("ngayTraPhong").toLocalDateTime(),
+	                rs.getInt("soKhach"),
+	                rs.getDouble("tienCoc"),
+	                nv,
+	                rs.getString("loaiDon"),
+	                rs.getString("trangThai")
+	            );
+
+	            danhSach.add(ddp);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return danhSach;
+	}
+
+	public List<DonDatPhong> getDonDatPhongDaThanhToanTheoTenVaSĐT(String ten, String sdt) {
+	    List<DonDatPhong> danhSach = new ArrayList<>();
+
+	    String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
+	            + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
+	            + "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec "
+	            + "FROM DonDatPhong ddp "
+	            + "JOIN KhachHang kh ON ddp.maKH = kh.maKH "
+	            + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
+	            + "WHERE ddp.trangThai = N'Đã thanh toán' "
+	            + "AND (kh.hoTen LIKE ? OR kh.sdt LIKE ?)";
+	    try {
+	        Connection conn = ConnectDB.getConnection();
+	        PreparedStatement stmt = conn.prepareStatement(sql);
+	        stmt.setString(1, "%" + ten + "%");
+	        stmt.setString(2, "%" + sdt + "%");
+	        ResultSet rs = stmt.executeQuery();
+	        
+	
+	        while (rs.next()) {
+	            KhachHang kh = new KhachHang(
+	                rs.getString("maKH"),
+	                rs.getString("tenKH"),
+	                rs.getString("sdtKH"),
+	                rs.getString("soCCCD"),
+	                rs.getString("email")
+	            );
+
+	            NhanVien nv = new NhanVien(
+	                rs.getString("maNV"),
+	                rs.getString("tenNV"),
+	                rs.getDate("ngaySinh").toLocalDate(),
+	                rs.getString("sdtNV"),
+	                rs.getString("diaChi"),
+	                rs.getString("cccdNV"),
+	                rs.getString("chucVu"),
+	                rs.getString("caLamViec")
+	            );
+
+	            DonDatPhong ddp = new DonDatPhong(
+	                rs.getString("maDonDatPhong"),
+	                kh,
+	                rs.getTimestamp("ngayDatPhong").toLocalDateTime(),
+	                rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
+	                rs.getTimestamp("ngayTraPhong").toLocalDateTime(),
+	                rs.getInt("soKhach"),
+	                rs.getDouble("tienCoc"),
+	                nv,
+	                rs.getString("loaiDon"),
+	                rs.getString("trangThai")
+	            );
+
+	            danhSach.add(ddp);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return danhSach;
+	}
+
+
     public List<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
         String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
                    + "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
@@ -213,6 +337,7 @@ public class DonDatPhong_DAO {
                     return new DonDatPhong(
                         rs.getString("maDonDatPhong"),
                         kh,
+                        rs.getTimestamp("ngayDatPhong").toLocalDateTime(),  
                         rs.getTimestamp("ngayNhanPhong").toLocalDateTime(),
                         rs.getTimestamp("ngayTraPhong").toLocalDateTime(),
                         rs.getInt("soKhach"),

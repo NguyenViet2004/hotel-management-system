@@ -75,32 +75,30 @@ public class ChiTietApDung_DAO {
         return false;
     }
 
-//    // Lấy danh sách áp dụng theo mã đơn đặt phòng
-//    public List<ChiTietApDung> getByMaDonDatPhong(String maDonDatPhong) {
-//        List<ChiTietApDung> list = new ArrayList<>();
-//        String sql = "SELECT * FROM ChiTietApDung WHERE maDonDatPhong = ?";
-//
-//        try (Connection con = ConnectDB.getConnection();
-//             PreparedStatement stmt = con.prepareStatement(sql)) {
-//
-//            stmt.setString(1, maDonDatPhong);
-//            ResultSet rs = stmt.executeQuery();
-//
-//            while (rs.next()) {
-//                String maKhuyenMai = rs.getString("maKhuyenMai");
-//                Float tongThanhToan = rs.getFloat("tongThanhToanSauApDung");
-//
-//                DonDatPhong ddp = new DonDatPhong(maDonDatPhong);
-//                KhuyenMai km = new KhuyenMai(maKhuyenMai, null, null, null, null, null, null);
-//
-//                ChiTietApDung cta = new ChiTietApDung(maDonDatPhong, maKhuyenMai, tongThanhToan, ddp, km);
-//                list.add(cta);
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return list;
-//    }
+    public List<ChiTietApDung> getDanhSachChiTietApDungTheoMaDon(String maDonDatPhong) {
+        List<ChiTietApDung> danhSach = new ArrayList<>();
+        String sql = "SELECT * FROM ChiTietApDung WHERE maDonDatPhong = ?";
+
+        try (
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, maDonDatPhong);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String maKhuyenMai = rs.getString("maKhuyenMai");
+                    float tongThanhToanSauApDung = rs.getFloat("tongThanhToanSauApDung");
+
+                    ChiTietApDung chiTiet = new ChiTietApDung(maDonDatPhong, maKhuyenMai, tongThanhToanSauApDung);
+                    danhSach.add(chiTiet);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return danhSach;
+    }
 }
