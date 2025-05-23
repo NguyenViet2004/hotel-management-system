@@ -33,7 +33,6 @@ import java.awt.Toolkit;
 
 public class GiaoDienChinh extends JFrame{
 
-    private JFrame frame;
     private JPanel hinhKhachSanpannel;
     private JLabel HinhAnhNen;
     private JButton btnPrev, btnNext;
@@ -56,7 +55,7 @@ public class GiaoDienChinh extends JFrame{
         EventQueue.invokeLater(() -> {
             try {
                 GiaoDienChinh window = new GiaoDienChinh();
-                window.frame.setVisible(true);
+                window.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,18 +120,17 @@ public class GiaoDienChinh extends JFrame{
         Scaler w = new Scaler(BASE_WIDTH, screenWidth);
         Scaler h = new Scaler(BASE_HEIGHT, screenHeight);
 
-        frame = new JFrame();
-        frame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/HinhAnhGiaoDienChinh/logo.png"));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.getContentPane().setLayout(null);
+        setIconImage(Toolkit.getDefaultToolkit().getImage("img/HinhAnhGiaoDienChinh/logo.png"));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        getContentPane().setLayout(null);
 
         JPanel Header = new JPanel();
         Header.setBounds(0, 0, screenWidth, h.apply(100));
         Header.setBackground(Color.WHITE);
         Header.setLayout(null);
         Header.setBorder(new LineBorder(Color.BLACK));
-        frame.getContentPane().add(Header);
+        getContentPane().add(Header);
 
         JLabel lblLoGo = new JLabel();
         ImageIcon originalIcon = new ImageIcon("img/HinhAnhGiaoDienChinh/logo.png");
@@ -160,7 +158,7 @@ public class GiaoDienChinh extends JFrame{
         Body.setBounds(0, Header.getHeight(), screenWidth, screenHeight - Header.getHeight());
         Body.setBackground(new Color(226, 219, 219));
         Body.setLayout(null);
-        frame.getContentPane().add(Body);
+        getContentPane().add(Body);
 
         JPanel Menupanel = new CustomRoundedPanel(15, 15, 15, 15);
         Menupanel.setBackground(Color.WHITE);
@@ -289,6 +287,10 @@ public class GiaoDienChinh extends JFrame{
         DangSuat.setBorderPainted(false);
         DangSuat.setOpaque(false);
         DangSuatpanel.add(DangSuat);
+        DangSuat.addActionListener(e -> {
+        	this.dispose();
+        	new DangNhap_GUI();
+        });
 
         btnPrev.addActionListener(e -> showPreviousImage());
         btnNext.addActionListener(e -> showNextImage());
@@ -361,7 +363,7 @@ public class GiaoDienChinh extends JFrame{
         JMenuItem menuItem = new JMenuItem(text);
         menuItem.setFont(new Font("Times New Roman", Font.BOLD, 25));
         menuItem.setBackground(new Color(255, 255, 255));
-        menuItem.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Đã chọn: " + text));
+        menuItem.addActionListener(e -> JOptionPane.showMessageDialog(this, "Đã chọn: " + text));
         return menuItem;
     }
 
@@ -377,7 +379,7 @@ public class GiaoDienChinh extends JFrame{
             }
         }
         if (imagePaths.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Không tìm thấy hình ảnh trong thư mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không tìm thấy hình ảnh trong thư mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -452,7 +454,7 @@ public class GiaoDienChinh extends JFrame{
         }
         }
     public void showWindow() {
-        frame.setVisible(true);
+        setVisible(true);
     }
 
 }
