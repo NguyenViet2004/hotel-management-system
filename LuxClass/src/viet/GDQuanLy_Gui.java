@@ -4,13 +4,14 @@ package viet;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
+
+import GUI.RoundedBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import GiaoDienChinh.RoundedBorder;
 
 public class GDQuanLy_Gui {
     private JFrame frame;
