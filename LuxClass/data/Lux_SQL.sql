@@ -185,7 +185,7 @@ go
 INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
 VALUES 
 ('2025LT001', N'Nguyễn Thị Xuyến', '1990-01-01', '0981234567', N'Hà Nội', '123456789012', N'Lễ tân', N'Sáng'),
-('2025KT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Kế toán', N'Chiều');
+('2025KT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Lễ tân', N'Chiều');
 go
 INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
 VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
@@ -274,3 +274,21 @@ INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
 -- STT 14: Đồ lót (1 bộ)
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
 ('DVGiatUiSay14', N'Đồ lót (1 bộ)', N'Giặt Sấy', 15000, 'LoaiDV03');
+
+INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES
+('KH230520250001', N'Nguyễn Văn AN', '0901234567', '075204003397', 'nguyenvanaN@gmail.com');
+
+INSERT INTO DonDatPhong
+    (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong,soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai)
+VALUES
+    ('23052025LT001001','KH230520250001','2025-05-23 12:00:00.000','2025-05-23 14:00:00.000','2025-05-24 12:00:00.000',2,0,'2025-05-23 03:00:00.000','2025LT001',N'Theo ngày',N'Chưa nhận phòng'),
+	('23052025LT001002','KH230520250001','2025-05-24 18:00:00.000','2025-05-24 20:00:00.000','2025-05-25 08:00:00.000',2,0,'2025-05-24 21:00:00.000','2025LT001',N'Theo đêm',N'Chưa nhận phòng'),
+	('23052025LT001003','KH230520250001','2025-05-25 09:00:00.000','2025-05-25 10:00:00.000','2025-05-25 15:00:00.000',2,0,'2025-05-25 13:00:00.000','2025LT001',N'Theo giờ',N'Chưa nhận phòng');
+INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong)
+VALUES ('23052025LT001001', 'P101', 1),('23052025LT001002', 'P101', 1),('23052025LT001003', 'P101', 1);
+
+
+
+
+
+
