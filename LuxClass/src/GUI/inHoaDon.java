@@ -58,8 +58,7 @@ public class inHoaDon {
             double tienCoc,
             String maGiamGia,
             double thanhTien,
-            String duongDanLuuFile,
-            JLabel qrCodeLabel) throws Exception { // Thay đổi thành JLabel
+            String duongDanLuuFile) throws Exception { // Thay đổi thành JLabel
         
         // Khởi tạo tài liệu A4 thẳng đứng với lề nhỏ
         Document taiLieu = new Document(PageSize.A4, 36, 36, 36, 36);
@@ -315,8 +314,7 @@ public class inHoaDon {
                 1000000, 
                 "SUMMER10", 
                 3700000, 
-                "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon.pdf",
-                qrCodeLabel
+                "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon.pdf"
             );
             
             System.out.println("Đã tạo hóa đơn thành công!");

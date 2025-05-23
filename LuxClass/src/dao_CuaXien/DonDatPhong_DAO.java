@@ -245,7 +245,23 @@ public class DonDatPhong_DAO {
             return false;
         }
     }
-    
+    public boolean setTienCocVeKhong(String maDonDatPhong) {
+        String sql = "UPDATE DonDatPhong SET tienCoc = 0 WHERE maDonDatPhong = ?";
+
+        try (
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, maDonDatPhong);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean coTheCapNhatTrangThai(String maDonDatPhong) {
         String sql = """
             SELECT COUNT(*) FROM ChiTietDonDatPhong ctd

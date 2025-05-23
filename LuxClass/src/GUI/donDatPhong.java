@@ -1670,11 +1670,13 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 					phong_DAO.setTrangThaiPhong(ma, "Trống");
 				}
 
+				
 //							setDonDatPhong
 				// Kiểm tra trước khi set trạng thái đơn đặt phòng
 				DonDatPhong_DAO ddDatPhong_DAO = new DonDatPhong_DAO();
 				String maDon = maHoaDon1.getText();
-	
+	            ddDatPhong_DAO.setTienCocVeKhong(maDon);
+				
 				if (ddDatPhong_DAO.coTheCapNhatTrangThai(maDon)) {
 					ddDatPhong_DAO.setTrangThaiDonDatPhong(maDon, "Đã thanh toán");
 				}
@@ -1692,40 +1694,44 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				ChiTietApDung_DAO chiTietApDung_DAO= new ChiTietApDung_DAO();
 				chiTietApDung_DAO.addChiTietApDung(ctap);
 				if (chuyenKhoan.isSelected()) {
-					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
-					try {
-						String amount = thanhTien1.getText().trim();
-						String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
-						String account = "7714205086854";
-						String name = "NGO BINH XUYEN";
-						String content = "THANH TOAN";
-
-						String qrUrl = "https://img.vietqr.io/image/" + bankCode.toLowerCase() + "-" + account
-								+ "-compact2.jpg" + "?amount=" + amount + "&addInfo="
-								+ java.net.URLEncoder.encode(content, "UTF-8") + "&accountName="
-								+ java.net.URLEncoder.encode(name, "UTF-8");
-
-						BufferedImage originalImage = ImageIO.read(new java.net.URL(qrUrl));
-						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth / 1536f),
-								Math.round(150f * frameHeight / 816f), BufferedImage.TYPE_INT_ARGB);
-
-						Graphics2D g2d = resizedImage.createGraphics();
-						g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-								RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR); // Dành cho ảnh QR rõ nét
-						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth / 1536f),
-								Math.round(150f * frameHeight / 816f), null);
-						g2d.dispose();
-						qrLabel.setIcon(new ImageIcon(resizedImage));
-
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
+//					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
+//					try {
+//						String amount = thanhTien1.getText().trim();
+//						String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
+//						String account = "7714205086854";
+//						String name = "NGO BINH XUYEN";
+//						String content = "THANH TOAN";
+//
+//						String qrUrl = "https://img.vietqr.io/image/" + bankCode.toLowerCase() + "-" + account
+//								+ "-compact2.jpg" + "?amount=" + amount + "&addInfo="
+//								+ java.net.URLEncoder.encode(content, "UTF-8") + "&accountName="
+//								+ java.net.URLEncoder.encode(name, "UTF-8");
+//
+//						BufferedImage originalImage = ImageIO.read(new java.net.URL(qrUrl));
+//						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth / 1536f),
+//								Math.round(150f * frameHeight / 816f), BufferedImage.TYPE_INT_ARGB);
+//
+//						Graphics2D g2d = resizedImage.createGraphics();
+//						g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+//								RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR); // Dành cho ảnh QR rõ nét
+//						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth / 1536f),
+//								Math.round(150f * frameHeight / 816f), null);
+//						g2d.dispose();
+//						qrLabel.setIcon(new ImageIcon(resizedImage));
+//
+//					} catch (Exception ex) {
+//						ex.printStackTrace();
+//					}
 
 					List<Object[]> data = getTableData(table1);
 					try {
-						inHoaDon.taoHoaDon(maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
-								dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc, (String) khuyenMai.getSelectedItem(),
-								thanhTien, "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon.pdf", qrLabel);
+						String filePath = "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon_" + maHoaDon1.getText() + ".pdf";
+
+						inHoaDon.taoHoaDon(
+						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
+						    dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
+						    (String) khuyenMai.getSelectedItem(), thanhTien, filePath
+						);
 						System.out.println("Đã tạo hóa đơn thành công!");
 					} catch (Exception e1) {
 						System.err.println("Lỗi khi tạo hóa đơn:");
@@ -1739,9 +1745,13 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				} else if (tienMat.isSelected()) {
 					List<Object[]> data = getTableData(table1);
 					try {
-						inHoaDon.taoHoaDon(maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
-								dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,(String) khuyenMai.getSelectedItem(),
-								thanhTien, "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon.pdf", qrLabel);
+						String filePath = "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon_" + maHoaDon1.getText() + ".pdf";
+
+						inHoaDon.taoHoaDon(
+						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
+						    dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
+						    (String) khuyenMai.getSelectedItem(), thanhTien, filePath
+						);
 						System.out.println("Đã tạo hóa đơn thành công!");
 					} catch (Exception e1) {
 						System.err.println("Lỗi khi tạo hóa đơn:");
@@ -1865,10 +1875,14 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		List<KhuyenMai> danhSachKM = dao.getKhuyenMaiTheoNgay(ngayNhan, ngayTra, tongThanhToan);
 
 		comboBox.removeAllItems(); // Xóa các item cũ
-		comboBox.addItem("Không");
+//		comboBox.addItem("Không");
 		for (KhuyenMai km : danhSachKM) {
-			comboBox.addItem(km.getMaKhuyenMai() + " - " + km.getGiaTriKhuyenMai() + "%");
-		}
+	        if (km.getMaKhuyenMai().equalsIgnoreCase("Không")) {
+	            comboBox.addItem("Không");
+	        } else {
+	            comboBox.addItem(km.getMaKhuyenMai() + " - " + km.getGiaTriKhuyenMai() + "%");
+	        }
+	    }
 	}
 
 	private String convertNumberToWords(int number) {
