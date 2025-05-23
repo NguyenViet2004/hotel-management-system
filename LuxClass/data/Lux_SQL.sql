@@ -114,6 +114,27 @@ CREATE TABLE ChiTietPhieuDichVu (
     FOREIGN KEY (maDichVu) REFERENCES DichVu(maDV)
 );
 go
+CREATE TABLE KhuyenMai (
+    maKhuyenMai VARCHAR(20) PRIMARY KEY,  
+    tenKhuyenMai NVARCHAR(50) NOT NULL,         
+    loaiKhuyenMai NVARCHAR(50) NOT NULL,                
+    giaTriKhuyenMai FLOAT,                        
+    ngayBatDau DATETIME NOT NULL,    
+    ngayKetThuc DATETIME NOT NULL,   
+    dieuKienApDung FLOAT NOT NULL,
+	trangThai NVARCHAR(20) NOT NULL
+);
+go
+CREATE TABLE ChiTietApDung (
+    maDonDatPhong VARCHAR(20) NOT NULL,   -- Mã đơn đặt phòng (khóa ngoại)
+    maKhuyenMai VARCHAR(20) NOT NULL,     -- Mã khuyến mãi (khóa ngoại)
+    tongThanhToanSauApDung Float NOT NULL,
+    PRIMARY KEY (maDonDatPhong, maKhuyenMai),  -- Khóa chính kết hợp
+    CONSTRAINT FK_ChiTietApDung_DonDatPhong FOREIGN KEY (maDonDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
+    CONSTRAINT FK_ChiTietApDung_KhuyenMai FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai)
+);
+GO
+go
 INSERT INTO LoaiPhong (maLoaiPhong, tenLoai, soLuong, dienTich, giaTheoGio, giaTheoNgay, giaTheoDem, phuThuQuaGio)
 VALUES 
     ('single', N'Single Room', 8, 30, 150000, 800000, 700000, 100000),
@@ -169,29 +190,87 @@ go
 INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
 VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
 go
-
-USE QuanLyKhachSan;
+-- Chèn dữ liệu vào bảng LoaiDichVu
+INSERT INTO LoaiDichVu (maLoai, tenLoai)
+VALUES 
+('LoaiDV01', N'Buffet'), ('LoaiDV02', N'Gọi món'), ('LoaiDV03', N'Giặt ủi');
 go
-CREATE TABLE KhuyenMai (
-    maKhuyenMai VARCHAR(20) PRIMARY KEY,  
-    tenKhuyenMai NVARCHAR(50) NOT NULL,         
-    loaiKhuyenMai NVARCHAR(50) NOT NULL,                
-    giaTriKhuyenMai FLOAT,                        
-    ngayBatDau DATETIME NOT NULL,    
-    ngayKetThuc DATETIME NOT NULL,   
-    dieuKienApDung FLOAT NOT NULL,
-	trangThai NVARCHAR(20) NOT NULL
-);
-USE QuanLyKhachSan;
-go
-CREATE TABLE ChiTietApDung (
-    maDonDatPhong VARCHAR(20) NOT NULL,   -- Mã đơn đặt phòng (khóa ngoại)
-    maKhuyenMai VARCHAR(20) NOT NULL,     -- Mã khuyến mãi (khóa ngoại)
-    tongThanhToanSauApDung Float NOT NULL,
-    PRIMARY KEY (maDonDatPhong, maKhuyenMai),  -- Khóa chính kết hợp
-    CONSTRAINT FK_ChiTietApDung_DonDatPhong FOREIGN KEY (maDonDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
-    CONSTRAINT FK_ChiTietApDung_KhuyenMai FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai)
-);
-GO
+-- Chèn dữ liệu vào bảng DichVu
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai)
+VALUES
+('DVBuffet', N'Buffet sáng', N'Từ 6:00-10:00', 150000, 'LoaiDV01'),
 
+('DVGoiMon1', N'Salad Caesar', N'Salad rau trộn với sốt Caesar, phô mai Parmesan, croutons.', 120000, 'LoaiDV02'),
+('DVGoiMon2', N'Gỏi Cuốn Tôm Thịt', N'Cuốn tươi gồm tôm, thịt, rau sống, bún, kèm nước chấm đặc biệt.', 100000, 'LoaiDV02'),
+('DVGoiMon3', N'Súp Kem Nấm', N'Súp kem mịn, hương nấm thơm ngon, thích hợp cho bữa khởi đầu.', 130000, 'LoaiDV02'),
+('DVGoiMon4', N'Phở Bò', N'Phở bò truyền thống với nước dùng trong, bánh phở mềm, thịt bò thái mỏng.', 150000, 'LoaiDV02'),
+('DVGoiMon5', N'Cơm Gà Xối Mỡ', N'Cơm trắng ăn kèm với gà xối mỡ giòn, nước sốt đặc trưng.', 180000, 'LoaiDV02'),
+('DVGoiMon6', N'Bít Tết Bò Sốt Tiêu Đen', N'Miếng bít tết bò chín tới, sốt tiêu đen đậm đà, ăn kèm rau củ.', 350000, 'LoaiDV02'),
+('DVGoiMon7', N'Pasta Sốt Bolognese', N'Mì Ý sốt bolognese đậm đà với thịt bò, cà chua, và gia vị Ý.', 200000, 'LoaiDV02'),
+('DVGoiMon8', N'Kem Vani', N'Kem mịn màng, hương vị vani truyền thống.', 70000, 'LoaiDV02'),
+('DVGoiMon9', N'Bánh Mousse Socola', N'Bánh mousse béo ngậy với vị socola đậm đà.', 100000, 'LoaiDV02'),
+('DVGoiMon10', N'Trái Cây Tươi', N'Đĩa trái cây theo mùa, cắt sẵn, tươi ngon.', 80000, 'LoaiDV02'),
+('DVGoiMon11', N'Nước Cam Tươi', N'Nước cam ép tươi, không đường.', 50000, 'LoaiDV02'),
+('DVGoiMon12', N'Trà Xanh Nóng', N'Trà xanh thanh mát, hương thơm tự nhiên.', 40000, 'LoaiDV02'),
+('DVGoiMon13', N'Cà Phê Đen', N'Cà phê đen đậm đà, được rang xay ngay.', 45000, 'LoaiDV02'),
+('DVGoiMon14', N'Nước Suối', N'Nước lọc tinh khiết.', 20000, 'LoaiDV02');
+-- STT 1: Áo thun
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay1', N'Áo thun', N'Giặt Sấy', 8000, 'LoaiDV03'),
+('DVGiatUiHap1', N'Áo thun', N'Giặt Hấp', 15000, 'LoaiDV03');
 
+-- STT 2: Áo sơ mi
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay2', N'Áo sơ mi', N'Giặt Sấy', 10000, 'LoaiDV03'),
+('DVGiatUiHap2', N'Áo sơ mi', N'Giặt Hấp', 20000, 'LoaiDV03');
+
+-- STT 3: Áo vest
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap3', N'Áo vest', N'Giặt Hấp', 150000, 'LoaiDV03');
+
+-- STT 4: Quần âu
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay4', N'Quần âu', N'Giặt Sấy', 20000, 'LoaiDV03'),
+('DVGiatUiHap4', N'Quần âu', N'Giặt Hấp', 40000, 'LoaiDV03');
+
+-- STT 5: Quần jeans
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay5', N'Quần jeans', N'Giặt Sấy', 20000, 'LoaiDV03');
+
+-- STT 6: Váy dạ hội
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap6', N'Váy dạ hội', N'Giặt Hấp', 200000, 'LoaiDV03');
+
+-- STT 7: Váy dài
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap7', N'Váy dài', N'Giặt Hấp', 250000, 'LoaiDV03');
+
+-- STT 8: Đầm công sở
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay8', N'Đầm công sở', N'Giặt Sấy', 50000, 'LoaiDV03'),
+('DVGiatUiHap8', N'Đầm công sở', N'Giặt Hấp', 100000, 'LoaiDV03');
+
+-- STT 9: Áo choàng
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap9', N'Áo choàng', N'Giặt Hấp', 200000, 'LoaiDV03');
+
+-- STT 10: Áo khoác da
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap10', N'Áo khoác da', N'Giặt Hấp', 300000, 'LoaiDV03');
+
+-- STT 11: Áo khoác lông vũ
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiHap11', N'Áo khoác lông vũ', N'Giặt Hấp', 180000, 'LoaiDV03');
+
+-- STT 12: Áo len
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay12', N'Áo len', N'Giặt Sấy', 40000, 'LoaiDV03'),
+('DVGiatUiHap12', N'Áo len', N'Giặt Hấp', 80000, 'LoaiDV03');
+
+-- STT 13: Khăn tắm
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay13', N'Khăn tắm', N'Giặt Sấy', 20000, 'LoaiDV03');
+
+-- STT 14: Đồ lót (1 bộ)
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVGiatUiSay14', N'Đồ lót (1 bộ)', N'Giặt Sấy', 15000, 'LoaiDV03');
