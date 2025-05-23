@@ -1694,34 +1694,34 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				ChiTietApDung_DAO chiTietApDung_DAO= new ChiTietApDung_DAO();
 				chiTietApDung_DAO.addChiTietApDung(ctap);
 				if (chuyenKhoan.isSelected()) {
-//					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
-//					try {
-//						String amount = thanhTien1.getText().trim();
-//						String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
-//						String account = "7714205086854";
-//						String name = "NGO BINH XUYEN";
-//						String content = "THANH TOAN";
-//
-//						String qrUrl = "https://img.vietqr.io/image/" + bankCode.toLowerCase() + "-" + account
-//								+ "-compact2.jpg" + "?amount=" + amount + "&addInfo="
-//								+ java.net.URLEncoder.encode(content, "UTF-8") + "&accountName="
-//								+ java.net.URLEncoder.encode(name, "UTF-8");
-//
-//						BufferedImage originalImage = ImageIO.read(new java.net.URL(qrUrl));
-//						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth / 1536f),
-//								Math.round(150f * frameHeight / 816f), BufferedImage.TYPE_INT_ARGB);
-//
-//						Graphics2D g2d = resizedImage.createGraphics();
-//						g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-//								RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR); // Dành cho ảnh QR rõ nét
-//						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth / 1536f),
-//								Math.round(150f * frameHeight / 816f), null);
-//						g2d.dispose();
-//						qrLabel.setIcon(new ImageIcon(resizedImage));
-//
-//					} catch (Exception ex) {
-//						ex.printStackTrace();
-//					}
+					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
+					try {
+						String amount = thanhTien1.getText().trim();
+						String bankCode = "agribank"; // viết thường và đúng tên code chuẩn
+						String account = "7714205086854";
+						String name = "NGO BINH XUYEN";
+						String content = "THANH TOAN";
+
+						String qrUrl = "https://img.vietqr.io/image/" + bankCode.toLowerCase() + "-" + account
+								+ "-compact2.jpg" + "?amount=" + amount + "&addInfo="
+								+ java.net.URLEncoder.encode(content, "UTF-8") + "&accountName="
+								+ java.net.URLEncoder.encode(name, "UTF-8");
+
+						BufferedImage originalImage = ImageIO.read(new java.net.URL(qrUrl));
+						BufferedImage resizedImage = new BufferedImage(Math.round(150f * frameWidth / 1536f),
+								Math.round(150f * frameHeight / 816f), BufferedImage.TYPE_INT_ARGB);
+
+						Graphics2D g2d = resizedImage.createGraphics();
+						g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+								RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR); // Dành cho ảnh QR rõ nét
+						g2d.drawImage(originalImage, 0, 0, Math.round(150f * frameWidth / 1536f),
+								Math.round(150f * frameHeight / 816f), null);
+						g2d.dispose();
+						qrLabel.setIcon(new ImageIcon(resizedImage));
+
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 
 					List<Object[]> data = getTableData(table1);
 					try {
