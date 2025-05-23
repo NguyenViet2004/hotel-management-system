@@ -37,6 +37,8 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import HuyPhong.HuyPhong_GUI;
+
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
@@ -61,7 +63,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane,panelSouth,panelWest;
-	RoundedButton btnDat;
+	private RoundedButton btnDat;
+	private RoundedButton btnHuy;
 	private Phong_Dao dsPhong;
 	private LoaiPhong_Dao dsLoaiPhong;
 	private Map<String, ArrayList<Phong>> roomCategories;
@@ -263,9 +266,10 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		panelCenter.add(btnTra);
 		
 
-		RoundedButton btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
+		btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
 		btnHuy.setPreferredSize(new Dimension(230, 40));
 		btnHuy.setFont(font); // Set bold font
+		btnHuy.addActionListener(this);
 		panelCenter.add(btnHuy);
 
 		contentPane.add(panelCenter);
@@ -602,10 +606,10 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 			dialog.setResizable(false);
 			dialog.setVisible(true);
 		}
-//        if(e.getSource() == btnDatPhong2){
+//        if(e.getSource() == btnHuy){
 //            // Mở cửa sổ đặt phòng
-//            DatPhong_GUI1 frameDatPhong = (DatPhong_GUI1) new DatPhong_GUI1(this);
-//            frameDatPhong.setVisible(true);
+//            HuyPhong_GUI frameHuyPhong =  new HuyPhong_GUI();
+//            frameHuyPhong.setVisible(true);
 //        }
 	}
 	private void loadData(java.util.Date selectedDate) {
