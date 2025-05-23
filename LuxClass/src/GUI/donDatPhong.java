@@ -9,6 +9,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import dao_CuaXien.ChiTietApDung_DAO;
 import dao_CuaXien.DichVu_DAO;
 import dao_CuaXien.DonDatPhong_DAO;
 import dao_CuaXien.KhachHang_DAO;
@@ -1673,7 +1674,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				// Kiểm tra trước khi set trạng thái đơn đặt phòng
 				DonDatPhong_DAO ddDatPhong_DAO = new DonDatPhong_DAO();
 				String maDon = maHoaDon1.getText();
-				ChiTietApDung ctapdung=new ChiTietApDung(maDon, (String) khuyenMai.getSelectedItem(), (float) thanhTien);
+	
 				if (ddDatPhong_DAO.coTheCapNhatTrangThai(maDon)) {
 					ddDatPhong_DAO.setTrangThaiDonDatPhong(maDon, "Đã thanh toán");
 				}
@@ -1685,7 +1686,11 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 					pdv.capNhatTrangThai((String) maDichVu, "Đã thanh toán");
 				}
 				JLabel qrLabel = new JLabel("", JLabel.CENTER);
-
+				String maKM=(String) khuyenMai.getSelectedItem();
+				System.out.println(maKM.split("-")[0].trim());
+				ChiTietApDung ctap= new ChiTietApDung(maDon, maKM.split("-")[0].trim(),(float) thanhTien);
+				ChiTietApDung_DAO chiTietApDung_DAO= new ChiTietApDung_DAO();
+				chiTietApDung_DAO.addChiTietApDung(ctap);
 				if (chuyenKhoan.isSelected()) {
 					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
 					try {
@@ -1754,7 +1759,6 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				}
 
 			}
-
 		});
 		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(new Color(0, 0, 0));

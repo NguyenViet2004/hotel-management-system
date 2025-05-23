@@ -31,7 +31,7 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.awt.Toolkit;
 
-public class GiaoDienChinh {
+public class GiaoDienChinh extends JFrame{
 
     private JFrame frame;
     private JPanel hinhKhachSanpannel;
@@ -170,6 +170,12 @@ public class GiaoDienChinh {
         Body.add(Menupanel);
 
         JMenuItem QuanLyDatPhong = createMenuItem("Quản lý đặt phòng", w.apply(20), h.apply(10), w.apply(285), h.apply(60));
+        QuanLyDatPhong.addActionListener(e -> {
+        	this.dispose();
+        	QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
+			frame.setVisible(true);
+        }
+        );
         Menupanel.add(QuanLyDatPhong);
 
         JMenuItem QuanLyKhachHang = createMenuItem("Quản lý khách hàng", w.apply(20), h.apply(70), w.apply(285), h.apply(60));
@@ -298,7 +304,6 @@ public class GiaoDienChinh {
         menuItem.setBounds(x, y, width, height);
         menuItem.setBackground(new Color(255, 255, 255));
         menuItem.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        menuItem.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Đã chọn: " + text));
 
         menuItem.addMouseListener(new MouseAdapter() {
             private Color defaultBackground;
@@ -446,5 +451,8 @@ public class GiaoDienChinh {
             g2.fill(path);
         }
         }
+    public void showWindow() {
+        frame.setVisible(true);
+    }
 
 }

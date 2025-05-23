@@ -291,7 +291,7 @@ public class panel_timKiem extends JPanel {
 		timTheoMaPhong.setBounds(226, 69, 231, 38);
 		add(timTheoMaPhong);
 		timTheoMaPhong.setFocusPainted(false);
-	    timTheoMaPhong.setForeground(new Color(255, 255, 255));
+	    timTheoMaPhong.setForeground(new Color(0, 0, 0));
 		timTheoMaPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
 		timTheoMaPhong.setBackground(new Color(255, 255, 255));
 				
