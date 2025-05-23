@@ -1,4 +1,4 @@
-package GiaoDienChinh;
+package GUI;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
