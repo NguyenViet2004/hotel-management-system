@@ -1677,7 +1677,7 @@ public class DatPhong_GUI extends JDialog {
 		JLabel lblKhachMoi = new JLabel("Nhập thông tin khách hàng");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 20));
 		JPanel topPanel = new JPanel();
-		topPanel.setBackground(Color.RED);
+		topPanel.setBackground(Color.WHITE);
 
 		GroupLayout layout = new GroupLayout(topPanel);
 		topPanel.setLayout(layout);
@@ -1960,14 +1960,15 @@ public class DatPhong_GUI extends JDialog {
 		                dondatphongdao.xoaDonDatPhong(maDon);
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
+		            dispose();
 		            JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
+		            QuanLyDatPhong_GUI qlDatPhong = new QuanLyDatPhong_GUI();
+		            qlDatPhong.setLocationRelativeTo(null);  // Căn giữa màn hình
+		            qlDatPhong.setVisible(true);
 		        } else {
 		            System.out.println("Thêm đơn đặt phòng không thành công");
 		        }
-
-
 			}
-
 	});
 		
 		// Gộp lại bằng BorderLayout để phân bố trái - phải rõ ràng
