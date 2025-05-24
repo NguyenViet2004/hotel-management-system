@@ -103,9 +103,14 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 			JButton btnHuy = new JButton("Hủy");
 
 			{
-				panel.setPreferredSize(new Dimension(195, 40));
-				btnNhan.setBounds(5, 5, 120, 30);
-				btnHuy.setBounds(130, 5, 60, 30);
+				panel.setPreferredSize(new Dimension(160, 40));
+				panel.setLayout(null);
+
+				btnNhan.setBounds(5, 5, 100, 30);
+				btnHuy.setBounds(110, 5, 45, 30);
+
+				btnNhan.setFont(new Font("Arial", Font.BOLD, 12));
+				btnHuy.setFont(new Font("Arial", Font.BOLD, 12));
 
 				btnNhan.setBackground(new Color(76, 175, 80));
 				btnNhan.setForeground(Color.WHITE);
@@ -252,7 +257,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			JFrame frame = new JFrame("Tìm đơn đặt phòng");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(1000, 700);
+			frame.setSize(1250, 700);
 			frame.setContentPane(new DSPhongDatTruoc_Gui());
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
