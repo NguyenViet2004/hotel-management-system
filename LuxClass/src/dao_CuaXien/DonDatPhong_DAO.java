@@ -14,15 +14,15 @@ import entity_CuaXien.KhachHang;
 import entity_CuaXien.NhanVien;
 
 public class DonDatPhong_DAO {
-	List<DonDatPhong> danhSach;
+	ArrayList<DonDatPhong> danhSach;
 
 	public DonDatPhong_DAO() {
 		// TODO Auto-generated constructor stub
 		danhSach = new ArrayList<>();
 	}
 
-	public List<DonDatPhong> getDonDatPhongDaThanhToan() {
-		List<DonDatPhong> danhSach = new ArrayList<>();
+	public ArrayList<DonDatPhong> getDonDatPhongDaThanhToan() {
+		ArrayList<DonDatPhong> danhSach = new ArrayList<>();
 
 		String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
 				+ "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
@@ -57,8 +57,8 @@ public class DonDatPhong_DAO {
 		return danhSach;
 	}
 
-	public List<DonDatPhong> getDonDatPhongDaThanhToanTheoTenVaSĐT(String ten, String sdt) {
-		List<DonDatPhong> danhSach = new ArrayList<>();
+	public ArrayList<DonDatPhong> getDonDatPhongDaThanhToanTheoTenVaSĐT(String ten, String sdt) {
+		ArrayList<DonDatPhong> danhSach = new ArrayList<>();
 
 		String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email, "
 				+ "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
@@ -96,7 +96,7 @@ public class DonDatPhong_DAO {
 		return danhSach;
 	}
 
-	public List<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
+	public ArrayList<DonDatPhong> getDonDatPhongTheoMaPhong(String soPhong) {
 		String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, "
 				+ "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
 				+ "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec " + "FROM DonDatPhong ddp "
@@ -160,7 +160,7 @@ public class DonDatPhong_DAO {
 		return null; // Nếu không tìm thấy
 	}
 
-	public List<DonDatPhong> getDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
+	public ArrayList<DonDatPhong> getDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
 		String sql = "SELECT ddp.*, kh.maKH, kh.hoTen AS tenKH, kh.sdt AS sdtKH, kh.soCCCD, kh.email,"
 				+ "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
 				+ "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec " + "FROM DonDatPhong ddp "
