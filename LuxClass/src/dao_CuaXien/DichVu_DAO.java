@@ -12,8 +12,8 @@ import entity_CuaXien.DichVu;
 import entity_CuaXien.LoaiDichVu;
 
 public class DichVu_DAO {
-	public List<DichVu> getDichVuTheoPhieuVaLoai(String maPhieuDichVu, String tenLoaiDichVu) {
-        List<DichVu> ds = new ArrayList<>();
+	public ArrayList<DichVu> getDichVuTheoPhieuVaLoai(String maPhieuDichVu, String tenLoaiDichVu) {
+        ArrayList<DichVu> ds = new ArrayList<>();
         Connection con = ConnectDB.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;

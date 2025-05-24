@@ -20,8 +20,8 @@ public class DonDatPhong {
 	private double tienCoc;
 	private LocalDateTime thoiGianCoc;
 	private NhanVien nhanVien;
-	private String loaiDon; 
-	private String trangThai; 
+	private String loaiDon;
+	private String trangThai;
 	private KhachHang khachHang;
 	private ArrayList<ChiTietDonDatPhong> chiTietPhong;
 
@@ -35,10 +35,12 @@ public class DonDatPhong {
 		this.maDonDatPhong = maDonDatPhong;
 	}
 
-	public DonDatPhong(String maDonDatPhong, LocalDateTime ngayDatPhong, LocalDateTime ngayNhanPhong,
+	public DonDatPhong(String maDonDatPhong,  KhachHang khachHang, LocalDateTime ngayDatPhong, LocalDateTime ngayNhanPhong,
 			LocalDateTime ngayTraPhong, int soKhach, double tienCoc, LocalDateTime thoiGianCoc, NhanVien nhanVien,
-			String loaiDon, String trangThai, KhachHang khachHang) {
+			String loaiDon, String trangThai) {
+		super();
 		this.maDonDatPhong = maDonDatPhong;
+		this.khachHang = khachHang;
 		this.ngayDatPhong = ngayDatPhong;
 		this.ngayNhanPhong = ngayNhanPhong;
 		this.ngayTraPhong = ngayTraPhong;
@@ -48,7 +50,6 @@ public class DonDatPhong {
 		this.nhanVien = nhanVien;
 		this.loaiDon = loaiDon;
 		this.trangThai = trangThai;
-		this.khachHang = khachHang;
 	}
 
 // ======== Getters & Setters ========

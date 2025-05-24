@@ -164,5 +164,33 @@ public class NhanVien_Dao {
 		}
 		return dsnv;
 	}
+	
+	public NhanVien getNhanVienByMa(String maNV) {
+	    NhanVien nhanVien = null;
+	    String sql = "SELECT * FROM NhanVien WHERE maNV = ?";
 
+	    try (Connection con = ConnectDB.getConnection();  // Kết nối từ class Database của bạn
+	         PreparedStatement stmt = con.prepareStatement(sql)) {
+
+	        stmt.setString(1, maNV);
+
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                String hoTen = rs.getString("hoTen");
+	                LocalDate ngaySinh = rs.getDate("ngaySinh").toLocalDate();
+	                String sdt = rs.getString("sdt");
+	                String diaChi = rs.getString("diaChi");
+	                String soCCCD = rs.getString("soCCCD");
+	                String chucVu = rs.getString("chucVu");
+	                String caLamViec = rs.getString("caLamViec");
+
+	                nhanVien = new NhanVien(maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return nhanVien;
+	}
 }
