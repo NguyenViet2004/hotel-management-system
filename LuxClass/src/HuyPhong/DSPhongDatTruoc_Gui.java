@@ -13,6 +13,7 @@ import entity.DonDatPhong;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class DSPhongDatTruoc_Gui extends JPanel {
@@ -20,6 +21,8 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 	private JTable tableDaDat, tableTamThoi;
 	private DefaultTableModel modelDaDat, modelTamThoi;
 	private JTabbedPane tabbedPane;
+
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public DSPhongDatTruoc_Gui() {
 		setLayout(new BorderLayout(10, 10));
@@ -29,7 +32,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		add(createTitlePanel(), BorderLayout.NORTH);
 		add(createSearchPanel(), BorderLayout.CENTER);
 		add(createTabbedPane(), BorderLayout.SOUTH);
-		
+
 		loadTatCaDonDatPhong();
 	}
 
@@ -56,11 +59,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		JButton btnTimKiem = new JButton("Tìm kiếm");
 		btnTimKiem.setFont(new Font("Times New Roman", Font.BOLD, 20));
 
-		btnTimKiem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				timKiemDonDatPhongTheoSDT();
-			}
-		});
+		btnTimKiem.addActionListener(e -> timKiemDonDatPhongTheoSDT());
 
 		panelTimKiem.add(lblSDT);
 		panelTimKiem.add(txtSoDienThoai);
@@ -72,79 +71,95 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		JTable table = new JTable(model) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return column == 4; // Chỉ cột cuối cùng (Chức năng) mới có thể tương tác
+				return column == 5; // chỉ cột chức năng
 			}
 		};
 
 		table.setRowHeight(40);
 
-		// Renderer cho nút
-		table.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-				JPanel panel = new JPanel(null);
+		table.getColumnModel().getColumn(5).setCellRenderer((tbl, value, isSelected, hasFocus, row, col) -> {
+			JPanel panel = new JPanel(null);
+			JButton btnNhan = new JButton("Nhận phòng");
+			JButton btnHuy = new JButton("Hủy");
 
-				JButton btnNhan = new JButton("Nhận phòng");
-				JButton btnHuy = new JButton("Hủy");
+			btnNhan.setBounds(5, 5, 120, 30);
+			btnNhan.setBackground(new Color(76, 175, 80));
+			btnNhan.setForeground(Color.WHITE);
 
-				// Cài đặt giống như phần Editor
-				btnNhan.setBackground(new Color(76, 175, 80));
-				btnNhan.setForeground(Color.WHITE);
-				btnNhan.setBounds(5, 5, 120, 30); 
+			btnHuy.setBounds(130, 5, 60, 30);
+			btnHuy.setBackground(new Color(244, 67, 54));
+			btnHuy.setForeground(Color.WHITE);
 
-				btnHuy.setBackground(new Color(244, 67, 54));
-				btnHuy.setForeground(Color.WHITE);
-				btnHuy.setBounds(130, 5, 60, 30);
+			panel.setPreferredSize(new Dimension(195, 40));
+			panel.add(btnNhan);
+			panel.add(btnHuy);
 
-				panel.setLayout(null);
-				panel.setPreferredSize(new Dimension(195, 40));
-				panel.add(btnNhan);
-				panel.add(btnHuy);
-
-				return panel;
-			}
+			return panel;
 		});
 
-		// Editor cho nút
-		table.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
-			JPanel panel = new JPanel(null); // dùng layout null để set kích thước thủ công
+		table.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
+			JPanel panel = new JPanel(null);
 			JButton btnNhan = new JButton("Nhận phòng");
 			JButton btnHuy = new JButton("Hủy");
 
 			{
-				panel.setLayout(null);
-				panel.setOpaque(true);
+				panel.setPreferredSize(new Dimension(195, 40));
+				btnNhan.setBounds(5, 5, 120, 30);
+				btnHuy.setBounds(130, 5, 60, 30);
 
-				// Cài đặt màu sắc
-				btnNhan.setBackground(new Color(76, 175, 80)); // Xanh lá
+				btnNhan.setBackground(new Color(76, 175, 80));
 				btnNhan.setForeground(Color.WHITE);
-
-				btnHuy.setBackground(new Color(244, 67, 54)); // Đỏ
+				btnHuy.setBackground(new Color(244, 67, 54));
 				btnHuy.setForeground(Color.WHITE);
 
-				// Kích thước nút (width lớn hơn cho btnNhan)
-				btnNhan.setBounds(5, 5, 120, 30);   // Giữ nguyên nút nhận phòng
-				btnHuy.setBounds(130, 5, 60, 30);  // Tăng lên 60 để đủ chỗ hiện chữ "Hủy"
-				panel.setPreferredSize(new Dimension(195, 40)); // Cập nhật chiều rộng tổng thể
 				panel.add(btnNhan);
 				panel.add(btnHuy);
 
-				// Sự kiện bấm nút
 				btnNhan.addActionListener(e -> {
 					int row = table.getSelectedRow();
-					JOptionPane.showMessageDialog(null, "Đã nhận phòng cho dòng " + row);
+					int tabIndex = tabbedPane.getSelectedIndex();
+					String maDon = (String) table.getValueAt(row, 0);
+					DonDatPhong_Dao dao = new DonDatPhong_Dao();
+
+				    capNhatVaReload(() -> {
+				        if (tabIndex == 0) {
+				            dao.setTrangThaiDonDatPhong(maDon, "Nhận phòng");
+				            JOptionPane.showMessageDialog(null, "Đã nhận phòng cho đơn đã đặt.");
+				        } else if (tabIndex == 1) {
+				            dao.setTrangThaiDonDatPhong(maDon, "Đã đặt");
+				            JOptionPane.showMessageDialog(null, "Đã xác nhận đặt phòng từ đơn tạm.");
+				        }
+				    });
 				});
 
 				btnHuy.addActionListener(e -> {
-					int row = table.getSelectedRow();
-					JOptionPane.showMessageDialog(null, "Đã hủy phòng cho dòng " + row);
+				    int row = table.getSelectedRow();
+				    int tabIndex = tabbedPane.getSelectedIndex();
+				    String maDon = (String) table.getValueAt(row, 0);
+				    DonDatPhong_Dao dao = new DonDatPhong_Dao();
+
+				    if (tabIndex == 0) {
+				        DonDatPhong donDatPhong = dao.timDonTheoMa(maDon);
+				        SwingUtilities.invokeLater(() -> {
+				            new HuyPhong_GUI().taoDonHuyPhong(donDatPhong, () -> {
+				                // Sau khi hủy thành công thì reload
+				                timKiemDonDatPhongTheoSDT();
+				            });
+				        });
+				    } else if (tabIndex == 1) {
+				        int chon = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn hủy đơn tạm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+				        if (chon == JOptionPane.YES_OPTION) {
+				            capNhatVaReload(() -> {
+				                dao.setTrangThaiDonDatPhong(maDon, "Đã hủy");
+				                JOptionPane.showMessageDialog(null, "Đã hủy đơn tạm thành công.");
+				            });
+				        }
+				    }
 				});
 			}
 
 			@Override
-			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-					int column) {
+			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 				return panel;
 			}
 
@@ -161,115 +176,85 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setFont(new Font("Times New Roman", Font.BOLD, 18));
 
-		String[] columnNames = { "SĐT", "Tên khách hàng", "Ngày nhận phòng", "Ngày trả phòng", "Chức năng" };
+		String[] columnNames = { "Mã đơn", "SĐT", "Tên KH", "Ngày nhận", "Ngày trả", "Chức năng" };
 
 		modelDaDat = new DefaultTableModel(new Object[][] {}, columnNames);
 		modelTamThoi = new DefaultTableModel(new Object[][] {}, columnNames);
 
 		tableDaDat = createTableWithButtons(modelDaDat);
-		JScrollPane scrollPane1 = new JScrollPane(tableDaDat);
-
 		tableTamThoi = createTableWithButtons(modelTamThoi);
-		JScrollPane scrollPane2 = new JScrollPane(tableTamThoi);
 
-		tabbedPane.add("Đơn đã đặt", scrollPane1);
-		tabbedPane.add("Đơn tạm thời", scrollPane2);
+		tabbedPane.add("Đơn đã đặt", new JScrollPane(tableDaDat));
+		tabbedPane.add("Đơn tạm thời", new JScrollPane(tableTamThoi));
 
 		return tabbedPane;
 	}
 
-	private JTable createTable(DefaultTableModel model) {
-		JTable tbl = new JTable(model);
-		tbl.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		tbl.setRowHeight(25);
-
-		JTableHeader header = tbl.getTableHeader();
-		header.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		header.setBackground(new Color(22, 160, 133));
-		header.setForeground(Color.WHITE);
-
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		for (int i = 0; i < tbl.getColumnCount(); i++) {
-			tbl.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-		}
-
-		return tbl;
-	}
-
 	private void timKiemDonDatPhongTheoSDT() {
 		String sdt = txtSoDienThoai.getText().trim();
+		
+		// Luôn clear bảng trước
+		modelDaDat.setRowCount(0);
+		modelTamThoi.setRowCount(0);
+
 		if (!sdt.isEmpty()) {
 			DonDatPhong_Dao dao = new DonDatPhong_Dao();
 			ArrayList<DonDatPhong> danhSach = dao.getDonDatPhongTheoSDT(sdt);
 
-			modelDaDat.setRowCount(0);
-			modelTamThoi.setRowCount(0);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 			for (DonDatPhong ddp : danhSach) {
-				String soDienThoai = ddp.getKhachHang().getSdt();
-				String tenKhach = ddp.getKhachHang().getHoTen();
-				String ngayNhan = ddp.getNgayNhanPhong().toString(); // Cần format đẹp nếu muốn
-				String ngayTra = ddp.getNgayTraPhong().toString(); // Cần format đẹp nếu muốn
-				String chucNang = ""; // ô này sẽ bị ghi đè bởi nút trong renderer
-
-				Object[] row = new Object[] { soDienThoai, tenKhach, ngayNhan, ngayTra, chucNang // giữ trống, renderer
-																									// sẽ gán nút vào
-																									// đây
+				String[] row = {
+					ddp.getMaDonDatPhong(),
+					ddp.getKhachHang().getSdt(),
+					ddp.getKhachHang().getHoTen(),
+					ddp.getNgayNhanPhong().format(dtf),
+					ddp.getNgayTraPhong().format(dtf),
+					""
 				};
-
-				if ("Đã đặt".equals(ddp.getTrangThai())) {
+				if ("Đã đặt".equals(ddp.getTrangThai()))
 					modelDaDat.addRow(row);
-				} else if ("Đơn tạm".equals(ddp.getTrangThai())) {
+				else if ("Đơn tạm".equals(ddp.getTrangThai()))
 					modelTamThoi.addRow(row);
-				}
 			}
-		} else {
-			JOptionPane.showMessageDialog(null, "Vui lòng nhập số điện thoại!", "Cảnh báo",
-					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+
+	private void loadTatCaDonDatPhong() {
+		DonDatPhong_Dao dao = new DonDatPhong_Dao();
+		ArrayList<DonDatPhong> danhSach = dao.getAllDonDatPhong();
+		modelDaDat.setRowCount(0);
+		modelTamThoi.setRowCount(0);
+
+		for (DonDatPhong ddp : danhSach) {
+			String[] row = {
+				ddp.getMaDonDatPhong(),
+				ddp.getKhachHang().getSdt(),
+				ddp.getKhachHang().getHoTen(),
+		        ddp.getNgayNhanPhong().format(dtf),
+		        ddp.getNgayTraPhong().format(dtf),
+				""
+			};
+			if ("Đã đặt".equals(ddp.getTrangThai()))
+				modelDaDat.addRow(row);
+			else if ("Đơn tạm".equals(ddp.getTrangThai()))
+				modelTamThoi.addRow(row);
 		}
 	}
 	
-	private void loadTatCaDonDatPhong() {
-	    dao.DonDatPhong_Dao dao = new dao.DonDatPhong_Dao();
-	    ArrayList<DonDatPhong> danhSach = dao.getAllDonDatPhong(); // Viết hàm này trong DAO nếu chưa có
-
-	    modelDaDat.setRowCount(0);
-	    modelTamThoi.setRowCount(0);
-
-	    for (DonDatPhong ddp : danhSach) {
-	        String soDienThoai = ddp.getKhachHang().getSdt();
-	        String tenKhach = ddp.getKhachHang().getHoTen();
-	        String ngayNhan = ddp.getNgayNhanPhong().toString();
-	        String ngayTra = ddp.getNgayTraPhong().toString();
-	        String chucNang = "";
-
-	        Object[] row = new Object[] {
-	            soDienThoai,
-	            tenKhach,
-	            ngayNhan,
-	            ngayTra,
-	            chucNang
-	        };
-
-	        if ("Đã đặt".equals(ddp.getTrangThai())) {
-	            modelDaDat.addRow(row);
-	        } else if ("Đơn tạm".equals(ddp.getTrangThai())) {
-	            modelTamThoi.addRow(row);
-	        }
-	    }
+	private void capNhatVaReload(Runnable capNhatTacVu) {
+	    capNhatTacVu.run(); // chạy hành động cập nhật (hủy, nhận...)
+	    timKiemDonDatPhongTheoSDT(); // gọi lại sau khi cập nhật
 	}
-
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			JFrame frame = new JFrame("Tìm đơn đặt phòng");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setSize(1000, 700); // tuỳ chỉnh theo kích thước panel
-
-			DSPhongDatTruoc_Gui panel = new DSPhongDatTruoc_Gui();
-			frame.setContentPane(panel);
-			frame.setLocationRelativeTo(null); // căn giữa màn hình
+			frame.setSize(1000, 700);
+			frame.setContentPane(new DSPhongDatTruoc_Gui());
+			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
 		});
 	}

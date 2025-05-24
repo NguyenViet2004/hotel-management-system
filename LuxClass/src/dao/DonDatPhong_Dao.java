@@ -39,8 +39,11 @@ public class DonDatPhong_Dao {
 				don.setMaDonDatPhong(rs.getString("maDonDatPhong"));
 
 				// Ngày nhận, trả -> convert sang LocalDateTime
+				Timestamp tsDat = rs.getTimestamp("ngayDatPhong");
 				Timestamp tsNhan = rs.getTimestamp("ngayNhanPhong");
 				Timestamp tsTra = rs.getTimestamp("ngayTraPhong");
+				if (tsDat != null)
+					don.setNgayDatPhong(tsDat.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 				if (tsNhan != null)
 					don.setNgayNhanPhong(tsNhan.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 				if (tsTra != null)

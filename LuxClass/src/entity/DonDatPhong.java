@@ -150,62 +150,55 @@ public class DonDatPhong {
 	}
 
 	public double tinhTienPhong() {
-		ChiTietDonDatPhong_Dao chiTietDonDatPhong_Dao = new ChiTietDonDatPhong_Dao();
-		chiTietPhong = chiTietDonDatPhong_Dao.getChiTietDonDatPhongTheoMaDon(maDonDatPhong);
+	    ChiTietDonDatPhong_Dao chiTietDonDatPhong_Dao = new ChiTietDonDatPhong_Dao();
+	    chiTietPhong = chiTietDonDatPhong_Dao.getChiTietDonDatPhongTheoMaDon(maDonDatPhong);
 
-		Phong_Dao phong_Dao = new Phong_Dao();
-		LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
+	    Phong_Dao phong_Dao = new Phong_Dao();
+	    LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
 
-		double tongTien = 0;
+	    double tongTien = 0;
 
-		// Chuyển LocalDateTime thành Instant
-		ZoneId zone = ZoneId.systemDefault(); // hoặc chọn zone cụ thể nếu cần
-		Instant start = ngayNhanPhong.atZone(zone).toInstant();
-		Instant end = ngayTraPhong.atZone(zone).toInstant();
+	    ZoneId zone = ZoneId.systemDefault();
+	    Instant start = ngayNhanPhong.atZone(zone).toInstant();
+	    Instant end = ngayTraPhong.atZone(zone).toInstant();
+	    long tongPhut = Duration.between(start, end).toMinutes();
 
-		// Tính số giờ và số ngày (hoặc số đêm nếu cần)
-		long soGio = Duration.between(start, end).toHours(); // Tổng số giờ
-		long soNgay = Duration.between(start, end).toDays(); // Tổng số ngày
-		long soDem = soNgay; // Theo logic tính số đêm như số ngày
+	    for (ChiTietDonDatPhong ct : chiTietPhong) {
+	        Phong phong = phong_Dao.getPhongTheoMa(ct.getPhong().getSoPhong());
+	        LoaiPhong loaiPhong = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong());
 
-		// Nếu bạn cần làm tròn số ngày/đêm, tính lại như sau:
-		if (Duration.between(start, end).toHours() > 12) {
-			soNgay++;
-		}
+	        switch (loaiDon) {
+	            case "Theo giờ":
+	                long soGio = (long) Math.ceil(tongPhut / 60.0); // Làm tròn lên
+	                if (soGio == 0) soGio = 1;
+	                tongTien += loaiPhong.getGiaTheoGio() * soGio;
+	                break;
 
-		// Vòng lặp xử lý các chi tiết phòng
-		for (ChiTietDonDatPhong ct : chiTietPhong) {
-			Phong phong = ct.getPhong();
-			phong = phong_Dao.getPhongTheoMa(phong.getSoPhong()); // Lấy thông tin phòng
-			LoaiPhong loaiPhong = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong()); // Lấy loại
-																											// phòng
+	            case "Theo ngày":
+	                long soNgay = tongPhut / (60 * 24);
+	                long phutLe = tongPhut % (60 * 24);
+	                if (phutLe > 12 * 60) soNgay++; // Nếu dư > 12 tiếng thì thêm 1 ngày
+	                if (soNgay == 0) soNgay = 1;
+	                tongTien += loaiPhong.getGiaTheoNgay() * soNgay;
+	                break;
 
-			// Tính tiền tùy theo loại đơn
-			switch (loaiDon) {
-			case "Theo giờ":
-				tongTien += loaiPhong.getGiaTheoGio() * soGio;
-				break;
-			case "Theo ngày":
-				tongTien += loaiPhong.getGiaTheoNgay() * soNgay;
-				break;
-			case "Theo đêm":
-				tongTien += loaiPhong.getGiaTheoDem() * soDem;
-				break;
-			default:
-				break;
-			}
-		}
-		return tongTien;
+	            case "Theo đêm":
+	                tongTien += loaiPhong.getGiaTheoDem(); // Cố định 1 đêm
+	                break;
+
+	            default:
+	                break;
+	        }
+	    }
+
+	    return tongTien;
 	}
+
 
 	/**
 	 * 
 	 * @param Phong
 	 */
-	public boolean catNhapTinhTrangPhong(int Phong) {
-		// TODO - implement DonDatPhong.catNhapTinhTrangPhong
-		throw new UnsupportedOperationException();
-	}
 
 	public double tinhTongTien() {
 		// TODO - implement DonDatPhong.tinhTongTien
@@ -226,8 +219,8 @@ public class DonDatPhong {
 		}
 	}
 
-	public double phiHuyPhong(LocalDateTime thoiGianDatPhong, LocalDateTime thoiGianHuy) {
-		Duration durationDat = Duration.between(thoiGianDatPhong, ngayNhanPhong);
+	public double phiHuyPhong(LocalDateTime thoiGianHuy, LocalDateTime ngayNhanPhong) {
+		Duration durationDat = Duration.between(thoiGianHuy, ngayNhanPhong);
 		long hoursBeforeCheckinAtDat = durationDat.toHours();
 
 		// Nếu đặt trực tiếp (gần giờ nhận phòng), miễn phí hủy
