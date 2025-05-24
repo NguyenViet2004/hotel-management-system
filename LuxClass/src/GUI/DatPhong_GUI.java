@@ -1932,7 +1932,7 @@ public class DatPhong_GUI extends JDialog {
 		                    coLoi = true;
 		                    break;
 		                }
-		                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đã đặt");
+		                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đang ở");
 		            }
 
 		            if (coLoi) {
