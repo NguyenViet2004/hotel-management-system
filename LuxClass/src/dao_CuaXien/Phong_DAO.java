@@ -219,7 +219,7 @@ public class Phong_DAO {
 
 		try (Connection conn = ConnectDB.getConnection(); // Thay ConnectDB bằng class kết nối DB của bạn
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, "Chưa thanh toán");
+			stmt.setString(1, "Nhận phòng");
 			stmt.setString(2, "Đang ở");
 			try (ResultSet rs = stmt.executeQuery()) {
 				while (rs.next()) {
