@@ -281,7 +281,7 @@ INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES
 INSERT INTO DonDatPhong
     (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong,soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai)
 VALUES
-    ('23052025LT001001','KH230520250001','2025-05-23 12:00:00.000','2025-05-23 14:00:00.000','2025-05-24 12:00:00.000',2,0,'2025-05-23 03:00:00.000','2025LT001',N'Theo ngày',N'Chưa thanh toán');
+    ('23052025LT001001','KH230520250001','2025-05-23 12:00:00.000','2025-05-23 14:00:00.000','2025-05-24 12:00:00.000',2,0,'2025-05-23 03:00:00.000','2025LT001',N'Theo ngày',N'Nhận phòng');
 INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong)
 VALUES ('23052025LT001001', 'P101', 1);
 UPDATE Phong
