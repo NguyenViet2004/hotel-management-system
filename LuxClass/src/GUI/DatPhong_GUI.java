@@ -1702,7 +1702,14 @@ public class DatPhong_GUI extends JDialog {
 		lblCccd.setFont(new Font("Arial", Font.BOLD, cochu));
 		JTextField txtCccd = new JTextField();
 		
-		JLabel lblBuffet = new JLabel("Dịch vụ buffet");
+		String text = "Dịch vụ thuê nôi em bé";
+		Font font = new Font("Arial", Font.BOLD, cochu); // cùng font như label bạn dùng
+		FontMetrics fm = new JLabel().getFontMetrics(font);
+		int width = fm.stringWidth(text);  // ← Đây là chiều rộng tính bằng pixel
+		System.out.println("Chiều rộng của chuỗi là: " + width + " px");
+
+		
+		JLabel lblBuffet = new JLabel("Dịch vụ buffet        ");
 		lblBuffet.setFont(new Font("Arial", Font.BOLD, cochu));
 
 		JSpinner spnBuffet = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
@@ -1711,56 +1718,110 @@ public class DatPhong_GUI extends JDialog {
 		spnBuffet.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		spnBuffet.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 
+		JLabel lblThueXeDay = new JLabel("Dịch vụ thuê xe đẩy ");
+		lblThueXeDay.setFont(new Font("Arial", Font.BOLD, cochu));
 
+		JSpinner spnThueXeDay = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
+		spnThueXeDay.setFont(new Font("Arial", Font.PLAIN, cochu));
+		spnThueXeDay.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnThueXeDay.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnThueXeDay.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		
+		JLabel lblBaoMau = new JLabel("Dịch vụ bảo mẫu      ");
+		lblBaoMau.setFont(new Font("Arial", Font.BOLD, cochu));
 
-		JLabel lblYeuCau = new JLabel("Yêu cầu đặc biệt");
-		lblYeuCau.setFont(new Font("Arial", Font.BOLD, cochu));
-		JCheckBox chkNoi = new JCheckBox("Thuê nôi");
-		chkNoi.setFont(new Font("Arial", Font.BOLD, cochu));
-		JCheckBox chkBaoMau = new JCheckBox("Thuê bảo mẫu");
-		chkBaoMau.setFont(new Font("Arial", Font.BOLD, cochu));
-		JCheckBox chkXeDay = new JCheckBox("Thuê xe đẩy");
-		chkXeDay.setFont(new Font("Arial", Font.BOLD, cochu));
+		JSpinner spnBaoMau = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
+		spnBaoMau.setFont(new Font("Arial", Font.PLAIN, cochu));
+		spnBaoMau.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnBaoMau.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnBaoMau.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		
+		JLabel lblNoiEmBe = new JLabel("Dịch vụ thuê nôi em bé");
+		lblNoiEmBe.setFont(new Font("Arial", Font.BOLD, cochu));
 
-		JPanel chkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		chkPanel.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
-		chkPanel.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
-		chkPanel.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.5), (int)(screenHeightTrang1*0.06)));
-
-		chkPanel.setBackground(Color.WHITE);
-		chkPanel.add(chkNoi);
-		chkPanel.add(chkBaoMau);
-		chkPanel.add(chkXeDay);
-
+		JSpinner spnThNoiEmBe = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
+		spnThNoiEmBe.setFont(new Font("Arial", Font.PLAIN, cochu));
+		spnThNoiEmBe.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnThNoiEmBe.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnThNoiEmBe.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+//
+//		Dimension labelSize = new Dimension(width, 30); // 30 là chiều cao hợp lý
+//
+//		lblBuffet.setPreferredSize(labelSize);
+//		lblThueXeDay.setPreferredSize(labelSize);
+//		lblBaoMau.setPreferredSize(labelSize);
+//		lblNoiEmBe.setPreferredSize(labelSize);
 		// GroupLayout setup
 		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(lblKhachMoi, GroupLayout.Alignment.CENTER)
-				.addGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(lblSDT)
-								.addComponent(lblHoTen).addComponent(lblEmail).addComponent(lblCccd)
-								.addComponent(lblBuffet).addComponent(lblYeuCau))
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(txtSDT)
-								.addComponent(txtHoTen).addComponent(txtEmail).addComponent(txtCccd)
-								.addComponent(spnBuffet).addComponent(chkPanel))));
+			    .addComponent(lblKhachMoi, GroupLayout.Alignment.CENTER)
+			    .addGroup(layout.createSequentialGroup()
+			        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+			            .addComponent(lblSDT)
+			            .addComponent(lblHoTen)
+			            .addComponent(lblEmail)
+			            .addComponent(lblCccd))
+			        .addGap(20)
+			        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+			            .addComponent(txtSDT)
+			            .addComponent(txtHoTen)
+			            .addComponent(txtEmail)
+			            .addComponent(txtCccd)))
+			    
+			    // Hàng 1: Buffet – thuê xe đẩy
+			    .addGroup(layout.createSequentialGroup()
+			        .addComponent(lblBuffet)
+			        .addGap(20) // <-- Khoảng cách từ label tới spinner
+			        .addComponent(spnBuffet, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			        .addGap(40) // khoảng cách giữa 2 nhóm
+			        .addComponent(lblThueXeDay)
+			        .addGap(20)
+			        .addComponent(spnThueXeDay, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+			    
+			    // Hàng 2: Bảo mẫu – nôi em bé
+			    .addGroup(layout.createSequentialGroup()
+			        .addComponent(lblBaoMau)
+			        .addGap(20)
+			        .addComponent(spnBaoMau, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			        .addGap(40)
+			        .addComponent(lblNoiEmBe)
+			        .addGap(20)
+			        .addComponent(spnThNoiEmBe, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+			);
 
 		int khoangcach = 20;
-		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(lblKhachMoi).addGap(khoangcach)
-				.addGroup(layout
-						.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblSDT).addComponent(txtSDT))
-				.addGap(khoangcach)
-				.addGroup(layout
-						.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblHoTen).addComponent(txtHoTen))
-				.addGap(khoangcach)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblEmail)
-						.addComponent(txtEmail))
-				.addGap(khoangcach)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblCccd)
-						.addComponent(txtCccd))
-				.addGap(khoangcach)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lblBuffet)
-						.addComponent(spnBuffet))
-				.addGap(khoangcach).addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(lblYeuCau).addComponent(chkPanel)));
+		layout.setVerticalGroup(layout.createSequentialGroup()
+			    .addComponent(lblKhachMoi)
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblSDT)
+			        .addComponent(txtSDT))
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblHoTen)
+			        .addComponent(txtHoTen))
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblEmail)
+			        .addComponent(txtEmail))
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblCccd)
+			        .addComponent(txtCccd))
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblBuffet)
+			        .addComponent(spnBuffet)
+			        .addComponent(lblThueXeDay)
+			        .addComponent(spnThueXeDay))
+			    .addGap(khoangcach)
+			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			        .addComponent(lblBaoMau)
+			        .addComponent(spnBaoMau)
+			        .addComponent(lblNoiEmBe)
+			        .addComponent(spnThNoiEmBe))
+			);
+
+
 		setTextFieldHeight(txtHoTen);
 		setTextFieldHeight(txtSDT);
 		setTextFieldHeight(txtEmail);
