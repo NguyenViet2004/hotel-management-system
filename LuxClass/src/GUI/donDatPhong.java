@@ -9,6 +9,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
+import Duong.DatPhong_GUI;
 import dao_CuaXien.ChiTietApDung_DAO;
 import dao_CuaXien.DichVu_DAO;
 import dao_CuaXien.DonDatPhong_DAO;
@@ -1738,10 +1739,20 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 						e1.printStackTrace();
 					}
 					int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo",
-							JOptionPane.OK_CANCEL_OPTION);
+					        JOptionPane.OK_CANCEL_OPTION);
+					int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo",
+					        JOptionPane.OK_CANCEL_OPTION);
+
 					if (option == JOptionPane.OK_OPTION) {
-						SwingUtilities.getWindowAncestor(thanhToan).dispose();
+					    // Đóng cửa sổ hiện tại
+					    Window window = SwingUtilities.getWindowAncestor(thanhToan);
+					    if (window != null) window.dispose();
+
+					    // Mở trang DatPhong_GUI
+					    DatPhong_GUI datPhongGUI = new DatPhong_GUI(); // nếu constructor không có tham số
+					    datPhongGUI.setVisible(true);
 					}
+
 				} else if (tienMat.isSelected()) {
 					List<Object[]> data = getTableData(table1);
 					try {
