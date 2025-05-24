@@ -56,4 +56,23 @@ public class ChiPhiPhatSinh_DAO {
         }
         return null;
     }
+    public boolean suaChiPhiPhatSinh(ChiPhiPhatSinh chiPhi) {
+        String sql = "UPDATE ChiPhiPhatSinh SET chiPhiTBHong = ?, soGioOQuaGio = ?, maDonDatPhong = ?, moTa = ? WHERE maChiPhi = ?";
+        
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setDouble(1, chiPhi.getChiPhiTBHong());
+            pst.setInt(2, chiPhi.getSoGioThem());
+            pst.setString(3, chiPhi.getDonDatPhong().getMaDonDatPhong());
+            pst.setString(4, chiPhi.getMoTa());
+            pst.setString(5, chiPhi.getMaChiPhi());  // WHERE điều kiện sửa theo mã
+
+            return pst.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

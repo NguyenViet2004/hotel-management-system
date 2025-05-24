@@ -200,6 +200,14 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		Home.setContentAreaFilled(false);
 		Home.setBorderPainted(false);
 		Home.setFocusPainted(false);
+		Home.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					dispose(); // đóng frame hiện tại
+					QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
+					frame.setVisible(true);
+				}
+		});
 		Header.add(Home);
 
 		JLabel lblNewLabel_7 = new JLabel("Trả phòng");
