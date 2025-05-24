@@ -359,7 +359,7 @@ public class chiPhiPhatSinh_Dialog extends JDialog {
         	        ChiPhiPhatSinh chiPhi= new ChiPhiPhatSinh(maChiPhiValue, chiPhiThietBiHongValue, soGioThemValue, moTa, ddp);
         	        ChiPhiPhatSinh_DAO chiPhiDAO = new ChiPhiPhatSinh_DAO();
         	        if (!chiPhiDAO.themChiPhiPhatSinh(chiPhi)) {
-        	            JOptionPane.showMessageDialog(null, "Phòng này đã có chi phí phát sinh");
+        	            chiPhiDAO.suaChiPhiPhatSinh(chiPhi);
         	        }
 
         	        // Đóng dialog
