@@ -558,6 +558,10 @@ public class KhuyenMaiDialog extends JDialog {
 	    model.setRowCount(0); // Xóa dữ liệu cũ
 
 	    for (KhuyenMai km : sortedList) {
+	    	 if ("Không".equalsIgnoreCase(km.getMaKhuyenMai())) {
+	    	        continue;
+	    	    }
+
 	        model.addRow(new Object[] {
 	            km.getTenKhuyenMai(),
 	            km.getMaKhuyenMai(),

@@ -120,7 +120,7 @@ public class LichSuDatPhong extends JDialog {
 		table.getColumnModel().getColumn(4).setPreferredWidth(112);
 		table.getColumnModel().getColumn(5).setResizable(false);
 		table.getColumnModel().getColumn(5).setPreferredWidth(30);
-		table.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+		table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
 		table.setRowHeight(26);
 		table.setBackground(Color.WHITE);
