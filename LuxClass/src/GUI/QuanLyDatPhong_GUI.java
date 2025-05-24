@@ -37,6 +37,7 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import HuyPhong.DSPhongDatTruoc_Gui;
 import HuyPhong.HuyPhong_GUI;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
@@ -606,11 +607,19 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 			dialog.setResizable(false);
 			dialog.setVisible(true);
 		}
-//        if(e.getSource() == btnHuy){
-//            // Mở cửa sổ đặt phòng
-//            HuyPhong_GUI frameHuyPhong =  new HuyPhong_GUI();
-//            frameHuyPhong.setVisible(true);
-//        }
+		if (e.getSource() == btnHuy) {
+			// Mở cửa sổ đặt phòng
+			DSPhongDatTruoc_Gui dspdt = new DSPhongDatTruoc_Gui();
+			dspdt.setVisible(true);
+            JFrame frame = new JFrame("Tìm đơn đặt phòng");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(1000, 700); // tuỳ chỉnh theo kích thước panel
+
+            DSPhongDatTruoc_Gui panel = new DSPhongDatTruoc_Gui();
+            frame.setContentPane(panel);
+            frame.setLocationRelativeTo(null); // căn giữa màn hình
+            frame.setVisible(true);
+		}
 	}
 	private void loadData(java.util.Date selectedDate) {
 		// Thực hiện các thao tác cần thiết để load dữ liệu dựa trên ngày được chọn
@@ -643,5 +652,4 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		// Thực hiện các thao tác để load dữ liệu từ database dựa trên ngày được chọn
 		// ...
 	}
-
 }
