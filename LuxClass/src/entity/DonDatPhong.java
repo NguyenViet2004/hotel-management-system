@@ -12,16 +12,17 @@ import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
 
 public class DonDatPhong {
-
 	private String maDonDatPhong;
-	private KhachHang khachHang;
+	private LocalDateTime ngayDatPhong;
 	private LocalDateTime ngayNhanPhong;
 	private LocalDateTime ngayTraPhong;
 	private int soKhach;
 	private double tienCoc;
+	private LocalDateTime thoiGianCoc;
 	private NhanVien nhanVien;
-	private String loaiDon;
-	private String trangThai;
+	private String loaiDon; 
+	private String trangThai; 
+	private KhachHang khachHang;
 	private ArrayList<ChiTietDonDatPhong> chiTietPhong;
 
 	public DonDatPhong() {
@@ -29,26 +30,28 @@ public class DonDatPhong {
 
 	}
 
-	public DonDatPhong(String maDonDatPhong, KhachHang khachHang, LocalDateTime ngayNhanPhong,
-			LocalDateTime ngayTraPhong, int soKhach, double tienCoc, NhanVien nhanVien, String loaiDon,
-			String trangThai) {
-		super();
-		this.maDonDatPhong = maDonDatPhong;
-		this.khachHang = khachHang;
-		this.ngayNhanPhong = ngayNhanPhong;
-		this.ngayTraPhong = ngayTraPhong;
-		this.soKhach = soKhach;
-		this.tienCoc = tienCoc;
-		this.nhanVien = nhanVien;
-		this.loaiDon = loaiDon;
-		this.trangThai = trangThai;
-	}
-
 	public DonDatPhong(String maDonDatPhong) {
 		super();
 		this.maDonDatPhong = maDonDatPhong;
 	}
 
+	public DonDatPhong(String maDonDatPhong, LocalDateTime ngayDatPhong, LocalDateTime ngayNhanPhong,
+			LocalDateTime ngayTraPhong, int soKhach, double tienCoc, LocalDateTime thoiGianCoc, NhanVien nhanVien,
+			String loaiDon, String trangThai, KhachHang khachHang) {
+		this.maDonDatPhong = maDonDatPhong;
+		this.ngayDatPhong = ngayDatPhong;
+		this.ngayNhanPhong = ngayNhanPhong;
+		this.ngayTraPhong = ngayTraPhong;
+		this.soKhach = soKhach;
+		this.tienCoc = tienCoc;
+		this.thoiGianCoc = thoiGianCoc;
+		this.nhanVien = nhanVien;
+		this.loaiDon = loaiDon;
+		this.trangThai = trangThai;
+		this.khachHang = khachHang;
+	}
+
+// ======== Getters & Setters ========
 	public String getMaDonDatPhong() {
 		return maDonDatPhong;
 	}
@@ -57,12 +60,12 @@ public class DonDatPhong {
 		this.maDonDatPhong = maDonDatPhong;
 	}
 
-	public KhachHang getKhachHang() {
-		return khachHang;
+	public LocalDateTime getNgayDatPhong() {
+		return ngayDatPhong;
 	}
 
-	public void setKhachHang(KhachHang khachHang) {
-		this.khachHang = khachHang;
+	public void setNgayDatPhong(LocalDateTime ngayDatPhong) {
+		this.ngayDatPhong = ngayDatPhong;
 	}
 
 	public LocalDateTime getNgayNhanPhong() {
@@ -97,6 +100,14 @@ public class DonDatPhong {
 		this.tienCoc = tienCoc;
 	}
 
+	public LocalDateTime getThoiGianCoc() {
+		return thoiGianCoc;
+	}
+
+	public void setThoiGianCoc(LocalDateTime thoiGianCoc) {
+		this.thoiGianCoc = thoiGianCoc;
+	}
+
 	public NhanVien getNhanVien() {
 		return nhanVien;
 	}
@@ -119,6 +130,14 @@ public class DonDatPhong {
 
 	public void setTrangThai(String trangThai) {
 		this.trangThai = trangThai;
+	}
+
+	public KhachHang getKhachHang() {
+		return khachHang;
+	}
+
+	public void setKhachHang(KhachHang khachHang) {
+		this.khachHang = khachHang;
 	}
 
 	public ArrayList<ChiTietDonDatPhong> getChiTietPhong() {
