@@ -193,7 +193,7 @@ go
 -- Chèn dữ liệu vào bảng LoaiDichVu
 INSERT INTO LoaiDichVu (maLoai, tenLoai)
 VALUES 
-('LoaiDV01', N'Buffet'), ('LoaiDV02', N'Gọi món'), ('LoaiDV03', N'Giặt ủi');
+('LoaiDV01', N'Buffet'), ('LoaiDV02', N'Gọi món'), ('LoaiDV03', N'Giặt ủi'), ('LoaiDV04', N'DVThueXeDay'),('LoaiDV05', N'DVBaoMau'),('LoaiDV06', N'DVNoiEmBe');
 go
 -- Chèn dữ liệu vào bảng DichVu
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai)
@@ -276,7 +276,10 @@ INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
 ('DVGiatUiSay14', N'Đồ lót (1 bộ)', N'Giặt Sấy', 15000, 'LoaiDV03');
 
 INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES
-('KH230520250001', N'Nguyễn Văn AN', '0901234567', '075204003397', 'nguyenvanaN@gmail.com');
+('KH230520250001', N'Lê Thành Đạo', '0334072027', '075204003367', 'nguyenvandao@gmail.com'),
+('KH230520250002', N'Nguyễn Quốc Việt', '0379173132', '064204008238', 'nguyenvanviet@gmail.com'),
+('KH230520250003', N'Ngô Bình Xuyên', '0946611645', '091204012876', 'nguyenvanxuyen@gmail.com'),
+('KH230520250004', N'Hà Văn Dương', '0383808030', '075204003399', 'nguyenvanduong@gmail.com');
 
 INSERT INTO DonDatPhong
     (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong,soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai)
@@ -309,3 +312,9 @@ VALUES (
     0,                           -- điều kiện áp dụng = 0
     N'Đang áp dụng'              -- trạng thái: có thể dùng cho mặc định
 );
+
+
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
+('DVThueXeDay', N'Thuê xe đẩy em bé', N'Thuê xe đẩy em bé', 50000, 'LoaiDV04'),
+('DVBaoMau', N'Phí bảo mẫu', N'Phí bảo mẫu', 40000, 'LoaiDV05'),
+('DVNoiEmBe', N'Nôi em bé', N'Nôi em bé', 30000, 'LoaiDV06');
