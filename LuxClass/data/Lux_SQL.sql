@@ -281,14 +281,31 @@ INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES
 INSERT INTO DonDatPhong
     (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong,soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai)
 VALUES
-    ('23052025LT001001','KH230520250001','2025-05-23 12:00:00.000','2025-05-23 14:00:00.000','2025-05-24 12:00:00.000',2,0,'2025-05-23 03:00:00.000','2025LT001',N'Theo ngày',N'Chưa thanh toán'),
-	('23052025LT001002','KH230520250001','2025-05-24 18:00:00.000','2025-05-24 20:00:00.000','2025-05-25 08:00:00.000',2,0,'2025-05-24 21:00:00.000','2025LT001',N'Theo đêm',N'Chưa thanh toán'),
-	('23052025LT001003','KH230520250001','2025-05-25 09:00:00.000','2025-05-25 10:00:00.000','2025-05-25 15:00:00.000',2,0,'2025-05-25 13:00:00.000','2025LT001',N'Theo giờ',N'Chưa thanh toán');
+    ('23052025LT001001','KH230520250001','2025-05-23 12:00:00.000','2025-05-23 14:00:00.000','2025-05-24 12:00:00.000',2,0,'2025-05-23 03:00:00.000','2025LT001',N'Theo ngày',N'Chưa thanh toán');
 INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong)
-VALUES ('23052025LT001001', 'P101', 1),('23052025LT001002', 'P101', 1),('23052025LT001003', 'P101', 1);
+VALUES ('23052025LT001001', 'P101', 1);
+UPDATE Phong
+SET trangThai = N'Đang ở'
+WHERE soPhong IN ('P101');
+go
 
-
-
-
-
-
+INSERT INTO KhuyenMai (
+    maKhuyenMai,
+    tenKhuyenMai,
+    loaiKhuyenMai,
+    giaTriKhuyenMai,
+    ngayBatDau,
+    ngayKetThuc,
+    dieuKienApDung,
+    trangThai
+)
+VALUES (
+    N'Không',                     -- mã khuyến mãi đặc biệt
+    N'Không',                    -- tên hiển thị
+    N'Khuyến mãi theo dịp lễ',                    -- loại khuyến mãi
+    0,                           -- giá trị khuyến mãi = 0
+    '2000-01-01',                -- ngày bắt đầu từ rất xa
+    '9999-12-31',                -- ngày kết thúc coi như "vô hạn"
+    0,                           -- điều kiện áp dụng = 0
+    N'Đang áp dụng'              -- trạng thái: có thể dùng cho mặc định
+);
