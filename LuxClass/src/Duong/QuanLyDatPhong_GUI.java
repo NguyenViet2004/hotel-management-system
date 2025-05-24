@@ -39,6 +39,10 @@ import javax.swing.border.EmptyBorder; // Added import
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
+import GUI.DatPhong_GUI;
+import GUI.timKiemDialog;
+
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
