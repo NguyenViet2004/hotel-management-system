@@ -1912,7 +1912,7 @@ public class DatPhong_GUI extends JDialog {
 		        if (kieuDat.equals("Trực tiếp")) {
 		            trangThai = "Nhận phòng";
 		        } else if (kieuDat.equals("Gián tiếp")) {
-		            trangThai = "Đã đặt";
+		            trangThai = "Đơn tạm";
 		        }
 				//thêm đơn đặt phòng
 		        System.out.println("===== THÔNG TIN ĐƠN ĐẶT PHÒNG =====");
