@@ -107,7 +107,7 @@ public class DatPhong_GUI extends JDialog {
 	private Timestamp currentTimestamp = Timestamp.valueOf(LocalDateTime.now());
 	private Timestamp hanChotCoc = Timestamp.valueOf(LocalDateTime.now().plusHours(3));
 
-	//biến thông tin tổng tiền
+	//biến thông tin 
 	private JLabel tongTienLabel;
 	private JLabel[] totalLabels;
 	
@@ -1808,9 +1808,29 @@ public class DatPhong_GUI extends JDialog {
 
 
 		// =============================== Footer=======================================
-		JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel footerPanel = new JPanel(new BorderLayout());
 		footerPanel.setBackground(Color.WHITE);
 		footerPanel.setPreferredSize(new Dimension(screenWidthTrang1, footerHeight));
+		
+		// Panel bên trái chứa tổng tiền và tiền cọc
+		JPanel leftInfoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		leftInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 0)); // padding trái
+		leftInfoPanel.setBackground(Color.WHITE);
+
+		tongTienLabel = new JLabel("Tổng tiền: 0 VNĐ");
+		tongTienLabel.setFont(new Font("Arial", Font.BOLD, 16));
+		tongTienLabel.setForeground(Color.BLACK);
+		capNhatTongTien();
+		// hiển thị tiền cọc
+		long tienCoc = "Gián tiếp".equalsIgnoreCase(kieuDat) ? Math.round(tongTien * 0.3) : 0;
+		String tienCocStr = String.format("%,d", tienCoc);
+		JLabel tienCocLabel = new JLabel("Tiền cọc: " + tienCocStr + " VNĐ");
+		tienCocLabel.setFont(new Font("Arial", Font.BOLD, 16));
+		tienCocLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // padding trái
+
+		leftInfoPanel.add(tongTienLabel);
+		leftInfoPanel.add(tienCocLabel);
+		
 
 		JButton confirmButton = new JButton("Xác nhận đặt phòng");
 		confirmButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -1890,7 +1910,7 @@ public class DatPhong_GUI extends JDialog {
 
 		        // Gán trạng thái dựa theo kiểu đặt
 		        if (kieuDat.equals("Trực tiếp")) {
-		            trangThai = "Chưa thanh toán";
+		            trangThai = "Nhận phòng";
 		        } else if (kieuDat.equals("Gián tiếp")) {
 		            trangThai = "Đã đặt";
 		        }
@@ -1949,8 +1969,15 @@ public class DatPhong_GUI extends JDialog {
 			}
 
 	});
+		
+		// Gộp lại bằng BorderLayout để phân bố trái - phải rõ ràng
+		JPanel containerPanel = new JPanel(new BorderLayout());
+		containerPanel.setBackground(Color.WHITE);
+		containerPanel.add(leftInfoPanel, BorderLayout.WEST);
+		containerPanel.add(confirmButton, BorderLayout.EAST);
 
-		footerPanel.add(confirmButton);
+		// Thêm containerPanel vào footerPanel (FlowLayout)
+		footerPanel.add(containerPanel);
 
 		// ============end===============Thêm các phần vào panel chọn phòng=======================
 		chonPhongPanel.add(headerPanel, BorderLayout.NORTH);
