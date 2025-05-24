@@ -16,10 +16,15 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import dao.ChiTietDonDatPhong_Dao;
+import dao.ChiTietPhieuDichVu_DAO;
 import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
+import dao.PhieuDichVu_DAO;
 import dao.Phong_Dao;
+import entity.ChiTietPhieuDichVu;
+import entity.DichVu;
 import entity.KhachHang;
+import entity.PhieuDichVu;
 import entity.Phong;
 
 import java.awt.*;
@@ -73,12 +78,18 @@ public class DatPhong_GUI extends JDialog {
 	//kích thước màn hình các trang
 	private int screenWidthTrang1;
 	private int screenHeightTrang1;
+	
+	//lớp entity
+	private PhieuDichVu pdv;
+	private ChiTietPhieuDichVu ctpdv;
 
 	//lớp Dao
 	private Phong_Dao phongdao;
 	private KhachHang_Dao khachhangdao;
 	private DonDatPhong_Dao dondatphongdao;
 	private ChiTietDonDatPhong_Dao chitietdondatphongdao;
+	private PhieuDichVu_DAO phieudichvudao;
+	private ChiTietPhieuDichVu_DAO chitietphieudichvudao;
 
 	//kiểu dữ liệu đặt phòng
 	private String[] tienIchPhong = {"Ban công", "View biển", "Phòng hút thuốc"};
@@ -124,6 +135,13 @@ public class DatPhong_GUI extends JDialog {
 	JCheckBox cbViewBien = new JCheckBox(tienIchPhong[2]);
 	
 	ItemListener tienIchListener;
+	JPanel footerPanel;
+	
+	// Biến lưu số lượng từng dịch vụ
+	private int soLuongBuffet = 0;
+	private int soLuongThueXeDay = 0;
+	private int soLuongBaoMau = 0;
+	private int soLuongNoiEmBe = 0;
 
 	//==============TRANG CHÍNH GUI==============
 	public DatPhong_GUI(JFrame parentFrame) {
@@ -166,6 +184,8 @@ public class DatPhong_GUI extends JDialog {
 		khachhangdao = new KhachHang_Dao();
 		phongdao = new Phong_Dao();
 		dondatphongdao = new DonDatPhong_Dao();
+		phieudichvudao = new PhieuDichVu_DAO();
+		chitietphieudichvudao = new ChiTietPhieuDichVu_DAO();
 		// Tính toán kích thước các phần
 		int headerHeight = (int) (screenHeightTrang1 * 0.3);
 		int centerHeight = (int) (screenHeightTrang1 * 0.6);
@@ -507,20 +527,7 @@ public class DatPhong_GUI extends JDialog {
 		        checkOutButton.setSelectedDate(selectedDate.plusDays(1));
 		    }
 		    //tự động load phòng trống
-			moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
-			System.out.println(">> moTa để truy vấn SQL: " + moTa);
-			System.out.println(">> từ ngày: " + tuNgay);
-			System.out.println(">> đêbs ngày: " + denNgay);
-	        loadGiaoDienTheoNgay();
-	        // 2. Xóa giao diện trung tâm cũ nếu cần
-	        centerPanel.removeAll(); // Xoá hết component cũ
-
-	        // 3. Load lại giao diện
-	        loadGiaoDienTheoNgay();
-
-	        // 4. Cập nhật lại giao diện
-	        centerPanel.revalidate();
-	        centerPanel.repaint();
+		    capNhatLaiTrang();
 		});
 
 
@@ -559,18 +566,7 @@ public class DatPhong_GUI extends JDialog {
 		checkOutButton = new CustomDateButton(LocalDate.now().plusDays(1), "12:00", selectedDate -> {
 		    tomorrowTimestamp = Timestamp.valueOf(selectedDate.atStartOfDay());
 		    //tự động load phòng trống
-		    moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
-			System.out.println(">> moTa để truy vấn SQL: " + moTa);
-	        loadGiaoDienTheoNgay();
-	        // 2. Xóa giao diện trung tâm cũ nếu cần
-	        centerPanel.removeAll(); // Xoá hết component cũ
-
-	        // 3. Load lại giao diện
-	        loadGiaoDienTheoNgay();
-
-	        // 4. Cập nhật lại giao diện
-	        centerPanel.revalidate();
-	        centerPanel.repaint();
+		    capNhatLaiTrang();
 		});
 		checkOutWrapper.add(checkOutButton);
 		checkOutPanel.add(checkOutWrapper, BorderLayout.CENTER);
@@ -670,17 +666,7 @@ public class DatPhong_GUI extends JDialog {
 		
 
 		tienIchListener = e -> {
-		    // 1. Cập nhật mô tả
-		    moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
-		    System.out.println(">> moTa để truy vấn SQL: " + moTa);
-		    System.out.println(">> từ ngày: " + tuNgay);
-		    System.out.println(">> đến ngày: " + denNgay);
-
-		    // 2. Xoá và load lại giao diện phòng
-		    centerPanel.removeAll(); // Xoá component cũ
-		    loadGiaoDienTheoNgay(); // Nạp lại giao diện phòng theo bộ lọc mới
-		    centerPanel.revalidate(); // Cập nhật bố cục
-		    centerPanel.repaint();    // Vẽ lại
+			capNhatLaiTrang();
 		};
 		cbBanCong.addItemListener(tienIchListener);
 		cbHutThuoc.addItemListener(tienIchListener);
@@ -730,11 +716,12 @@ public class DatPhong_GUI extends JDialog {
 		loadGiaoDienTheoNgay();
 
 		// =============================== Footer=============================================
-		JPanel footerPanel = new JPanel(new BorderLayout()); // ← Dùng BorderLayout thay vì FlowLayout
+		footerPanel = new JPanel(new BorderLayout()); 
 		footerPanel.setBackground(Color.WHITE);
 		footerPanel.setPreferredSize(new Dimension(screenWidthTrang1, footerHeight));
 		// ===== Panel trái: Tổng tiền =====
-		tongTienLabel = new JLabel("Tổng tiền: 0 VNĐ");
+		tongTien= 0;
+		tongTienLabel = new JLabel("Tổng tiền: " + String.format("%,d", tongTien) + " VNĐ");
 		tongTienLabel.setFont(new Font("Arial", Font.BOLD, 16));
 		tongTienLabel.setForeground(Color.BLACK);	
 		tongTienLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0)); // top, left, bottom, right
@@ -823,6 +810,22 @@ public class DatPhong_GUI extends JDialog {
 
 		return contentPane;
 	}
+	private void capNhatLaiTrang() {
+	    moTa = layMoTaChinhXac(cbBanCong, cbHutThuoc, cbViewBien);
+	    System.out.println(">> moTa để truy vấn SQL: " + moTa);
+	    System.out.println(">> từ ngày: " + tuNgay);
+	    System.out.println(">> đến ngày: " + denNgay);
+
+	    centerPanel.removeAll();       // Xóa giao diện cũ
+	    loadGiaoDienTheoNgay();       // Load lại giao diện theo ngày
+
+	    centerPanel.revalidate();     // Cập nhật lại giao diện
+	    centerPanel.repaint();
+
+	    tongTien = 0;
+	    capNhatTongTien();
+	}
+
 
 	//==============Hàm cập nhật màu khi ấn nút==============
 	private void updateButtonStyles(JButton selected, JButton... others) {
@@ -1171,33 +1174,41 @@ public class DatPhong_GUI extends JDialog {
 		rowPanel.add(quantityPanel);
 
 		// === Tổng cộng ===
-		JLabel totalLabel = new JLabel("0 VND", SwingConstants.CENTER);
+		final long[] total = {0}; // dùng mảng 1 phần tử để truy cập được trong lambda
+
+		JLabel totalLabel = new JLabel(formatCurrency(total[0]), SwingConstants.CENTER);
 		totalLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 		totalLabels[index] = totalLabel;
 		rowPanel.add(totalLabel);
 
-		// Xử lý tăng giảm
-		decreaseButton.addActionListener(e -> {
-			int qty = Integer.parseInt(quantityField.getText());
-			if (qty > 0) {
-				qty--;
-				quantityField.setText(String.valueOf(qty));
-				roomQuantities[index] = qty;
-				updateTotal(totalLabel, qty, roomPrice);
-				capNhatTongTien(); // ← Gọi cập nhật tổng tiền
-			}
+		increaseButton.addActionListener(e -> {
+		    int qty = roomQuantities[index];
+		    if (qty < soPhongTrong) {
+		        qty++;
+		        roomQuantities[index] = qty;
+		        quantityField.setText(String.valueOf(qty));
+
+		        total[0] = (long) qty * roomPrice;
+		        totalLabel.setText(formatCurrency(total[0]));
+//		        totalLabel.putClientProperty("total", total[0]); // nếu bạn vẫn dùng capNhatTongTien()
+		        capNhatTongTien();
+		    }
 		});
 
-		increaseButton.addActionListener(e -> {
-			int qty = Integer.parseInt(quantityField.getText());
-			if (qty < soPhongTrong) {
-				qty++;
-				quantityField.setText(String.valueOf(qty));
-				roomQuantities[index] = qty;
-				updateTotal(totalLabel, qty, roomPrice);
-				capNhatTongTien(); // ← Gọi cập nhật tổng tiền
-			}
+		decreaseButton.addActionListener(e -> {
+		    int qty = roomQuantities[index];
+		    if (qty > 0) {
+		        qty--;
+		        roomQuantities[index] = qty;
+		        quantityField.setText(String.valueOf(qty));
+
+		        total[0] = (long) qty * roomPrice;
+		        totalLabel.setText(formatCurrency(total[0]));
+//		        totalLabel.putClientProperty("total", total[0]); // nếu bạn vẫn dùng capNhatTongTien()
+		        capNhatTongTien();
+		    }
 		});
+
 
 
 		return rowPanel;
@@ -1207,27 +1218,29 @@ public class DatPhong_GUI extends JDialog {
 	    tongTien = 0;
 	    for (JLabel label : totalLabels) {
 	        if (label != null) {
-	            String text = label.getText().replaceAll("[^\\d]", ""); // Xóa ký tự không phải số
+	            String text = label.getText().replaceAll("[^\\d]", ""); // Lọc số
 	            if (!text.isEmpty()) {
 	                tongTien += Long.parseLong(text);
 	            }
 	        }
 	    }
+	    // Gán lại text hiển thị dựa trên biến tongTien
 	    tongTienLabel.setText("Tổng tiền: " + String.format("%,d", tongTien) + " VNĐ");
 	}
 
 
-	//==============Hàm cập nhật tiền sau khi chọn phòng==============
+
 	private void updateTotal(JLabel totalLabel, int qty, int roomPrice) {
-		int total = qty * roomPrice;
-		totalLabel.setText(formatCurrency(total));
+	    long total = (long) qty * roomPrice; // dùng long an toàn hơn int
+	    totalLabel.setText(formatCurrency(total));
+	    totalLabel.putClientProperty("total", total); // lưu giá trị thật vào label
+	}
+	
+	private String formatCurrency(long amount) {
+	    DecimalFormat df = new DecimalFormat("#,###");
+	    return df.format(amount).replace(",", ".") + " VND";
 	}
 
-	//==============Hàm định dạng tiền==============
-	private String formatCurrency(int amount) {
-		DecimalFormat df = new DecimalFormat("#,###");
-		return df.format(amount).replace(",", ".") + " VND";
-	}
 
 	//==============LOAD TRANG THEO NGÀY(TRANG 1)==============
 	private void loadGiaoDienTheoNgay() {
@@ -1704,7 +1717,7 @@ public class DatPhong_GUI extends JDialog {
 		System.out.println("Chiều rộng của chuỗi là: " + width + " px");
 
 		
-		JLabel lblBuffet = new JLabel("Dịch vụ buffet        ");
+		JLabel lblBuffet = new JLabel("Dịch vụ buffet");
 		lblBuffet.setFont(new Font("Arial", Font.BOLD, cochu));
 
 		JSpinner spnBuffet = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
@@ -1722,7 +1735,7 @@ public class DatPhong_GUI extends JDialog {
 		spnThueXeDay.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		spnThueXeDay.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		
-		JLabel lblBaoMau = new JLabel("Dịch vụ bảo mẫu      ");
+		JLabel lblBaoMau = new JLabel("Dịch vụ bảo mẫu");
 		lblBaoMau.setFont(new Font("Arial", Font.BOLD, cochu));
 
 		JSpinner spnBaoMau = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
@@ -1794,6 +1807,31 @@ public class DatPhong_GUI extends JDialog {
 
 
 		centerPanel.add(topPanel, BorderLayout.CENTER);
+
+		// Spinner dịch vụ buffet
+		spnBuffet.addChangeListener(e -> {
+		    soLuongBuffet = (int) spnBuffet.getValue();
+		    System.out.println("Buffet: " + soLuongBuffet);
+		});
+
+		// Spinner dịch vụ thuê xe đẩy
+		spnThueXeDay.addChangeListener(e -> {
+		    soLuongThueXeDay = (int) spnThueXeDay.getValue();
+		    System.out.println("Thuê xe đẩy: " + soLuongThueXeDay);
+		});
+
+		// Spinner dịch vụ bảo mẫu
+		spnBaoMau.addChangeListener(e -> {
+		    soLuongBaoMau = (int) spnBaoMau.getValue();
+		    System.out.println("Bảo mẫu: " + soLuongBaoMau);
+		});
+
+		// Spinner dịch vụ thuê nôi em bé
+		spnThNoiEmBe.addChangeListener(e -> {
+		    soLuongNoiEmBe = (int) spnThNoiEmBe.getValue();
+		    System.out.println("Nôi em bé: " + soLuongNoiEmBe);
+		});
+
 		
 		setTextFieldHeight(txtHoTen);
 		setTextFieldHeight(txtSDT);
@@ -1992,6 +2030,54 @@ public class DatPhong_GUI extends JDialog {
 		                dondatphongdao.xoaDonDatPhong(maDon);
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
+		            String maPhieu ="PDV" +maDon;
+		            LocalDateTime ngayLap = currentTimestamp.toLocalDateTime(); 
+		            
+		            System.out.println("mã phiếu: "+maPhieu);
+		            System.out.println("ngày lập phiếu: "+ngayLap);
+		            pdv = new PhieuDichVu(maPhieu,maDon,ngayLap,"Chưa thanh toán");
+		            if(phieudichvudao.themPhieuDichVu(pdv)) {
+		            	System.out.println("Thêm đơn phiếu dịch vụ thành công");
+		            }
+	                PhieuDichVu phieudichvu = new PhieuDichVu(maPhieu);
+		         // 1. Dịch vụ Buffet
+		            if (soLuongBuffet > 0) {
+		                DichVu dvBuffet = new DichVu("DVBuffet");
+		                ChiTietPhieuDichVu ctpdv = new ChiTietPhieuDichVu(phieudichvu, dvBuffet, soLuongBuffet);
+		                if (chitietphieudichvudao.them(ctpdv)) {
+		                    System.out.println("Đã thêm chi tiết dịch vụ: Buffet");
+		                }
+		            }
+
+		            // 2. Dịch vụ Thuê xe đẩy
+		            if (soLuongThueXeDay > 0) {
+		                DichVu dvXeDay = new DichVu("DVThueXeDay");
+		                ChiTietPhieuDichVu ctpdv = new ChiTietPhieuDichVu(phieudichvu, dvXeDay, soLuongThueXeDay);
+		                if (chitietphieudichvudao.them(ctpdv)) {
+		                    System.out.println("Đã thêm chi tiết dịch vụ: Thuê xe đẩy");
+		                }
+		            }
+
+		            // 3. Dịch vụ Bảo mẫu
+		            if (soLuongBaoMau > 0) {
+		                DichVu dvBaoMau = new DichVu("DVBaoMau");
+		                ChiTietPhieuDichVu ctpdv = new ChiTietPhieuDichVu(phieudichvu, dvBaoMau, soLuongBaoMau);
+		                if (chitietphieudichvudao.them(ctpdv)) {
+		                    System.out.println("Đã thêm chi tiết dịch vụ: Bảo mẫu");
+		                }
+		            }
+
+		            // 4. Dịch vụ Nôi em bé
+		            if (soLuongNoiEmBe > 0) {
+		                DichVu dvNoi = new DichVu("DVNoiEmBe");
+		                ChiTietPhieuDichVu ctpdv = new ChiTietPhieuDichVu(phieudichvu, dvNoi, soLuongNoiEmBe);
+		                if (chitietphieudichvudao.them(ctpdv)) {
+		                    System.out.println("Đã thêm chi tiết dịch vụ: Nôi em bé");
+		                }
+		            }
+
+
+		            
 		            JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
 		            dispose();
 		        } else {
