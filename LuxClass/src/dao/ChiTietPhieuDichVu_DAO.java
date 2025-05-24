@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import connectDB_CuaXien.ConnectDB;
+import entity.ChiTietPhieuDichVu;
 
 public class ChiTietPhieuDichVu_DAO {
 
@@ -23,6 +24,23 @@ public class ChiTietPhieuDichVu_DAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false; // Xóa thất bại
+        }
+    }
+    public boolean them(ChiTietPhieuDichVu ctpdv) {
+        String sql = "INSERT INTO ChiTietPhieuDichVu (maPhieuDichVu, maDichVu, soLuong) VALUES (?, ?, ?)";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, ctpdv.getPhieuDichVu().getMaPhieuDichVu());
+            stmt.setString(2, ctpdv.getDichVu().getMaDV());
+            stmt.setInt(3, ctpdv.getSoLuong());
+
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
