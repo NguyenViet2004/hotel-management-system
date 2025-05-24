@@ -1619,8 +1619,7 @@ public class DatPhong_GUI extends JDialog {
 		chonPhongPanel.setBackground(Color.WHITE);
 		chonPhongPanel.setPreferredSize(new Dimension(300, 800));
 
-		// =========================================== Header
-		// ========================================================
+		// =========================================== Header====================================
 		JPanel headerPanel = new JPanel(new BorderLayout());
 		headerPanel.setBackground(Color.GREEN); // Màu xám nhạt
 		headerPanel.setPreferredSize(new Dimension(screenWidthTrang1, headerHeight));
@@ -1661,11 +1660,7 @@ public class DatPhong_GUI extends JDialog {
 
 		headerPanel.add(titleClosePanel);
 
-		// =============================== Center
-		// =============================================================
-		System.out.println("=== Kích thước các trang ===");
-		System.out.println("Trang 1: " + screenWidthTrang1 + " x " + screenHeightTrang1);
-		
+		// =============================== Center=====================================================
 
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout());
@@ -1673,16 +1668,16 @@ public class DatPhong_GUI extends JDialog {
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
 		centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
-		// ======================= Top Panel: Thông tin khách hàng mới=====================
+		// ======================= Top Panel: Thông tin khách hàng =====================
 		JLabel lblKhachMoi = new JLabel("Nhập thông tin khách hàng");
 		lblKhachMoi.setFont(new Font("Arial", Font.BOLD, 20));
-		JPanel topPanel = new JPanel();
+		JPanel topPanel = new JPanel(new GridBagLayout()); 
 		topPanel.setBackground(Color.WHITE);
 
-		GroupLayout layout = new GroupLayout(topPanel);
-		topPanel.setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
+		
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.fill = GridBagConstraints.HORIZONTAL; // để các component giãn theo chiều ngang
 
 		int cochu = 14;
 
@@ -1714,7 +1709,7 @@ public class DatPhong_GUI extends JDialog {
 
 		JSpinner spnBuffet = new JSpinner(new SpinnerNumberModel(0, 0, 30, 1));
 		spnBuffet.setFont(new Font("Arial", Font.PLAIN, cochu));
-		spnBuffet.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
+		spnBuffet.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.3), (int)(screenHeightTrang1*0.06)));
 		spnBuffet.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		spnBuffet.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 
@@ -1744,84 +1739,62 @@ public class DatPhong_GUI extends JDialog {
 		spnThNoiEmBe.setMinimumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		spnThNoiEmBe.setPreferredSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
 		spnThNoiEmBe.setMaximumSize(new Dimension((int) (screenWidthTrang1 * 0.1), (int)(screenHeightTrang1*0.06)));
-//
-//		Dimension labelSize = new Dimension(width, 30); // 30 là chiều cao hợp lý
-//
-//		lblBuffet.setPreferredSize(labelSize);
-//		lblThueXeDay.setPreferredSize(labelSize);
-//		lblBaoMau.setPreferredSize(labelSize);
-//		lblNoiEmBe.setPreferredSize(labelSize);
-		// GroupLayout setup
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			    .addComponent(lblKhachMoi, GroupLayout.Alignment.CENTER)
-			    .addGroup(layout.createSequentialGroup()
-			        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			            .addComponent(lblSDT)
-			            .addComponent(lblHoTen)
-			            .addComponent(lblEmail)
-			            .addComponent(lblCccd))
-			        .addGap(20)
-			        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-			            .addComponent(txtSDT)
-			            .addComponent(txtHoTen)
-			            .addComponent(txtEmail)
-			            .addComponent(txtCccd)))
-			    
-			    // Hàng 1: Buffet – thuê xe đẩy
-			    .addGroup(layout.createSequentialGroup()
-			        .addComponent(lblBuffet)
-			        .addGap(20) // <-- Khoảng cách từ label tới spinner
-			        .addComponent(spnBuffet, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			        .addGap(40) // khoảng cách giữa 2 nhóm
-			        .addComponent(lblThueXeDay)
-			        .addGap(20)
-			        .addComponent(spnThueXeDay, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-			    
-			    // Hàng 2: Bảo mẫu – nôi em bé
-			    .addGroup(layout.createSequentialGroup()
-			        .addComponent(lblBaoMau)
-			        .addGap(20)
-			        .addComponent(spnBaoMau, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			        .addGap(40)
-			        .addComponent(lblNoiEmBe)
-			        .addGap(20)
-			        .addComponent(spnThNoiEmBe, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-			);
 
-		int khoangcach = 20;
-		layout.setVerticalGroup(layout.createSequentialGroup()
-			    .addComponent(lblKhachMoi)
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblSDT)
-			        .addComponent(txtSDT))
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblHoTen)
-			        .addComponent(txtHoTen))
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblEmail)
-			        .addComponent(txtEmail))
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblCccd)
-			        .addComponent(txtCccd))
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblBuffet)
-			        .addComponent(spnBuffet)
-			        .addComponent(lblThueXeDay)
-			        .addComponent(spnThueXeDay))
-			    .addGap(khoangcach)
-			    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-			        .addComponent(lblBaoMau)
-			        .addComponent(spnBaoMau)
-			        .addComponent(lblNoiEmBe)
-			        .addComponent(spnThNoiEmBe))
-			);
+		int row = 0;
+		Dimension spinnerSize = new Dimension(150, (int)(screenHeightTrang1 * 0.06));
+
+		// Hàng 1: Số điện thoại
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblSDT, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(txtSDT, gbc);
+
+		// Hàng 2: Họ tên
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblHoTen, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(txtHoTen, gbc);
+
+		// Hàng 3: Email
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblEmail, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(txtEmail, gbc);
+
+		// Hàng 4: CCCD
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblCccd, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(txtCccd, gbc);
+
+		// Set cùng kích thước cho spinner
+		spnBuffet.setPreferredSize(spinnerSize);
+		spnThueXeDay.setPreferredSize(spinnerSize);
+		spnBaoMau.setPreferredSize(spinnerSize);
+		spnThNoiEmBe.setPreferredSize(spinnerSize);
+
+		// Hàng 5: Dịch vụ buffet & thuê xe đẩy
+		gbc.gridy = row++;
+		gbc.gridwidth = 1;
+		gbc.gridx = 0; topPanel.add(lblBuffet, gbc);
+		gbc.gridx = 1; topPanel.add(spnBuffet, gbc);
+		gbc.gridx = 2; topPanel.add(lblThueXeDay, gbc);
+		gbc.gridx = 3; topPanel.add(spnThueXeDay, gbc);
+
+		// Hàng 6: Dịch vụ bảo mẫu & thuê nôi em bé
+		gbc.gridy = row++;
+		gbc.gridx = 0; topPanel.add(lblBaoMau, gbc);
+		gbc.gridx = 1; topPanel.add(spnBaoMau, gbc);
+		gbc.gridx = 2; topPanel.add(lblNoiEmBe, gbc);
+		gbc.gridx = 3; topPanel.add(spnThNoiEmBe, gbc);
 
 
+		centerPanel.add(topPanel, BorderLayout.CENTER);
+		
 		setTextFieldHeight(txtHoTen);
 		setTextFieldHeight(txtSDT);
 		setTextFieldHeight(txtEmail);
@@ -1864,8 +1837,6 @@ public class DatPhong_GUI extends JDialog {
 		        timKhach();
 		    }
 		});
-
-		centerPanel.add(topPanel, BorderLayout.CENTER);
 
 
 		// =============================== Footer=======================================
@@ -2021,11 +1992,8 @@ public class DatPhong_GUI extends JDialog {
 		                dondatphongdao.xoaDonDatPhong(maDon);
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
-		            dispose();
 		            JOptionPane.showMessageDialog(null, "Đặt phòng thành công!");
-		            QuanLyDatPhong_GUI qlDatPhong = new QuanLyDatPhong_GUI();
-		            qlDatPhong.setLocationRelativeTo(null);  // Căn giữa màn hình
-		            qlDatPhong.setVisible(true);
+		            dispose();
 		        } else {
 		            System.out.println("Thêm đơn đặt phòng không thành công");
 		        }
