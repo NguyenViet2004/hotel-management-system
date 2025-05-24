@@ -32,10 +32,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,8 +54,8 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
-import dao_CuaXien.KhuyenMai_DAO;
-import entity_CuaXien.KhuyenMai;
+import dao.KhuyenMai_DAO;
+import entity.KhuyenMai;
 
 public class KhuyenMaiDialog extends JDialog {
 
@@ -90,7 +92,7 @@ public class KhuyenMaiDialog extends JDialog {
 		KhuyenMai_DAO dao = new KhuyenMai_DAO();
 		dao.capNhatTrangThaiKhuyenMaiHetHan(); // Cập nhật trước
 
-		List<KhuyenMai> danhSachKM = dao.getAllKhuyenMai(); // Lấy danh sách đã cập nhật
+		ArrayList<KhuyenMai> danhSachKM = dao.getAllKhuyenMai(); // Lấy danh sách đã cập nhật
 
 		setModalityType(ModalityType.TOOLKIT_MODAL);
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
@@ -545,14 +547,14 @@ public class KhuyenMaiDialog extends JDialog {
 		}
 	}
 
-	public void loadTable(List<KhuyenMai> ds) {
-	    List<KhuyenMai> sortedList = ds.stream()
-	        .sorted((km1, km2) -> {
-	            boolean km1Active = "Đang áp dụng".equals(km1.getTrangThai());
-	            boolean km2Active = "Đang áp dụng".equals(km2.getTrangThai());
-	            return Boolean.compare(!km1Active, !km2Active); // true < false
-	        })
-	        .toList();
+	public void loadTable(ArrayList<KhuyenMai> danhSachKM) {
+		ArrayList<KhuyenMai> sortedList = danhSachKM.stream()
+			    .sorted((km1, km2) -> {
+			        boolean km1Active = "Đang áp dụng".equals(km1.getTrangThai());
+			        boolean km2Active = "Đang áp dụng".equals(km2.getTrangThai());
+			        return Boolean.compare(!km1Active, !km2Active); // "Đang áp dụng" lên trước
+			    })
+			    .collect(Collectors.toCollection(ArrayList::new));
 
 	    DefaultTableModel model = (DefaultTableModel) table_KhuyenMai.getModel();
 	    model.setRowCount(0); // Xóa dữ liệu cũ

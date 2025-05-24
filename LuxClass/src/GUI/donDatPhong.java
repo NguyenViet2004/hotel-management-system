@@ -1725,7 +1725,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 					List<Object[]> data = getTableData(table1);
 					try {
-						String filePath = "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon_" + maHoaDon1.getText() + ".pdf";
+						String filePath = "FileTestHoaDon/HoaDon_" + maHoaDon1.getText() + ".pdf";
 
 						inHoaDon.taoHoaDon(
 						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
