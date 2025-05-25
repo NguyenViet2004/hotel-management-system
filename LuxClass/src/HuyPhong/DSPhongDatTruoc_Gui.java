@@ -5,16 +5,20 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import dao.ChiTietDonDatPhong_Dao;
 import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
+import dao.Phong_Dao;
 import entity.DonDatPhong;
 import entity.KhachHang;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -22,13 +26,19 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 	private JTextField txtSoDienThoai;
 	private JTable tableDaDat, tableTamThoi;
 	private DefaultTableModel modelDaDat, modelTamThoi;
+	private LocalDateTime thoiGianHienTai = LocalDateTime.now();
 	private JTabbedPane tabbedPane;
 	private KhachHang_Dao khachhangdao;
-
+	private Phong_Dao phongdao;
+	private DonDatPhong_Dao dondatphong;
+	private ChiTietDonDatPhong_Dao chitietdondatphongdao;
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
 	public DSPhongDatTruoc_Gui() {
 		khachhangdao = new KhachHang_Dao();
+		phongdao = new Phong_Dao();
+		chitietdondatphongdao = new ChiTietDonDatPhong_Dao();
+		dondatphong = new DonDatPhong_Dao();
 		setLayout(new BorderLayout(10, 10));
 		setBackground(Color.WHITE);
 		setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -78,154 +88,147 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 				return column == 5; // chỉ cột chức năng
 			}
 		};
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent e) {
+		        int row = table.rowAtPoint(e.getPoint());
+		        int col = table.columnAtPoint(e.getPoint());
+
+		        if (col == 6) { // Cột chức năng
+		            String[] options = {"Nhận phòng", "Hủy đơn", "Hủy thao tác"};
+		            int choice = JOptionPane.showOptionDialog(null,
+		                    "Bạn muốn thực hiện gì cho đơn này?",
+		                    "Chọn hành động",
+		                    JOptionPane.DEFAULT_OPTION,
+		                    JOptionPane.QUESTION_MESSAGE,
+		                    null,
+		                    options,
+		                    options[0]);
+
+		            if (choice == 0) {
+		                xuLyNhanPhong(table, row);
+		            } else if (choice == 1) {
+		                xuLyHuyPhong(table, row);
+		            }
+		        }
+		    }
+		});
+
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
 		// Áp dụng căn giữa cho tất cả cột (trừ cột "Chức năng")
 		for (int i = 0; i < table.getColumnCount(); i++) {
-		    if (i != 6) { // Không căn giữa cột nút chức năng
+		    if (i != 7) { // Không căn giữa cột nút chức năng
 		        table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		    }
 		}
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		// Cố định độ rộng cho cột "Chức năng"
-		table.getColumnModel().getColumn(6).setMinWidth(200);
-		table.getColumnModel().getColumn(6).setMaxWidth(200);
-		table.getColumnModel().getColumn(6).setPreferredWidth(200);
+
 
 		table.setRowHeight(40);
-
-		table.getColumnModel().getColumn(6).setCellRenderer((tbl, value, isSelected, hasFocus, row, col) -> {
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-			panel.setPreferredSize(new Dimension(200, 40));
-
-			JButton btnNhan = new JButton("Nhận phòng2");
-			JButton btnHuy = new JButton("Hủy");
-
-			btnNhan.setBackground(new Color(76, 175, 80));
-			btnNhan.setForeground(Color.WHITE);
-
-			btnHuy.setBackground(new Color(244, 67, 54));
-			btnHuy.setForeground(Color.WHITE);
-
-			panel.add(btnNhan);
-			panel.add(btnHuy);
-			return panel;
-		});
-
-
-		table.getColumnModel().getColumn(6).setCellEditor(new DefaultCellEditor(new JCheckBox()) {
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-			JButton btnNhan = new JButton("Nhận phòng1");
-			JButton btnHuy = new JButton("Hủy");
-
-			{
-				panel.setPreferredSize(new Dimension(200, 40));
-				btnNhan.setFont(new Font("Arial", Font.BOLD, 12));
-				btnHuy.setFont(new Font("Arial", Font.BOLD, 12));
-
-				btnNhan.setBackground(new Color(76, 175, 80));
-				btnNhan.setForeground(Color.WHITE);
-				btnHuy.setBackground(new Color(244, 67, 54));
-				btnHuy.setForeground(Color.WHITE);
-
-				panel.add(btnNhan);
-				panel.add(btnHuy);
-
-				// Xử lý sự kiện
-				btnNhan.addActionListener(e -> {
-				    int row = table.getSelectedRow();
-				    int tabIndex = tabbedPane.getSelectedIndex();
-				    String maDon = (String) table.getValueAt(row, 0);
-				    String sdt = (String) table.getValueAt(row, 1);
-
-				    String regexCccd = "^(001|002|004|006|008|010|011|012|014|015|017|019|020|022|023|025|026|027|030|031|033|034|035|036|037|038|040|042|044|045|046|048|049|051|052|054|056|058|060|062|064|066|067|068|070|072|074|075|077|079|080|082|083|084|086|087|089|091|092|093|094|095|096)([0-9])([0-9]{2})([0-9]{6})$";
-
-				    KhachHang kh = khachhangdao.timKhachHangTheoSoDienThoai(sdt);
-
-				    if (kh.getSoCCCD() == null || kh.getSoCCCD().trim().isEmpty()) {
-				        boolean daNhapDung = false;
-				        while (!daNhapDung) {
-				            String nhapCCCD = JOptionPane.showInputDialog(null,
-				                "Khách hàng chưa có CCCD.\nVui lòng nhập CCCD (12 số, đúng định dạng):",
-				                "Nhập CCCD", JOptionPane.WARNING_MESSAGE);
-
-				            if (nhapCCCD == null || nhapCCCD.trim().isEmpty()) {
-				                JOptionPane.showMessageDialog(null,
-				                    "Không thể nhận phòng khi chưa có CCCD!",
-				                    "Lỗi", JOptionPane.ERROR_MESSAGE);
-				                return;
-				            }
-
-				            nhapCCCD = nhapCCCD.trim();
-				            if (!nhapCCCD.matches(regexCccd)) {
-				                JOptionPane.showMessageDialog(null,
-				                    "CCCD không đúng định dạng! Vui lòng nhập lại.\n(12 số, bắt đầu bằng mã tỉnh hợp lệ)",
-				                    "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
-				            } else {
-				                // Hợp lệ → cập nhật
-				                kh.setSoCCCD(nhapCCCD);
-				                khachhangdao.suaCCCD(kh);
-				                daNhapDung = true;
-				            }
-				        }
-				    }
-
-				    DonDatPhong_Dao dao = new DonDatPhong_Dao();
-
-				    capNhatVaReload(() -> {
-				        if (tabIndex == 0) {
-				            dao.setTrangThaiDonDatPhong(maDon, "Nhận phòng");
-				            JOptionPane.showMessageDialog(null, "Đã nhận phòng cho đơn đã đặt.");
-				        } else if (tabIndex == 1) {
-				            dao.setTrangThaiDonDatPhong(maDon, "Đã đặt");
-				            JOptionPane.showMessageDialog(null, "Đã xác nhận đặt phòng từ đơn tạm.");
-				        }
-				    });
-				});
-
-
-
-				btnHuy.addActionListener(e -> {
-					int row = table.getSelectedRow();
-					int tabIndex = tabbedPane.getSelectedIndex();
-					String maDon = (String) table.getValueAt(row, 0);
-					DonDatPhong_Dao dao = new DonDatPhong_Dao();
-
-					if (tabIndex == 0) {
-						DonDatPhong donDatPhong = dao.timDonTheoMa(maDon);
-						SwingUtilities.invokeLater(() -> {
-							new HuyPhong_GUI().taoDonHuyPhong(donDatPhong, () -> {
-								timKiemDonDatPhongTheoSDT();
-							});
-						});
-					} else if (tabIndex == 1) {
-						int chon = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn hủy đơn tạm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-						if (chon == JOptionPane.YES_OPTION) {
-							capNhatVaReload(() -> {
-								dao.setTrangThaiDonDatPhong(maDon, "Đã hủy");
-								JOptionPane.showMessageDialog(null, "Đã hủy đơn tạm thành công.");
-							});
-						}
-					}
-				});
-			}
-
-			@Override
-			public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-				return panel;
-			}
-
-			@Override
-			public Object getCellEditorValue() {
-				return "";
-			}
-		});
 
 
 		return table;
 	}
+	
+	private void xuLyNhanPhong(JTable table, int row) {
+	    int tabIndex = tabbedPane.getSelectedIndex();
+	    String maDon = (String) table.getValueAt(row, 0);
+	    String sdt = (String) table.getValueAt(row, 1);
+	    String regexCccd = "^(001|002|004|006|008|010|011|012|014|015|017|019|020|022|023|025|026|027|030|031|033|034|035|036|037|038|040|042|044|045|046|048|049|051|052|054|056|058|060|062|064|066|067|068|070|072|074|075|077|079|080|082|083|084|086|087|089|091|092|093|094|095|096)([0-9])([0-9]{2})([0-9]{6})$";
+
+	    KhachHang kh = khachhangdao.timKhachHangTheoSoDienThoai(sdt);
+
+	    if (kh.getSoCCCD() == null || kh.getSoCCCD().trim().isEmpty()) {
+	        boolean daNhapDung = false;
+	        while (!daNhapDung) {
+	            String nhapCCCD = JOptionPane.showInputDialog(null,
+	                "Khách hàng chưa có CCCD.\nVui lòng nhập CCCD (12 số, đúng định dạng):",
+	                "Nhập CCCD", JOptionPane.WARNING_MESSAGE);
+
+	            if (nhapCCCD == null || nhapCCCD.trim().isEmpty()) {
+	                JOptionPane.showMessageDialog(null,
+	                    "Không thể nhận phòng khi chưa có CCCD!",
+	                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+	                return;
+	            }
+
+	            nhapCCCD = nhapCCCD.trim();
+	            if (!nhapCCCD.matches(regexCccd)) {
+	                JOptionPane.showMessageDialog(null,
+	                    "CCCD không đúng định dạng! Vui lòng nhập lại.\n(12 số, bắt đầu bằng mã tỉnh hợp lệ)",
+	                    "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+	            } else {
+	                // Hợp lệ → cập nhật
+	                kh.setSoCCCD(nhapCCCD);
+	                khachhangdao.suaCCCD(kh);
+	                daNhapDung = true;
+	            }
+	        }
+	    }
+
+	    DonDatPhong_Dao dao = new DonDatPhong_Dao();
+
+	    capNhatVaReload(() -> {
+	        if (tabIndex == 0) {
+	            LocalDateTime ngayNhan = dao.layNgayNhanPhong(maDon);
+
+	            // Chỉ cho nhận phòng nếu đã đến hoặc sắp tới giờ nhận (trong vòng 2 tiếng)
+	            if (thoiGianHienTai.isBefore(ngayNhan.minusHours(2))) {
+	                JOptionPane.showMessageDialog(null,
+	                    "Chưa đến giờ nhận phòng.\nChỉ được nhận sớm tối đa 2 tiếng trước giờ nhận.",
+	                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+	                return;
+	            }
+
+	            // Được phép nhận phòng
+	            dao.setTrangThaiDonDatPhong(maDon, "Nhận phòng");
+	            ArrayList<String> danhSachPhong = chitietdondatphongdao.getDanhSachSoPhongTheoDon(maDon);
+
+	            for (String soPhong : danhSachPhong) {
+	                boolean capNhat = phongdao.setTrangThaiPhong(soPhong, "Đang ở");
+	                if (capNhat) {
+	                    System.out.println("Đã cập nhật trạng thái phòng " + soPhong + " thành 'Đang ở'");
+	                } else {
+	                    System.out.println("Cập nhật thất bại cho phòng " + soPhong);
+	                }
+	            }
+
+	            JOptionPane.showMessageDialog(null, "Đã nhận phòng cho đơn đã đặt.");
+	        } else if (tabIndex == 1) {
+	            dao.setTrangThaiDonDatPhong(maDon, "Đã đặt");
+	            JOptionPane.showMessageDialog(null, "Đã xác nhận đặt phòng từ đơn tạm.");
+	        }
+	    });
+
+	}
+
+	private void xuLyHuyPhong(JTable table, int row) {
+	    int tabIndex = tabbedPane.getSelectedIndex();
+	    String maDon = (String) table.getValueAt(row, 0);
+		DonDatPhong_Dao dao = new DonDatPhong_Dao();
+
+		if (tabIndex == 0) {
+			DonDatPhong donDatPhong = dao.timDonTheoMa(maDon);
+			SwingUtilities.invokeLater(() -> {
+				new HuyPhong_GUI().taoDonHuyPhong(donDatPhong, () -> {
+					timKiemDonDatPhongTheoSDT();
+				});
+			});
+		} else if (tabIndex == 1) {
+			int chon = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn hủy đơn tạm này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+			if (chon == JOptionPane.YES_OPTION) {
+				capNhatVaReload(() -> {
+					dao.setTrangThaiDonDatPhong(maDon, "Đã hủy");
+					JOptionPane.showMessageDialog(null, "Đã hủy đơn tạm thành công.");
+				});
+			}
+		}
+	}
+
 
 	private JTabbedPane createTabbedPane() {
 		tabbedPane = new JTabbedPane();
@@ -265,7 +268,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 					ddp.getKhachHang().getHoTen(),
 					ddp.getNgayNhanPhong().format(dtf),
 					ddp.getNgayTraPhong().format(dtf),
-					""
+					"Nhận / Hủy"
 				};
 				if ("Đã đặt".equals(ddp.getTrangThai()))
 					modelDaDat.addRow(row);
@@ -296,14 +299,37 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 		        ddp.getNgayNhanPhong().format(dtf),
 		        ddp.getNgayTraPhong().format(dtf),
 		        String.valueOf(ddp.getTienCoc()),
-		        ""
+		        "Nhận / Hủy"
 			};
 			System.out.println(ddp.getThoiGianCoc());
 			
 			if ("Đã đặt".equals(ddp.getTrangThai())) {
-				modelDaDat.addRow(row);}
+			    LocalDateTime ngayNhan = ddp.getNgayNhanPhong();
+			    LocalDateTime hienTai = LocalDateTime.now();
+
+			    LocalDateTime sau1Gio = ngayNhan.plusHours(1);
+			    LocalDateTime sau3Gio = ngayNhan.plusHours(3);
+
+			    if (hienTai.isAfter(sau3Gio)) {
+			        // Tự động hủy đơn vì khách không đến
+			        dao.setTrangThaiDonDatPhong(ddp.getMaDonDatPhong(), "Đã hủy");
+			        continue;
+			    }
+
+			    // Thêm dòng vào bảng
+			    modelDaDat.addRow(row);
+
+			    // Nếu đã quá 1 giờ nhưng chưa đến 3 giờ → đánh dấu màu đỏ
+			    if (!hienTai.isBefore(sau1Gio)) {
+			        int lastRow = modelDaDat.getRowCount() - 1;
+			        tableDaDat.setRowSelectionInterval(lastRow, lastRow);
+			        tableDaDat.setSelectionBackground(Color.RED);
+			    }
+			}
 			else if ("Đơn tạm".equals(ddp.getTrangThai())) {
-				modelTamThoi.addRow(row);
+				if (ddp.getThoiGianCoc() != null && !thoiGianHienTai.isAfter(ddp.getThoiGianCoc())) {
+			        modelTamThoi.addRow(row);
+			    }
 		}
 		System.out.println("Số đơn 'Đã đặt': " + modelDaDat.getRowCount());
 		System.out.println("Số đơn 'Đơn tạm': " + modelTamThoi.getRowCount());}
@@ -317,7 +343,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			JFrame frame = new JFrame("Tìm đơn đặt phòng");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setSize(1250, 700);
 			frame.setContentPane(new DSPhongDatTruoc_Gui());
 			frame.setLocationRelativeTo(null);
