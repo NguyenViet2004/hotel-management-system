@@ -121,7 +121,8 @@ public class GDQuanLy_Gui {
         addMenuButton(Menupanel, "Quản lý tài khoản", 70, e -> cardLayout.show(mainPanel, "QLTK"));
         addMenuButton(Menupanel, "Quản lý dịch vụ", 130, e -> cardLayout.show(mainPanel, "QLDV"));
         addMenuButton(Menupanel, "Quản lý phòng", 190, e -> cardLayout.show(mainPanel, "QLP"));
-        addMenuButton(Menupanel, "Thống kê doanh thu", 250, e -> cardLayout.show(mainPanel, "TKDT"));
+        addMenuButton(Menupanel, "Quản lý khuyến mãi", 250, e -> cardLayout.show(mainPanel, "QLKM"));
+        addMenuButton(Menupanel, "Thống kê doanh thu", 310, e -> cardLayout.show(mainPanel, "TKDT"));
 
         JPanel DongHoPannel = new JPanel();
         DongHoPannel.setBackground(Color.WHITE);
@@ -178,6 +179,7 @@ public class GDQuanLy_Gui {
         mainPanel.add(new QuanLyTaiKhoan_Panel(), "QLTK");
         mainPanel.add(new JLabel("Quản lý dịch vụ"), "QLDV");
         mainPanel.add(new JLabel("Quản lý phòng"), "QLP");
+        mainPanel.add(new QuanLyKhuyenMai_Panel(), "QLKM");
         mainPanel.add(new JLabel("Thống kê doanh thu"), "TKDT");
 
         if (!menuButtons.isEmpty()) {

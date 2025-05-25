@@ -2,14 +2,14 @@
 package viet;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import com.toedter.calendar.JDateChooser;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.function.IntConsumer;
 import java.util.List;
 import dao.NhanVien_Dao;
 import entity.NhanVien;
@@ -17,11 +17,125 @@ import entity.NhanVien;
 public class QuanLyNhanVien_Panel extends JPanel {
     private JTable table;
     private DefaultTableModel model;
+    private JTextField tfMaNV, tfHoTen, tfSdt, tfCCCD, tfDiaChi;
+    private JComboBox<String> cbChucVu, cbCa;
+    private JDateChooser dateChooser;
     private NhanVien_Dao nhanVienDao = new NhanVien_Dao();
 
     public QuanLyNhanVien_Panel() {
         setLayout(new BorderLayout());
-        add(createNhanVienPanel(), BorderLayout.CENTER);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(null);
+        contentPanel.setBackground(new Color(240, 240, 240));
+        add(contentPanel, BorderLayout.CENTER);
+
+        JLabel lblTitle = new JLabel("Quản lý nhân viên");
+        lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        lblTitle.setBounds(450, 0, 300, 30);
+        contentPanel.add(lblTitle);
+
+        JPanel formPanel = new JPanel(null);
+        formPanel.setBounds(30, 40, 1140, 250);
+        formPanel.setBackground(Color.WHITE);
+        contentPanel.add(formPanel);
+
+        // Trái
+        int labelWidth = 130, fieldWidth = 250, height = 30, spacingY = 40;
+        int leftX = 40, rightX = 600;
+
+        JLabel lbMaNV = new JLabel("Mã nhân viên:");
+        lbMaNV.setBounds(leftX, 20, labelWidth, height);
+        tfMaNV = new JTextField();
+        tfMaNV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        tfMaNV.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
+
+        JLabel lbHoTen = new JLabel("Họ tên:");
+        lbHoTen.setBounds(leftX, 20 + spacingY, labelWidth, height);
+        tfHoTen = new JTextField();
+        tfHoTen.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        tfHoTen.setBounds(leftX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
+
+        JLabel lbNgaySinh = new JLabel("Ngày sinh:");
+        lbNgaySinh.setBounds(leftX, 20 + 2 * spacingY, labelWidth, height);
+        dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("dd/MM/yyyy");
+        dateChooser.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        dateChooser.setBounds(leftX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
+
+        JLabel lbSdt = new JLabel("SĐT:");
+        lbSdt.setBounds(leftX, 20 + 3 * spacingY, labelWidth, height);
+        tfSdt = new JTextField();
+        tfSdt.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        tfSdt.setBounds(leftX + labelWidth + 10, 20 + 3 * spacingY, fieldWidth, height);
+
+        // Phải
+        JLabel lbCCCD = new JLabel("CCCD:");
+        lbCCCD.setBounds(rightX, 20, labelWidth, height);
+        tfCCCD = new JTextField();
+        tfCCCD.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        tfCCCD.setBounds(rightX + labelWidth + 10, 20, fieldWidth, height);
+
+        JLabel lbDiaChi = new JLabel("Địa chỉ:");
+        lbDiaChi.setBounds(rightX, 20 + spacingY, labelWidth, height);
+        tfDiaChi = new JTextField();
+        tfDiaChi.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
+        tfDiaChi.setBounds(rightX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
+
+        JLabel lbChucVu = new JLabel("Chức vụ:");
+        lbChucVu.setBounds(rightX, 20 + 2 * spacingY, labelWidth, height);
+        cbChucVu = new JComboBox<>(new String[]{"Kế toán", "Lễ tân", "Bếp", "Buồng phòng"});
+        cbChucVu.setBounds(rightX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
+
+        JLabel lbCa = new JLabel("Ca làm việc:");
+        lbCa.setBounds(rightX, 20 + 3 * spacingY, labelWidth, height);
+        cbCa = new JComboBox<>(new String[]{"Ca 1", "Ca 2", "Ca 3"});
+        cbCa.setBounds(rightX + labelWidth + 10, 20 + 3 * spacingY, fieldWidth, height);
+
+        JButton btnThem = new JButton("Thêm nhân viên");
+        btnThem.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnThem.setBackground(new Color(0, 255, 128));
+        btnThem.setBounds(rightX + labelWidth + 10, 20 + 4 * spacingY + 5, 180, 35);
+        btnThem.addActionListener(this::handleAdd);
+
+        // add vào formPanel
+        Component[] components = {
+            lbMaNV, tfMaNV, lbHoTen, tfHoTen, lbNgaySinh, dateChooser, lbSdt, tfSdt,
+            lbCCCD, tfCCCD, lbDiaChi, tfDiaChi, lbChucVu, cbChucVu, lbCa, cbCa, btnThem
+        };
+        for (Component c : components) formPanel.add(c);
+
+        JPanel tablePanel = new JPanel(null);
+        tablePanel.setBounds(30, 300, 1140, 360);
+        tablePanel.setBackground(Color.WHITE);
+        contentPanel.add(tablePanel);
+
+        JLabel lblDanhSach = new JLabel("Danh sách nhân viên");
+        lblDanhSach.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        lblDanhSach.setBounds(420, 10, 300, 30);
+        tablePanel.add(lblDanhSach);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 50, 1100, 280);
+        tablePanel.add(scrollPane);
+
+        String[] columns = {"Mã NV", "Họ tên", "Ngày sinh", "SĐT", "CCCD", "Địa chỉ", "Chức vụ", "Ca làm"};
+        model = new DefaultTableModel(columns, 0);
+        table = new JTable(model);
+        table.setRowHeight(30);
+        table.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("Arial", Font.BOLD, 15));
+        header.setPreferredSize(new Dimension(header.getWidth(), 35));
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        scrollPane.setViewportView(table);
         loadData();
     }
 
@@ -31,200 +145,42 @@ public class QuanLyNhanVien_Panel extends JPanel {
         List<NhanVien> list = nhanVienDao.getAllNhanVien();
         for (NhanVien nv : list) {
             model.addRow(new Object[]{
-                nv.getMaNV(), nv.getHoTen(), sdf.format(java.sql.Date.valueOf(nv.getNgaySinh())),
-                nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec(), "Sửa"
+                nv.getMaNV(), nv.getHoTen(),
+                sdf.format(java.sql.Date.valueOf(nv.getNgaySinh())),
+                nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
             });
         }
     }
 
-    private JPanel createNhanVienPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(Color.WHITE);
-
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.WHITE);
-        JLabel title = new JLabel("Quản lý nhân viên");
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        JButton btnThem = new JButton("+ Thêm nhân viên");
-        btnThem.addActionListener(e -> openAddDialog());
-        header.add(title, BorderLayout.WEST);
-        header.add(btnThem, BorderLayout.EAST);
-
-        String[] columns = {"Mã NV", "Họ tên", "Ngày sinh", "SĐT", "CCCD", "Địa chỉ", "Chức vụ", "Ca làm", "Sửa"};
-        model = new DefaultTableModel(columns, 0);
-        table = new JTable(model);
-        table.setRowHeight(40);
-        table.setFont(new Font("Arial", Font.PLAIN, 14));
-        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
-        table.getColumn("Sửa").setCellRenderer(new ButtonRenderer("Sửa"));
-        table.getColumn("Sửa").setCellEditor(new ButtonEditor(new JCheckBox(), "Sửa", this::openEditDialog));
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(header, BorderLayout.NORTH);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        return panel;
-    }
-
-    private void openAddDialog() {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm nhân viên", true);
-        dialog.setSize(450, 500);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        JTextField tfMa = new JTextField();
-        JTextField tfHoTen = new JTextField();
-        JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("dd/MM/yyyy");
-        JTextField tfSdt = new JTextField();
-        JTextField tfCCCD = new JTextField();
-        JTextField tfDiaChi = new JTextField();
-        JComboBox<String> cbChucVu = new JComboBox<>(new String[]{"Kế toán", "Lễ tân", "Bếp", "Buồng phòng"});
-        JComboBox<String> cbCa = new JComboBox<>(new String[]{"Ca 1", "Ca 2", "Ca 3"});
-
-        String[] labels = {"Mã nhân viên", "Họ tên", "Ngày sinh", "Số điện thoại", "CCCD", "Địa chỉ", "Chức vụ", "Ca làm việc"};
-        Component[] fields = {tfMa, tfHoTen, dateChooser, tfSdt, tfCCCD, tfDiaChi, cbChucVu, cbCa};
-
-        for (int i = 0; i < labels.length; i++) {
-            gbc.gridx = 0; gbc.gridy = i;
-            dialog.add(new JLabel(labels[i]), gbc);
-            gbc.gridx = 1;
-            dialog.add(fields[i], gbc);
+    private void handleAdd(ActionEvent e) {
+        Date selectedDate = dateChooser.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh hợp lệ!");
+            return;
         }
-
-        JButton btnLuu = new JButton("Lưu");
-        gbc.gridx = 0; gbc.gridy = labels.length; gbc.gridwidth = 2;
-        btnLuu.addActionListener(e -> {
-            Date selectedDate = dateChooser.getDate();
-            if (selectedDate == null) return;
-
-            NhanVien nv = new NhanVien(
-                tfMa.getText(), tfHoTen.getText(),
-                selectedDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
-                tfSdt.getText(), tfDiaChi.getText(), tfCCCD.getText(),
-                cbChucVu.getSelectedItem().toString(), cbCa.getSelectedItem().toString()
-            );
-
-            if (nhanVienDao.them(nv)) {
-                model.addRow(new Object[]{
-                    nv.getMaNV(), nv.getHoTen(), new SimpleDateFormat("dd/MM/yyyy").format(selectedDate),
-                    nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec(), "Sửa"
-                });
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(dialog, "Thêm thất bại (trùng mã?)");
-            }
-        });
-        dialog.add(btnLuu, gbc);
-        dialog.setVisible(true);
-    }
-
-    private void openEditDialog(int row) {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa nhân viên", true);
-        dialog.setSize(450, 500);
-        dialog.setLocationRelativeTo(this);
-        dialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        JTextField tfMa = new JTextField((String) model.getValueAt(row, 0));
-        JTextField tfHoTen = new JTextField((String) model.getValueAt(row, 1));
-        JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("dd/MM/yyyy");
-        try {
-            Date existingDate = new SimpleDateFormat("dd/MM/yyyy").parse((String) model.getValueAt(row, 2));
-            dateChooser.setDate(existingDate);
-        } catch (Exception ex) {
-            dateChooser.setDate(null);
+        NhanVien nv = new NhanVien(
+            tfMaNV.getText(), tfHoTen.getText(),
+            selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+            tfSdt.getText(), tfDiaChi.getText(), tfCCCD.getText(),
+            cbChucVu.getSelectedItem().toString(), cbCa.getSelectedItem().toString()
+        );
+        if (nhanVienDao.them(nv)) {
+            model.addRow(new Object[]{
+                nv.getMaNV(), nv.getHoTen(), new SimpleDateFormat("dd/MM/yyyy").format(selectedDate),
+                nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
+            });
+            JOptionPane.showMessageDialog(this, "Thêm thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại (trùng mã?)");
         }
-        JTextField tfSdt = new JTextField((String) model.getValueAt(row, 3));
-        JTextField tfCCCD = new JTextField((String) model.getValueAt(row, 4));
-        JTextField tfDiaChi = new JTextField((String) model.getValueAt(row, 5));
-        JComboBox<String> cbChucVu = new JComboBox<>(new String[]{"Kế toán", "Lễ tân", "Bếp", "Buồng phòng"});
-        cbChucVu.setSelectedItem(model.getValueAt(row, 6));
-        JComboBox<String> cbCa = new JComboBox<>(new String[]{"Ca 1", "Ca 2", "Ca 3"});
-        cbCa.setSelectedItem(model.getValueAt(row, 7));
-
-        String[] labels = {"Mã nhân viên", "Họ tên", "Ngày sinh", "Số điện thoại", "CCCD", "Địa chỉ", "Chức vụ", "Ca làm việc"};
-        Component[] fields = {tfMa, tfHoTen, dateChooser, tfSdt, tfCCCD, tfDiaChi, cbChucVu, cbCa};
-
-        for (int i = 0; i < labels.length; i++) {
-            gbc.gridx = 0; gbc.gridy = i;
-            dialog.add(new JLabel(labels[i]), gbc);
-            gbc.gridx = 1;
-            dialog.add(fields[i], gbc);
-        }
-
-        JButton btnCapNhat = new JButton("Cập nhật");
-        gbc.gridx = 0; gbc.gridy = labels.length; gbc.gridwidth = 2;
-        btnCapNhat.addActionListener(e -> {
-            Date selectedDate = dateChooser.getDate();
-            if (selectedDate == null) return;
-
-            NhanVien nv = new NhanVien(
-                tfMa.getText(), tfHoTen.getText(),
-                selectedDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
-                tfSdt.getText(), tfDiaChi.getText(), tfCCCD.getText(),
-                cbChucVu.getSelectedItem().toString(), cbCa.getSelectedItem().toString()
-            );
-
-            if (nhanVienDao.sua(nv)) {
-                model.setValueAt(nv.getMaNV(), row, 0);
-                model.setValueAt(nv.getHoTen(), row, 1);
-                model.setValueAt(new SimpleDateFormat("dd/MM/yyyy").format(selectedDate), row, 2);
-                model.setValueAt(nv.getSdt(), row, 3);
-                model.setValueAt(nv.getSoCCCD(), row, 4);
-                model.setValueAt(nv.getDiaChi(), row, 5);
-                model.setValueAt(nv.getChucVu(), row, 6);
-                model.setValueAt(nv.getCaLamViec(), row, 7);
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại!");
-            }
-        });
-        dialog.add(btnCapNhat, gbc);
-        dialog.setVisible(true);
     }
-}
 
-class ButtonRenderer extends JButton implements TableCellRenderer {
-    public ButtonRenderer(String label) {
-        setText(label);
-        setOpaque(true);
-    }
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                    boolean isSelected, boolean hasFocus,
-                                                    int row, int column) {
-        return this;
-    }
-}
-
-class ButtonEditor extends DefaultCellEditor {
-    protected JButton button;
-    private boolean isPushed;
-    private int row;
-    private final IntConsumer callback;
-
-    public ButtonEditor(JCheckBox checkBox, String label, IntConsumer callback) {
-        super(checkBox);
-        this.callback = callback;
-        button = new JButton(label);
-        button.setOpaque(true);
-        button.addActionListener(e -> {
-            fireEditingStopped();
-            callback.accept(row);
-        });
-    }
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                  boolean isSelected, int row, int column) {
-        this.row = row;
-        return button;
-    }
-    public Object getCellEditorValue() {
-        return "Sửa";
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Quản lý nhân viên");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1220, 720);
+        frame.setContentPane(new QuanLyNhanVien_Panel());
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
