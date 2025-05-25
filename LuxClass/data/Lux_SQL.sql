@@ -194,87 +194,87 @@ go
 -- Chèn dữ liệu vào bảng LoaiDichVu
 INSERT INTO LoaiDichVu (maLoai, tenLoai)
 VALUES 
-('LoaiDV01', N'Buffet'), ('LoaiDV02', N'Gọi món'), ('LoaiDV03', N'Giặt ủi'), ('LoaiDV04', N'DVThueXeDay'),('LoaiDV05', N'DVBaoMau'),('LoaiDV06', N'DVNoiEmBe');
+('Buffet', N'Buffet'), ('GoiMon', N'Gọi món'), ('GiatUi', N'Giặt ủi'), ('DichVuKhac', N'Dịch vụ khác');
 go
 -- Chèn dữ liệu vào bảng DichVu
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai)
 VALUES
-('DVBuffet', N'Buffet sáng', N'Từ 6:00-10:00', 150000, 'LoaiDV01'),
+('DVBuffet', N'Buffet sáng', N'Từ 6:00-10:00', 150000, 'Buffet'),
 
-('DVGoiMon1', N'Salad Caesar', N'Salad rau trộn với sốt Caesar, phô mai Parmesan, croutons.', 120000, 'LoaiDV02'),
-('DVGoiMon2', N'Gỏi Cuốn Tôm Thịt', N'Cuốn tươi gồm tôm, thịt, rau sống, bún, kèm nước chấm đặc biệt.', 100000, 'LoaiDV02'),
-('DVGoiMon3', N'Súp Kem Nấm', N'Súp kem mịn, hương nấm thơm ngon, thích hợp cho bữa khởi đầu.', 130000, 'LoaiDV02'),
-('DVGoiMon4', N'Phở Bò', N'Phở bò truyền thống với nước dùng trong, bánh phở mềm, thịt bò thái mỏng.', 150000, 'LoaiDV02'),
-('DVGoiMon5', N'Cơm Gà Xối Mỡ', N'Cơm trắng ăn kèm với gà xối mỡ giòn, nước sốt đặc trưng.', 180000, 'LoaiDV02'),
-('DVGoiMon6', N'Bít Tết Bò Sốt Tiêu Đen', N'Miếng bít tết bò chín tới, sốt tiêu đen đậm đà, ăn kèm rau củ.', 350000, 'LoaiDV02'),
-('DVGoiMon7', N'Pasta Sốt Bolognese', N'Mì Ý sốt bolognese đậm đà với thịt bò, cà chua, và gia vị Ý.', 200000, 'LoaiDV02'),
-('DVGoiMon8', N'Kem Vani', N'Kem mịn màng, hương vị vani truyền thống.', 70000, 'LoaiDV02'),
-('DVGoiMon9', N'Bánh Mousse Socola', N'Bánh mousse béo ngậy với vị socola đậm đà.', 100000, 'LoaiDV02'),
-('DVGoiMon10', N'Trái Cây Tươi', N'Đĩa trái cây theo mùa, cắt sẵn, tươi ngon.', 80000, 'LoaiDV02'),
-('DVGoiMon11', N'Nước Cam Tươi', N'Nước cam ép tươi, không đường.', 50000, 'LoaiDV02'),
-('DVGoiMon12', N'Trà Xanh Nóng', N'Trà xanh thanh mát, hương thơm tự nhiên.', 40000, 'LoaiDV02'),
-('DVGoiMon13', N'Cà Phê Đen', N'Cà phê đen đậm đà, được rang xay ngay.', 45000, 'LoaiDV02'),
-('DVGoiMon14', N'Nước Suối', N'Nước lọc tinh khiết.', 20000, 'LoaiDV02');
+('DVGoiMon1', N'Salad Caesar', N'Salad rau trộn với sốt Caesar, phô mai Parmesan, croutons.', 120000, 'GoiMon'),
+('DVGoiMon2', N'Gỏi Cuốn Tôm Thịt', N'Cuốn tươi gồm tôm, thịt, rau sống, bún, kèm nước chấm đặc biệt.', 100000, 'GoiMon'),
+('DVGoiMon3', N'Súp Kem Nấm', N'Súp kem mịn, hương nấm thơm ngon, thích hợp cho bữa khởi đầu.', 130000, 'GoiMon'),
+('DVGoiMon4', N'Phở Bò', N'Phở bò truyền thống với nước dùng trong, bánh phở mềm, thịt bò thái mỏng.', 150000, 'GoiMon'),
+('DVGoiMon5', N'Cơm Gà Xối Mỡ', N'Cơm trắng ăn kèm với gà xối mỡ giòn, nước sốt đặc trưng.', 180000, 'GoiMon'),
+('DVGoiMon6', N'Bít Tết Bò Sốt Tiêu Đen', N'Miếng bít tết bò chín tới, sốt tiêu đen đậm đà, ăn kèm rau củ.', 350000, 'GoiMon'),
+('DVGoiMon7', N'Pasta Sốt Bolognese', N'Mì Ý sốt bolognese đậm đà với thịt bò, cà chua, và gia vị Ý.', 200000, 'GoiMon'),
+('DVGoiMon8', N'Kem Vani', N'Kem mịn màng, hương vị vani truyền thống.', 70000, 'GoiMon'),
+('DVGoiMon9', N'Bánh Mousse Socola', N'Bánh mousse béo ngậy với vị socola đậm đà.', 100000, 'GoiMon'),
+('DVGoiMon10', N'Trái Cây Tươi', N'Đĩa trái cây theo mùa, cắt sẵn, tươi ngon.', 80000, 'GoiMon'),
+('DVGoiMon11', N'Nước Cam Tươi', N'Nước cam ép tươi, không đường.', 50000, 'GoiMon'),
+('DVGoiMon12', N'Trà Xanh Nóng', N'Trà xanh thanh mát, hương thơm tự nhiên.', 40000, 'GoiMon'),
+('DVGoiMon13', N'Cà Phê Đen', N'Cà phê đen đậm đà, được rang xay ngay.', 45000, 'GoiMon'),
+('DVGoiMon14', N'Nước Suối', N'Nước lọc tinh khiết.', 20000, 'GoiMon');
 -- STT 1: Áo thun
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay1', N'Áo thun', N'Giặt Sấy', 8000, 'LoaiDV03'),
-('DVGiatUiHap1', N'Áo thun', N'Giặt Hấp', 15000, 'LoaiDV03');
+('DVGiatUiSay1', N'Áo thun', N'Giặt Sấy', 8000, 'GiatUi'),
+('DVGiatUiHap1', N'Áo thun', N'Giặt Hấp', 15000, 'GiatUi');
 
 -- STT 2: Áo sơ mi
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay2', N'Áo sơ mi', N'Giặt Sấy', 10000, 'LoaiDV03'),
-('DVGiatUiHap2', N'Áo sơ mi', N'Giặt Hấp', 20000, 'LoaiDV03');
+('DVGiatUiSay2', N'Áo sơ mi', N'Giặt Sấy', 10000, 'GiatUi'),
+('DVGiatUiHap2', N'Áo sơ mi', N'Giặt Hấp', 20000, 'GiatUi');
 
 -- STT 3: Áo vest
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap3', N'Áo vest', N'Giặt Hấp', 150000, 'LoaiDV03');
+('DVGiatUiHap3', N'Áo vest', N'Giặt Hấp', 150000, 'GiatUi');
 
 -- STT 4: Quần âu
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay4', N'Quần âu', N'Giặt Sấy', 20000, 'LoaiDV03'),
-('DVGiatUiHap4', N'Quần âu', N'Giặt Hấp', 40000, 'LoaiDV03');
+('DVGiatUiSay4', N'Quần âu', N'Giặt Sấy', 20000, 'GiatUi'),
+('DVGiatUiHap4', N'Quần âu', N'Giặt Hấp', 40000, 'GiatUi');
 
 -- STT 5: Quần jeans
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay5', N'Quần jeans', N'Giặt Sấy', 20000, 'LoaiDV03');
+('DVGiatUiSay5', N'Quần jeans', N'Giặt Sấy', 20000, 'GiatUi');
 
 -- STT 6: Váy dạ hội
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap6', N'Váy dạ hội', N'Giặt Hấp', 200000, 'LoaiDV03');
+('DVGiatUiHap6', N'Váy dạ hội', N'Giặt Hấp', 200000, 'GiatUi');
 
 -- STT 7: Váy dài
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap7', N'Váy dài', N'Giặt Hấp', 250000, 'LoaiDV03');
+('DVGiatUiHap7', N'Váy dài', N'Giặt Hấp', 250000, 'GiatUi');
 
 -- STT 8: Đầm công sở
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay8', N'Đầm công sở', N'Giặt Sấy', 50000, 'LoaiDV03'),
-('DVGiatUiHap8', N'Đầm công sở', N'Giặt Hấp', 100000, 'LoaiDV03');
+('DVGiatUiSay8', N'Đầm công sở', N'Giặt Sấy', 50000, 'GiatUi'),
+('DVGiatUiHap8', N'Đầm công sở', N'Giặt Hấp', 100000, 'GiatUi');
 
 -- STT 9: Áo choàng
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap9', N'Áo choàng', N'Giặt Hấp', 200000, 'LoaiDV03');
+('DVGiatUiHap9', N'Áo choàng', N'Giặt Hấp', 200000, 'GiatUi');
 
 -- STT 10: Áo khoác da
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap10', N'Áo khoác da', N'Giặt Hấp', 300000, 'LoaiDV03');
+('DVGiatUiHap10', N'Áo khoác da', N'Giặt Hấp', 300000, 'GiatUi');
 
 -- STT 11: Áo khoác lông vũ
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiHap11', N'Áo khoác lông vũ', N'Giặt Hấp', 180000, 'LoaiDV03');
+('DVGiatUiHap11', N'Áo khoác lông vũ', N'Giặt Hấp', 180000, 'GiatUi');
 
 -- STT 12: Áo len
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay12', N'Áo len', N'Giặt Sấy', 40000, 'LoaiDV03'),
-('DVGiatUiHap12', N'Áo len', N'Giặt Hấp', 80000, 'LoaiDV03');
+('DVGiatUiSay12', N'Áo len', N'Giặt Sấy', 40000, 'GiatUi'),
+('DVGiatUiHap12', N'Áo len', N'Giặt Hấp', 80000, 'GiatUi');
 
 -- STT 13: Khăn tắm
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay13', N'Khăn tắm', N'Giặt Sấy', 20000, 'LoaiDV03');
+('DVGiatUiSay13', N'Khăn tắm', N'Giặt Sấy', 20000, 'GiatUi');
 
 -- STT 14: Đồ lót (1 bộ)
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVGiatUiSay14', N'Đồ lót (1 bộ)', N'Giặt Sấy', 15000, 'LoaiDV03');
+('DVGiatUiSay14', N'Đồ lót (1 bộ)', N'Giặt Sấy', 15000, 'GiatUi');
 
 INSERT INTO KhachHang (maKH, hoTen, sdt, soCCCD, email) VALUES
 ('KH230520250001', N'Lê Thành Đạo', '0334072027', '075204003367', 'nguyenvandao@gmail.com'),
@@ -316,6 +316,6 @@ VALUES (
 
 
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
-('DVThueXeDay', N'Thuê xe đẩy em bé', N'Thuê xe đẩy em bé', 50000, 'LoaiDV04'),
-('DVBaoMau', N'Phí bảo mẫu', N'Phí bảo mẫu', 40000, 'LoaiDV05'),
-('DVNoiEmBe', N'Nôi em bé', N'Nôi em bé', 30000, 'LoaiDV06');
+('DVThueXeDay', N'Thuê xe đẩy em bé', N'Thuê xe đẩy em bé', 50000, 'DichVuKhac'),
+('DVBaoMau', N'Phí bảo mẫu', N'Phí bảo mẫu', 40000, 'DichVuKhac'),
+('DVNoiEmBe', N'Nôi em bé', N'Nôi em bé', 30000, 'DichVuKhac');
