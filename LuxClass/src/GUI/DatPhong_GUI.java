@@ -16,7 +16,7 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import GUI.donDatPhong;
-import GUI_Cua_Dao.ChiTietDonDatPhong_Dao;
+import dao.ChiTietDonDatPhong_Dao;
 import dao.ChiTietPhieuDichVu_DAO;
 import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
@@ -492,7 +492,9 @@ public class DatPhong_GUI extends JDialog {
 		checkInWrapper.setBackground(Color.WHITE);
 		checkInButton = new CustomDateButton(LocalDate.now(), "14:00", selectedDate -> {
 		    todayTimestamp = Timestamp.valueOf(selectedDate.atStartOfDay());
-
+			tuNgay = convertToTimestamp(checkInButton.getSelectedDate(), checkInButton.fixedTime);
+			denNgay = convertToTimestamp(checkOutButton.getSelectedDate(), checkOutButton.fixedTime);
+//		    tuNgay = Timestamp.valueOf(selectedDate.atTime(roundedHour)); // << thêm dòng này
 		    if (loaiDon.equalsIgnoreCase("Theo giờ")) {
 			    if (selectedDate.equals(LocalDate.now())) {
 			        now = LocalTime.now().withSecond(0).withNano(0);
@@ -715,6 +717,7 @@ public class DatPhong_GUI extends JDialog {
 		
 		tuNgay = convertToTimestamp(checkInButton.getSelectedDate(), checkInButton.fixedTime);
 		denNgay = convertToTimestamp(checkOutButton.getSelectedDate(), checkOutButton.fixedTime);
+		System.out.println("test tu ngày:"+tuNgay);
 		loadGiaoDienTheoNgay();
 
 		// =============================== Footer=============================================
@@ -1679,17 +1682,17 @@ public class DatPhong_GUI extends JDialog {
 
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new BorderLayout());
-		centerPanel.setBackground(Color.PINK);
+		centerPanel.setBackground(Color.WHITE);
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50));
 		centerPanel.setPreferredSize(new Dimension(screenWidthTrang1, centerHeight));
 
 		// ======================= Top Panel: Thông tin khách hàng =====================
 		JPanel topPanel = new JPanel(new GridBagLayout()); 
-		topPanel.setBackground(Color.ORANGE);
+		topPanel.setBackground(Color.WHITE);
 
 		
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.insets = new Insets(8, 8, 8, 8);
 		gbc.fill = GridBagConstraints.HORIZONTAL; // để các component giãn theo chiều ngang
 
 		int cochu = 14;
@@ -1796,46 +1799,120 @@ public class DatPhong_GUI extends JDialog {
 		spnBaoMau.setPreferredSize(spinnerSize);
 		spnThNoiEmBe.setPreferredSize(spinnerSize);
 
-		// Hàng 5: Dịch vụ buffet & thuê xe đẩy
-		gbc.gridy = row++;
-		gbc.gridwidth = 1;
-		gbc.gridx = 0; topPanel.add(lblBuffet, gbc);
-		gbc.gridx = 1; topPanel.add(spnBuffet, gbc);
-		gbc.gridx = 2; topPanel.add(lblThueXeDay, gbc);
-		gbc.gridx = 3; topPanel.add(spnThueXeDay, gbc);
+		// Hàng 5: Dịch vụ buffet
+		// Tạo label mô tả
+		JLabel lblBuffetMoTa = new JLabel("");
+		lblBuffetMoTa.setFont(new Font("Arial", Font.ITALIC, cochu));
 
-		// Hàng 6: Dịch vụ bảo mẫu & thuê nôi em bé
+		// Tạo panel chứa spinner + mô tả
+		JPanel buffetWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		buffetWrapper.setBackground(Color.WHITE); // giống topPanel
+		buffetWrapper.add(spnBuffet);
+		buffetWrapper.add(lblBuffetMoTa);
+
+		// Hàng 5: Dịch vụ buffet
 		gbc.gridy = row++;
-		gbc.gridx = 0; topPanel.add(lblBaoMau, gbc);
-		gbc.gridx = 1; topPanel.add(spnBaoMau, gbc);
-		gbc.gridx = 2; topPanel.add(lblNoiEmBe, gbc);
-		gbc.gridx = 3; topPanel.add(spnThNoiEmBe, gbc);
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblBuffet, gbc);
+
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(buffetWrapper, gbc);
+
+
+
+		// ===== Hàng 6: Dịch vụ thuê xe đẩy
+		JLabel lblXeDayMoTa = new JLabel("");
+		lblXeDayMoTa.setFont(new Font("Arial", Font.ITALIC, cochu));
+		JPanel xeDayWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		xeDayWrapper.setBackground(Color.WHITE);
+		xeDayWrapper.add(spnThueXeDay);
+		xeDayWrapper.add(lblXeDayMoTa);
+
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblThueXeDay, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(xeDayWrapper, gbc);
+
+
+		// ===== Hàng 7: Dịch vụ bảo mẫu
+		JLabel lblBaoMauMoTa = new JLabel("");
+		lblBaoMauMoTa.setFont(new Font("Arial", Font.ITALIC, cochu));
+		JPanel baoMauWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		baoMauWrapper.setBackground(Color.WHITE);
+		baoMauWrapper.add(spnBaoMau);
+		baoMauWrapper.add(lblBaoMauMoTa);
+
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblBaoMau, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(baoMauWrapper, gbc);
+
+
+		// ===== Hàng 8: Dịch vụ thuê nôi em bé
+		JLabel lblNoiMoTa = new JLabel("");
+		lblNoiMoTa.setFont(new Font("Arial", Font.ITALIC, cochu));
+		JPanel noiWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+		noiWrapper.setBackground(Color.WHITE);
+		noiWrapper.add(spnThNoiEmBe);
+		noiWrapper.add(lblNoiMoTa);
+
+		gbc.gridy = row++;
+		gbc.gridx = 0; gbc.gridwidth = 1;
+		topPanel.add(lblNoiEmBe, gbc);
+		gbc.gridx = 1; gbc.gridwidth = 3;
+		topPanel.add(noiWrapper, gbc);
+
+
 
 
 		centerPanel.add(topPanel, BorderLayout.NORTH);
+
+		int giaBuffetMotNguoi = 150_000;
+		int giaXeDay = 50_000;
+		int giaBaoMau = 40_000;
+		int giaNoiEmBe = 30_000;
+
 
 		// Spinner dịch vụ buffet
 		spnBuffet.addChangeListener(e -> {
 		    soLuongBuffet = (int) spnBuffet.getValue();
 		    System.out.println("Buffet: " + soLuongBuffet);
+		    //cập nhật tiền buffet
+		    int soNguoi = (int) spnBuffet.getValue();
+		    int tongTien = soNguoi * giaBuffetMotNguoi;
+		    lblBuffetMoTa.setText(soNguoi + " vé / " + String.format("%,d", tongTien) + " vnd");
 		});
 
 		// Spinner dịch vụ thuê xe đẩy
 		spnThueXeDay.addChangeListener(e -> {
 		    soLuongThueXeDay = (int) spnThueXeDay.getValue();
 		    System.out.println("Thuê xe đẩy: " + soLuongThueXeDay);
+			//cập nhật tiền Thuê xe đẩy
+		    int soXe = (int) spnThueXeDay.getValue();
+		    int tongTien = soXe * giaXeDay;
+		    lblXeDayMoTa.setText(soXe + " xe / " + String.format("%,d", tongTien) + " vnd");
 		});
 
 		// Spinner dịch vụ bảo mẫu
 		spnBaoMau.addChangeListener(e -> {
 		    soLuongBaoMau = (int) spnBaoMau.getValue();
 		    System.out.println("Bảo mẫu: " + soLuongBaoMau);
+			//cập nhật tiền Bảo mẫu
+		    int soNguoi = (int) spnBaoMau.getValue();
+		    int tongTien = soNguoi * giaBaoMau;
+		    lblBaoMauMoTa.setText(soNguoi + " người / " + String.format("%,d", tongTien) + " vnd");
 		});
 
 		// Spinner dịch vụ thuê nôi em bé
 		spnThNoiEmBe.addChangeListener(e -> {
 		    soLuongNoiEmBe = (int) spnThNoiEmBe.getValue();
 		    System.out.println("Nôi em bé: " + soLuongNoiEmBe);
+			//cập nhật tiền Thuê nôi em bé
+		    int soNoi = (int) spnThNoiEmBe.getValue();
+		    int tongTien = soNoi * giaNoiEmBe;
+		    lblNoiMoTa.setText(soNoi + " nôi / " + String.format("%,d", tongTien) + " vnd");
 		});
 
 		
