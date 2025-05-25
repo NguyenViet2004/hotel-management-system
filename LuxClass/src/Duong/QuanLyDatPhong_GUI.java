@@ -1,6 +1,7 @@
 package Duong;
 
 import java.awt.EventQueue;
+
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -12,13 +13,22 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -40,12 +50,13 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
-import GUI.DatPhong_GUI;
-import GUI.timKiemDialog;
+import connectDB.ConnectDB;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
+import entity.ChiTietDonDatPhong;
+import entity.DonDatPhong;
 import entity.LoaiPhong;
 import entity.Phong;
 import java.util.Map;
@@ -78,7 +89,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	private Phong_Dao dsPhong;
 	private LoaiPhong_Dao dsLoaiPhong;
 	private Map<String, ArrayList<Phong>> roomCategoriesMap; // Renamed to avoid conflict
-	private RoundedButton btnTra , btnDoi;
+	private RoundedButton btnTra, btnDoi;
 	// Filter components as class members
 	private JRadioButton rbPhongTrong;
 	private JRadioButton rbPhongDaDat;
@@ -104,6 +115,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	public QuanLyDatPhong_GUI() {
+
+
 		dsPhong = new Phong_Dao();
 		dsLoaiPhong = new LoaiPhong_Dao();
 		roomCategoriesMap = new HashMap<>();
@@ -137,7 +150,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		int westWidth = (int) (screenWidth * 0.18);
 		// Adjust Y position of panelWest to be below the new panelNorth height
 		panelWest.setBounds(8, (int) (screenHeight * 0.10) + 5, westWidth - 3,
-				screenHeight - (int) (screenHeight * 0.10) - 50); // Adjusted height calculation
+				screenHeight - (int) (screenHeight * 0.10)); // Adjusted height calculation
 		panelWest.setBackground(Color.WHITE);
 		panelWest.setLayout(null);
 		contentPane.add(panelWest);
@@ -330,20 +343,23 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 
 			for (Phong room : rooms) {
 				int days = 0;
-				RoomPanel roomPanel = new RoomPanel(room, days);
+				String moTa = room.getMoTa(); // lấy mô tả riêng từng phòng
+				RoomPanel roomPanel = new RoomPanel(room, moTa);
 				roomPanel.setPreferredSize(new Dimension(roomWidth, roomHeight));
 				roomGridPanel.add(roomPanel);
 				allRoomPanelsList.add(roomPanel);
 			}
+
 			panelSouth.add(roomGridPanel);
 		}
 
 		JScrollPane scrollPane = new JScrollPane(panelSouth);
+		scrollPane.setBackground(Color.white);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// Adjust Y and Height of scrollPane
 		scrollPane.setBounds(westWidth + 10, (int) (screenHeight * 0.10) + centerButtonsHeight + 8, centerButtonsWidth,
-				screenHeight - ((int) (screenHeight * 0.10) + centerButtonsHeight) - 60); // Adjusted bounds
+				screenHeight - ((int) (screenHeight * 0.10) + centerButtonsHeight)); // Adjusted bounds
 		scrollPane.setBorder(null);
 		contentPane.add(scrollPane);
 
@@ -352,6 +368,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	private JPanel createHeaderPanel() {
+
 		JPanel headerPanel = new JPanel(new GridBagLayout());
 		headerPanel.setBackground(Color.WHITE);
 		headerPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -385,8 +402,14 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		lblTitleHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JButton btnHome = new JButton(loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/home.png", 30, 30));
-		btnHome.setBackground(Color.white);
+		btnHome.setBackground(Color.WHITE);
 		btnHome.setBorder(null);
+		btnHome.setBorderPainted(false);
+		btnHome.setContentAreaFilled(false);
+		btnHome.setFocusPainted(false);
+		btnHome.setOpaque(false);
+		btnHome.setAlignmentX(Component.LEFT_ALIGNMENT);
+		btnHome.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		homePanel.add(lblTitleHeader);
 		homePanel.add(Box.createVerticalStrut(5));
@@ -394,7 +417,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 
 		gbc.gridx = 1;
 		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.LINE_START; // Căn trái sát logo
+		gbc.anchor = GridBagConstraints.LINE_START; // căn trái sát logo
+		gbc.fill = GridBagConstraints.NONE;
 		headerPanel.add(homePanel, gbc);
 
 		// Cột 2: dùng để đẩy khoảng cách (cột "rỗng")
@@ -442,12 +466,12 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 
 		// Cột 7: Nút Close (X) góc phải trên
 		JButton btnClose = new JButton("X");
-		btnClose.setFont(new Font("Arial", Font.BOLD, 15));
-		btnClose.setForeground(Color.WHITE);
-		btnClose.setBackground(Color.RED);
+		btnClose.setFont(new Font("Arial", Font.BOLD, 22));
+		btnClose.setForeground(Color.black);
+		btnClose.setBackground(Color.white);
 		btnClose.setFocusPainted(false);
 		btnClose.setBorderPainted(false);
-		btnClose.setPreferredSize(new Dimension(20, 20));
+		btnClose.setPreferredSize(new Dimension(40, 40));
 		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.addActionListener(e -> {
 			int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn thoát?", "Xác nhận thoát",
@@ -469,6 +493,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	private ImageIcon loadIcon(String fileName, int width, int height) {
+
 		URL imgURL = getClass().getClassLoader().getResource(ICON_PATH_PREFIX + fileName);
 		if (imgURL != null) {
 			try {
@@ -493,6 +518,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	private JButton createIconButton(String text, int fontSize) {
+
 		JButton button = new JButton(text);
 		button.setFont(new Font("Arial", Font.PLAIN, fontSize));
 		button.setFocusPainted(false);
@@ -503,77 +529,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		return button;
 	}
 
-	private void applyFilters() {
-		if (panelSouth == null || allRoomPanelsList.isEmpty()) {
-			return;
-		}
-
-		String statusFilter = "";
-		if (rbPhongTrong.isSelected()) {
-			statusFilter = "TRONG";
-		} else if (rbPhongDaDat.isSelected()) {
-			statusFilter = "DADAT";
-		} else if (rbTatCaPhong.isSelected()) {
-			statusFilter = ""; // Show all
-		}
-
-		List<String> selectedRoomTypeCodes = new ArrayList<>();
-		boolean isCbAllRoomsSelected = cbAllRooms.isSelected();
-		boolean specificTypeSelected = false;
-
-		for (JCheckBox checkBox : loaiPhongCheckBoxes) {
-			if (checkBox.isSelected()) {
-				selectedRoomTypeCodes.add(checkBox.getActionCommand());
-				specificTypeSelected = true;
-			}
-		}
-
-		for (RoomPanel rp : allRoomPanelsList) {
-			Phong phong = rp.getRoom();
-			if (phong == null) {
-				rp.setVisible(false);
-				continue;
-			}
-
-			boolean matchesStatus = false;
-			if (statusFilter.isEmpty()) {
-				matchesStatus = true;
-			} else if (statusFilter.equals("TRONG") && "Trống".equalsIgnoreCase(phong.getTrangThai())) {
-				matchesStatus = true;
-			} else if (statusFilter.equals("DADAT") && "Đã đặt".equalsIgnoreCase(phong.getTrangThai())) {
-				matchesStatus = true;
-			}
-
-			boolean matchesType = false;
-			if (isCbAllRoomsSelected || !specificTypeSelected) {
-				matchesType = true;
-			} else {
-				if (phong.getLoaiPhong() != null
-						&& selectedRoomTypeCodes.contains(phong.getLoaiPhong().getMaLoaiPhong())) {
-					matchesType = true;
-				}
-			}
-
-			boolean shouldBeVisible = matchesStatus && matchesType;
-			rp.setVisible(shouldBeVisible);
-		}
-
-		panelSouth.revalidate();
-		panelSouth.repaint();
-
-		Component parent = panelSouth.getParent();
-		if (parent instanceof javax.swing.JViewport) {
-			parent.revalidate();
-			parent.repaint();
-		} else {
-			if (panelSouth.getParent() instanceof JScrollPane) {
-				((JScrollPane) panelSouth.getParent()).revalidate();
-				((JScrollPane) panelSouth.getParent()).repaint();
-			}
-		}
-	}
-
 	class RoundedButton extends JButton {
+
 		private int radius;
 
 		public RoundedButton(String text, int radius) {
@@ -631,6 +588,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	class CustomRoundedPanel extends JPanel {
+
 		private int topLeft, topRight, bottomLeft, bottomRight;
 
 		public CustomRoundedPanel(int topLeft, int topRight, int bottomLeft, int bottomRight) {
@@ -668,157 +626,308 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		}
 	}
 
-	class RoomPanel extends JPanel {
-		private Phong room;
-		private int days;
+	private void applyFilters() {
 
-		public RoomPanel(Phong room, int days) {
-			this.room = room;
-			this.days = days;
-			setPreferredSize(new Dimension(220, 180));
-			setOpaque(false);
-			// Bỏ phần loại phòng trong tooltip
-			setToolTipText("<html><b>Phòng:</b> " + room.getSoPhong() + "<br><b>Trạng thái:</b> " + room.getTrangThai()
-					+ "<br><b>Số ngày ở dự kiến:</b> " + days + "</html>");
+		if (panelSouth == null || allRoomPanelsList.isEmpty()) {
+			return;
 		}
 
-		public Phong getRoom() {
-			return room;
+		String statusFilter = "";
+		if (rbPhongTrong.isSelected()) {
+			statusFilter = "TRONG";
+		} else if (rbPhongDaDat.isSelected()) {
+			statusFilter = "DADAT";
+		} else if (rbTatCaPhong.isSelected()) {
+			statusFilter = ""; // Show all
 		}
 
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Graphics2D g2 = (Graphics2D) g.create();
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		List<String> selectedRoomTypeCodes = new ArrayList<>();
+		boolean isCbAllRoomsSelected = cbAllRooms.isSelected();
+		boolean specificTypeSelected = false;
 
-			Color bgColor;
-			String currentStatus = room.getTrangThai();
-			if ("Trống".equalsIgnoreCase(currentStatus)) {
-				bgColor = Color.green;
-			} else if ("Đã đặt".equalsIgnoreCase(currentStatus)) {
-				bgColor = new Color(211, 211, 211);
-			} else if ("Phòng đang sửa chữa".equalsIgnoreCase(currentStatus)) {
-				bgColor = new Color(255, 228, 181);
+		for (JCheckBox checkBox : loaiPhongCheckBoxes) {
+			if (checkBox.isSelected()) {
+				selectedRoomTypeCodes.add(checkBox.getActionCommand());
+				specificTypeSelected = true;
+			}
+		}
+
+		for (RoomPanel rp : allRoomPanelsList) {
+			Phong phong = rp.getRoom();
+			if (phong == null) {
+				rp.setVisible(false);
+				continue;
+			}
+
+			boolean matchesStatus = false;
+			if (statusFilter.isEmpty()) {
+				matchesStatus = true;
+			} else if (statusFilter.equals("TRONG") && "Trống".equalsIgnoreCase(phong.getTrangThai())) {
+				matchesStatus = true;
+			} else if (statusFilter.equals("DADAT") && "Đang ở".equalsIgnoreCase(phong.getTrangThai())) {
+				matchesStatus = true;
+			}
+
+			boolean matchesType = false;
+			if (isCbAllRoomsSelected || !specificTypeSelected) {
+				matchesType = true;
 			} else {
-				bgColor = Color.LIGHT_GRAY;
-			}
-
-			g2.setColor(bgColor);
-			g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 25, 25));
-
-			g2.setColor(new Color(180, 180, 180));
-			g2.setStroke(new BasicStroke(1));
-			g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, 25, 25));
-
-			int margin = 15;
-			int y = margin + 15;
-			g2.setColor(Color.DARK_GRAY);
-
-			g2.setFont(new Font("Arial", Font.BOLD, 16));
-			g2.drawString("Phòng: " + room.getSoPhong(), margin, y);
-
-			y += 25;
-			// Bỏ phần hiển thị loại phòng
-
-			g2.setFont(new Font("Arial", Font.PLAIN, 14));
-			g2.drawString("Trạng thái: " + room.getTrangThai(), margin, y);
-
-			y += 20;
-			Font font = new Font("Arial", Font.PLAIN, 12);
-			g2.setFont(font);
-			FontMetrics fm = g2.getFontMetrics(font);
-			String moTa = room.getMoTa() != null ? room.getMoTa() : "";
-			List<String> lines = wrapText("Mô tả: " + moTa, fm, getWidth() - 2 * margin);
-			for (String line : lines) {
-				if (y + fm.getHeight() < getHeight() - margin - 20) {
-					g2.drawString(line, margin, y);
-					y += fm.getHeight();
-				} else {
-					break;
+				if (phong.getLoaiPhong() != null
+						&& selectedRoomTypeCodes.contains(phong.getLoaiPhong().getMaLoaiPhong())) {
+					matchesType = true;
 				}
 			}
 
-			if (y + 20 < getHeight() - margin) {
-				y += 5;
-				int iconSize = 16;
-				g2.setColor(Color.DARK_GRAY);
-				g2.setStroke(new BasicStroke(1.5f));
-				g2.drawOval(margin, y, iconSize, iconSize);
-				g2.drawLine(margin + 4, y + 8, margin + 7, y + 11);
-				g2.drawLine(margin + 7, y + 11, margin + 12, y + 6);
-				g2.setFont(new Font("Arial", Font.PLAIN, 14));
-				g2.drawString("Ở: " + days + " ngày", margin + iconSize + 5, y + iconSize - 2);
-			}
-			g2.dispose();
+			boolean shouldBeVisible = matchesStatus && matchesType;
+			rp.setVisible(shouldBeVisible);
 		}
 
-		private List<String> wrapText(String text, FontMetrics fm, int maxWidth) {
-			List<String> lines = new ArrayList<>();
-			if (text == null || text.isEmpty()) {
-				lines.add("");
-				return lines;
-			}
-			String[] words = text.split(" ");
-			if (words.length == 0) {
-				lines.add("");
-				return lines;
-			}
-			StringBuilder currentLine = new StringBuilder(words[0]);
+		panelSouth.revalidate();
+		panelSouth.repaint();
 
-			for (int i = 1; i < words.length; i++) {
-				if (fm.stringWidth(currentLine.toString() + " " + words[i]) < maxWidth) {
-					currentLine.append(" ").append(words[i]);
-				} else {
-					lines.add(currentLine.toString());
-					currentLine = new StringBuilder(words[i]);
+		Component parent = panelSouth.getParent();
+		if (parent instanceof javax.swing.JViewport) {
+			parent.revalidate();
+			parent.repaint();
+		} else {
+			if (panelSouth.getParent() instanceof JScrollPane) {
+				((JScrollPane) panelSouth.getParent()).revalidate();
+				((JScrollPane) panelSouth.getParent()).repaint();
+			}
+		}
+	}
+
+	public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngay) {
+
+
+
+		List<Phong> danhSach = new ArrayList<>();
+		String sql = "SELECT DISTINCT p.soPhong, p.trangThai, lp.maLoaiPhong, lp.tenLoai, lp.soLuong, "
+				+ "lp.dienTich, lp.giaTheoGio, lp.giaTheoNgay, lp.giaTheoDem, lp.phuThuQuaGio, p.moTa "
+				+ "FROM Phong p " + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
+				+ "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
+				+ "JOIN DonDatPhong ddp ON ctd.maDonDatPhong = ddp.maDonDatPhong "
+				+ "WHERE ? BETWEEN ddp.ngayNhanPhong AND ddp.ngayTraPhong";
+
+		try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setDate(1, ngay);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					Phong p = new Phong();
+					p.setSoPhong(rs.getString("soPhong"));
+					p.setTrangThai(rs.getString("trangThai"));
+					p.setMoTa(rs.getString("moTa"));
+					// Gán thêm các thuộc tính khác nếu cần
+
+					danhSach.add(p);
 				}
 			}
-			if (currentLine.length() > 0) {
-				lines.add(currentLine.toString());
+
+			// In ra danh sách phòng lấy được
+			System.out.println("Danh sách phòng đã đặt trong ngày " + ngay + ":");
+			for (Phong p : danhSach) {
+				System.out.println("- Phòng số: " + p.getSoPhong() + ", trạng thái: " + p.getTrangThai());
 			}
-			if (lines.isEmpty() && text.length() > 0) {
-				lines.add(text);
-			}
-			return lines;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return danhSach;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnDat) {
-			DatPhong_GUI frameDatPhong = new DatPhong_GUI(this);
-			frameDatPhong.setVisible(true);
+	private int tinhSoNgayTheoPhong(String soPhong, List<DonDatPhong> danhSachDon, LocalDate ngayDuocChon) {
+
+		for (DonDatPhong don : danhSachDon) {
+			if (don.getChiTietPhong() != null) {
+				for (ChiTietDonDatPhong ct : don.getChiTietPhong()) {
+					if (ct.getPhong().getSoPhong().equals(soPhong)) {
+						LocalDate ngayNhan = don.getNgayNhanPhong().toLocalDate();
+						LocalDate ngayTra = don.getNgayTraPhong().toLocalDate();
+						if ((ngayDuocChon.isEqual(ngayNhan) || ngayDuocChon.isAfter(ngayNhan))
+								&& ngayDuocChon.isBefore(ngayTra)) {
+							return (int) ChronoUnit.DAYS.between(ngayNhan, ngayTra);
+						}
+					}
+				}
+			}
 		}
-		if (e.getSource() == btnTra) {
-			timKiemDialog dialog = new timKiemDialog(this);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setUndecorated(true);
-			dialog.setLocationRelativeTo(null);
-			dialog.setSize(929, 629);
-			dialog.setResizable(false);
-			dialog.setVisible(true);
-		}
-//		if(e.getSource() == btnDoi) {
-////			timKiemDialog dialog = new timKiemDialog(this);
-////			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-////			dialog.setUndecorated(true);
-////			dialog.setLocationRelativeTo(null);
-////			dialog.setSize(929, 629);
-////			dialog.setResizable(false);
-////			dialog.setVisible(true);
-////			}
+		return 0;
 	}
 
-	private void loadData(java.util.Date selectedDate) {
-		String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(selectedDate);
-		System.out.println("Ngày được chọn: " + formattedDate);
-		// TODO: Implement logic to reload room data from the database based on the
-		// selected date.
-		System.out.println("loadData function called. Room display should be updated based on " + formattedDate);
+
+	private void veChuoiXuongDong(Graphics2D g2, String text, int x, int y, int maxWidth, int lineHeight) {
+	    FontMetrics fm = g2.getFontMetrics();
+	    String[] words = text.split(" ");
+	    String line = "";
+	    int curY = y;
+
+	    for (String word : words) {
+	        String testLine = line.isEmpty() ? word : line + " " + word;
+	        int width = fm.stringWidth(testLine);
+	        if (width > maxWidth) {
+	            g2.drawString(line, x, curY);
+	            line = word;
+	            curY += lineHeight;
+	        } else {
+	            line = testLine;
+	        }
+	    }
+	    if (!line.isEmpty()) {
+	        g2.drawString(line, x, curY);
+	    }
+	}
+
+
+public class RoomPanel extends JPanel {
+
+
+    private Phong room;
+    private String moTa;
+
+    public RoomPanel(Phong room, String moTa) {
+        this.room = room;
+        this.moTa = moTa;
+        setPreferredSize(new Dimension(220, 180));
+        setOpaque(true);
+        capNhatTooltip();
+    }
+
+    public Phong getRoom() {
+        return room;
+    }
+
+    public void capNhatTrangThai(Phong phongMoi) {
+        this.room = phongMoi;
+        capNhatTooltip();
+        repaint();
+    }
+
+    private void capNhatTooltip() {
+        String tooltip = "<html><b>Phòng:</b> " + room.getSoPhong() +
+                "<br><b>Trạng thái:</b> " + room.getTrangThai();
+        if (moTa != null && !moTa.trim().isEmpty()) {
+            tooltip += "<br><b>Mô tả:</b> " + moTa;
+        }
+        tooltip += "</html>";
+        setToolTipText(tooltip);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Color bgColor;
+        String currentStatus = room.getTrangThai();
+        if ("Trống".equalsIgnoreCase(currentStatus)) {
+            bgColor = Color.GREEN;
+        } else if ("Đã đặt".equalsIgnoreCase(currentStatus)) {
+            bgColor = new Color(211, 211, 211);
+        } else if ("Phòng đang sửa chữa".equalsIgnoreCase(currentStatus)) {
+            bgColor = new Color(255, 228, 181);
+        } else {
+            bgColor = Color.LIGHT_GRAY;
+        }
+
+        // Vẽ nền bo góc (không có viền)
+        g2.setColor(bgColor);
+        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 25, 25));
+
+        // Không vẽ viền nữa
+        // g2.setStroke(new BasicStroke(1));
+        // g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, 25, 25));
+
+        Color textColor = ("Trống".equalsIgnoreCase(currentStatus)) ? Color.black : Color.BLACK;
+        g2.setColor(textColor);
+
+        // Vẽ các dòng text với khoảng cách đều nhau, chỉnh lại cho đẹp
+        int startX = 20;
+        int startY = 40;
+        int lineHeight = 30;
+
+        g2.setFont(new Font("Arial", Font.BOLD, 18));
+        g2.drawString("Phòng: " + room.getSoPhong(), startX, startY);
+
+        g2.setFont(new Font("Arial", Font.PLAIN, 14));
+        g2.drawString("Trạng thái: " + currentStatus, startX, startY + lineHeight);
+
+        if (moTa != null && !moTa.trim().isEmpty()) {
+            g2.setFont(new Font("Arial", Font.PLAIN, 14));
+            int maxWidth = getWidth() - 40; // padding 20 2 bên
+            lineHeight = g2.getFontMetrics().getHeight();
+            veChuoiXuongDong(g2, "Mô tả: " + moTa, 20, 100, maxWidth, lineHeight);
+        }
+
+        g2.dispose();
+    }
+    
+}
+
+
+private void loadData(java.util.Date selectedDate) {
+    if (selectedDate == null) return;
+
+    java.sql.Date sqlDate = new java.sql.Date(selectedDate.getTime());
+
+    List<Phong> phongDaDatTrongNgay = getPhongDaDatTheoNgay(sqlDate);
+
+    Set<String> phongDaDatSet = new HashSet<>();
+    for (Phong p : phongDaDatTrongNgay) {
+        phongDaDatSet.add(p.getSoPhong());
+    }
+
+    for (RoomPanel rp : allRoomPanelsList) {
+        Phong phong = rp.getRoom();
+        if (phong == null) {
+            rp.setVisible(false);
+            continue;
+        }
+
+        boolean phongDaDat = phongDaDatSet.contains(phong.getSoPhong());
+
+        if (phongDaDat) {
+            phong.setTrangThai("Đã đặt");
+        } else {
+            phong.setTrangThai("Trống");
+        }
+
+        // Cập nhật trạng thái mới, bỏ tham số days nếu không dùng nữa
+        rp.capNhatTrangThai(phong);
+        rp.setVisible(true);
+    }
+
+    panelSouth.revalidate();
+    panelSouth.repaint();
+
+    JOptionPane.showMessageDialog(this, "Đã tải dữ liệu phòng thành công!");
+}
+
+	public boolean kiemTraPhongTrong(String soPhong, LocalDate date, List<DonDatPhong> danhSachDonDatPhong) {
+		for (DonDatPhong donDatPhong : danhSachDonDatPhong) {
+			if (donDatPhong.getChiTietPhong() != null) {
+				for (ChiTietDonDatPhong ct : donDatPhong.getChiTietPhong()) {
+					String soPhongTrongDon = ct.getPhong().getSoPhong();
+					if (soPhongTrongDon.equals(soPhong)) {
+						LocalDate ngayNhan = donDatPhong.getNgayNhanPhong().toLocalDate();
+						LocalDate ngayTra = donDatPhong.getNgayTraPhong().toLocalDate();
+
+						// Nếu date nằm trong khoảng [ngayNhan, ngayTra) thì phòng không trống
+						if ((date.isEqual(ngayNhan) || date.isAfter(ngayNhan)) && date.isBefore(ngayTra)) {
+							return false; // phòng không trống
+						}
+					}
+				}
+			}
+		}
+		return true; // phòng trống
 	}
 
 	public class DateLabelFormatter extends AbstractFormatter {
+
 		private static final String DATE_PATTERN = "dd/MM/yyyy";
 		private final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_PATTERN);
 
@@ -834,6 +943,33 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 				return dateFormatter.format(cal.getTime());
 			}
 			return "";
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource() == btnDat) {
+			DatPhong_GUI frameDatPhong = new DatPhong_GUI(this);
+			frameDatPhong.setVisible(true);
+		}
+		if (e.getSource() == btnTra) {
+			timKiemDialog dialog = new timKiemDialog(this);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setUndecorated(true);
+			dialog.setLocationRelativeTo(null);
+			dialog.setSize(929, 629);
+			dialog.setResizable(false);
+			dialog.setVisible(true);
+		}
+		if (e.getSource() == btnDoi) {
+			timKiemDialog dialog = new timKiemDialog(this);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setUndecorated(true);
+			dialog.setLocationRelativeTo(null);
+			dialog.setSize(929, 629);
+			dialog.setResizable(false);
+			dialog.setVisible(true);
 		}
 	}
 
