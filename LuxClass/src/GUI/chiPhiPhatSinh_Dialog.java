@@ -45,11 +45,11 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import dao_CuaXien.ChiPhiPhatSinh_DAO;
-import dao_CuaXien.LoaiPhong_DAO;
-import entity_CuaXien.ChiPhiPhatSinh;
-import entity_CuaXien.DonDatPhong;
-import entity_CuaXien.LoaiPhong;
+import dao.ChiPhiPhatSinh_DAO;
+import dao.LoaiPhong_Dao;
+import entity.ChiPhiPhatSinh;
+import entity.DonDatPhong;
+import entity.LoaiPhong;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -229,7 +229,7 @@ public class chiPhiPhatSinh_Dialog extends JDialog {
 
         // Điều chỉnh kích thước dòng
         phuThuQuaGio.setRowHeight(30);
-        LoaiPhong_DAO loai= new LoaiPhong_DAO();
+        LoaiPhong_Dao loai= new LoaiPhong_Dao();
         LoaiPhong loaiPhong2= loai.getLoaiPhongBySoPhong(maPhong);
         themPhuThuQuaGio(maPhong, loaiPhong, loaiPhong2.getPhuThuQuaGio(), 0);
         // Điều chỉnh kích thước header

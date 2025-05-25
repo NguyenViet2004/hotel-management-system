@@ -2,7 +2,7 @@ package GUI;
 
 import javax.swing.*;
 
-import connectDB_CuaXien.ConnectDB;
+import connectDB.ConnectDB;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;

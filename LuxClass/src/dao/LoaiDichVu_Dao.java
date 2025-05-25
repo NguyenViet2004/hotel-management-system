@@ -5,7 +5,6 @@ import entity.LoaiDichVu;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class LoaiDichVu_Dao {
 
@@ -90,8 +89,8 @@ public class LoaiDichVu_Dao {
         return loaiDichVu;
     }
     
-	public List<LoaiDichVu> getLoaiDichVuByMaPhieu(String maPhieuDichVu) {
-        List<LoaiDichVu> list = new ArrayList<>();
+	public ArrayList<LoaiDichVu> getLoaiDichVuByMaPhieu(String maPhieuDichVu) {
+        ArrayList<LoaiDichVu> list = new ArrayList<>();
 
         String sql = """
             SELECT DISTINCT ld.maLoai, ld.tenLoai

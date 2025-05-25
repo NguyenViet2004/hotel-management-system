@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import connectDB_CuaXien.ConnectDB;
-import entity_CuaXien.ChiPhiPhatSinh;
-import entity_CuaXien.DonDatPhong;
+import connectDB.ConnectDB;
+import entity.ChiPhiPhatSinh;
+import entity.DonDatPhong;
 
 public class ChiPhiPhatSinh_DAO {
 

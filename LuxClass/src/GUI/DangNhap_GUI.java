@@ -33,10 +33,10 @@ import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.UIManager;
 
-import connectDB_CuaXien.ConnectDB;
-import dao_CuaXien.TaiKhoan_DAO;
-import entity_CuaXien.NhanVien;
-import entity_CuaXien.TaiKhoan;
+import connectDB.ConnectDB;
+import dao.TaiKhoan_Dao;
+import entity.NhanVien;
+import entity.TaiKhoan;
 
 import java.awt.BorderLayout;
 import javax.swing.JCheckBox;
@@ -232,10 +232,10 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 		String mkNhapVao=text_Password.getText();
 		String tkNhapVao=text_User.getText();
 		if(o.equals(jButton_Login)) {
-			TaiKhoan_DAO tKhoan_DAO= new TaiKhoan_DAO();
+			TaiKhoan_Dao tKhoan_DAO= new TaiKhoan_Dao();
 			boolean kiemTraTK= tKhoan_DAO.kiemTraTaiKhoan(tkNhapVao, mkNhapVao);
 			if(kiemTraTK) {
-				TaiKhoan_DAO tK= new TaiKhoan_DAO();
+				TaiKhoan_Dao tK= new TaiKhoan_Dao();
 				TaiKhoan tk= tK.getTaiKhoan(tkNhapVao, mkNhapVao);
 				String chucVu= tk.getNhanVien().getChucVu();
 				System.out.println("Chức vụ: " + chucVu);

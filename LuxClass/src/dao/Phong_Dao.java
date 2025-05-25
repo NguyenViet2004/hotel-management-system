@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 import connectDB.ConnectDB;
 import entity.LoaiPhong;
@@ -91,8 +90,8 @@ public class Phong_Dao {
         return phong; // Trả về null nếu không tìm thấy phòng
     }
     
-	public List<Phong> getPhongTheoMaDonDatPhong(String maDonDatPhong) {
-		List<Phong> dsPhong = new ArrayList<>();
+	public ArrayList<Phong> getPhongTheoMaDonDatPhong(String maDonDatPhong) {
+		ArrayList<Phong> dsPhong = new ArrayList<>();
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -154,8 +153,8 @@ public class Phong_Dao {
 		return dsPhong;
 	}
 
-	public List<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
-		List<Phong> dsPhong = new ArrayList<>();
+	public ArrayList<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
+		ArrayList<Phong> dsPhong = new ArrayList<>();
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -252,8 +251,8 @@ public class Phong_Dao {
 		return phong;
 	}
 
-	public List<Phong> getPhongChuaThanhToan() {
-		List<Phong> danhSach = new ArrayList<>();
+	public ArrayList<Phong> getPhongChuaThanhToan() {
+		ArrayList<Phong> danhSach = new ArrayList<>();
 		String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
 				+ "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
 				+ "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
@@ -262,7 +261,7 @@ public class Phong_Dao {
 
 		try (Connection conn = ConnectDB.getConnection(); // Thay ConnectDB bằng class kết nối DB của bạn
 				PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, "Chưa thanh toán");
+			stmt.setString(1, "Nhận phòng");
 			stmt.setString(2, "Đang ở");
 			try (ResultSet rs = stmt.executeQuery()) {
 				while (rs.next()) {

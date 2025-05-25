@@ -211,7 +211,7 @@ public class DonDatPhong_Dao {
 				+ "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec " + "FROM DonDatPhong ddp "
 				+ "JOIN ChiTietDonDatPhong ct ON ddp.maDonDatPhong = ct.maDonDatPhong "
 				+ "JOIN KhachHang kh ON ddp.maKH = kh.maKH " + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-				+ "WHERE ct.soPhong = ? AND ddp.trangThai = N'Chưa thanh toán'";
+				+ "WHERE ct.soPhong = ? AND ddp.trangThai = N'Nhận phòng'";
 
 		try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, soPhong);

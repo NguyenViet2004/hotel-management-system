@@ -23,6 +23,7 @@ import dao.PhieuDichVu_DAO;
 import dao.Phong_Dao;
 import entity.ChiTietPhieuDichVu;
 import entity.DichVu;
+import entity.DonDatPhong;
 import entity.KhachHang;
 import entity.PhieuDichVu;
 import entity.Phong;
@@ -49,7 +50,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -93,7 +93,7 @@ public class DatPhong_GUI extends JDialog {
 
 	//kiểu dữ liệu đặt phòng
 	private String[] tienIchPhong = {"Ban công", "View biển", "Phòng hút thuốc"};
-	private List<JCheckBox> checkBoxes = new ArrayList<>();
+	private ArrayList<JCheckBox> checkBoxes = new ArrayList<>();
 	private String moTaChinhXac;
 	private int[] roomQuantities;
 	private String[] danhSachSoPhongDuocChon;
@@ -842,7 +842,7 @@ public class DatPhong_GUI extends JDialog {
 	    String[] thuTuChuan = {"Ban công", "View biển", "Phòng hút thuốc"};
 
 	    // Lấy danh sách tiện ích đã chọn
-	    List<String> daCheck = new ArrayList<>();
+	    ArrayList<String> daCheck = new ArrayList<>();
 	    if (cbBanCong.isSelected()) {
 	        daCheck.add("Ban công");
 	    }
@@ -854,7 +854,7 @@ public class DatPhong_GUI extends JDialog {
 	    }
 
 	    // Sắp xếp lại theo thứ tự chuẩn
-	    List<String> sapXepTheoThuTu = new ArrayList<>();
+	    ArrayList<String> sapXepTheoThuTu = new ArrayList<>();
 	    for (String t : thuTuChuan) {
 	        if (daCheck.contains(t)) {
 	            sapXepTheoThuTu.add(t);
@@ -1035,7 +1035,7 @@ public class DatPhong_GUI extends JDialog {
 	        System.out.println("now"+now);
 	        System.out.println("localCopy"+localCopy);
 	        // Danh sách giờ từ startHour đến 23:00
-	        List<String> formattedTimes = new ArrayList<>();
+	        ArrayList<String> formattedTimes = new ArrayList<>();
 	        while (localCopy.isBefore(LocalTime.of(23, 00))) {
 	            formattedTimes.add(localCopy.format(formatter));
 	            localCopy = localCopy.plusHours(1);
@@ -1414,7 +1414,7 @@ public class DatPhong_GUI extends JDialog {
 		rowsPanel.setLayout(new BoxLayout(rowsPanel, BoxLayout.Y_AXIS));
 		rowsPanel.setBackground(Color.WHITE);
 
-		List<JComboBox<String>> danhSachComboBox = new ArrayList<>();
+		ArrayList<JComboBox<String>> danhSachComboBox = new ArrayList<>();
 		
 		int tongSoLuongPhong = 0;
 		for (int soLuong : soLuongPhong) {
@@ -1443,7 +1443,7 @@ public class DatPhong_GUI extends JDialog {
 
 		        try {
 		            String loaiPhongDB = loaiPhong.toLowerCase().split(" ")[0];
-		            List<String> danhSachPhong = chitietdondatphongdao.layDanhSachPhongTrong(tuNgay, denNgay, loaiPhongDB);
+		            ArrayList<String> danhSachPhong = chitietdondatphongdao.layDanhSachPhongTrong(tuNgay, denNgay, loaiPhongDB);
 
 		            for (String soPhong : danhSachPhong) {
 		                phongComboBox.addItem(soPhong);
@@ -2031,11 +2031,14 @@ public class DatPhong_GUI extends JDialog {
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
 		            String maPhieu ="PDV" +maDon;
+		            DonDatPhong donDatPhong = new DonDatPhong(maDon);
+		            DonDatPhong_Dao ddp_dao = new DonDatPhong_Dao(); 
+		            donDatPhong = ddp_dao.getDonDatPhongTheoMa(maDon);
 		            LocalDateTime ngayLap = currentTimestamp.toLocalDateTime(); 
 		            
 		            System.out.println("mã phiếu: "+maPhieu);
 		            System.out.println("ngày lập phiếu: "+ngayLap);
-		            pdv = new PhieuDichVu(maPhieu,maDon,ngayLap,"Chưa thanh toán");
+		            pdv = new PhieuDichVu(maPhieu,donDatPhong,ngayLap,"Chưa thanh toán");
 		            if(phieudichvudao.themPhieuDichVu(pdv)) {
 		            	System.out.println("Thêm đơn phiếu dịch vụ thành công");
 		            }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
@@ -317,7 +316,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 		// Duyệt qua các loại phòng và tạo từng phần tương ứng
 		for (Entry<String, ArrayList<Phong>> entry : roomCategories.entrySet()) {
 			String roomType = entry.getKey();
-			List<Phong> rooms = entry.getValue();
+			ArrayList<Phong> rooms = entry.getValue();
 
 			// Tạo JPanel để chứa tiêu đề và căn lề trái
 			JPanel titlePanel = new JPanel();
@@ -389,7 +388,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 
         // Lấy danh sách các checkbox
         Component[] components = panelWest.getComponents();
-        List<String> selectedRoomTypes = new ArrayList<>();
+        ArrayList<String> selectedRoomTypes = new ArrayList<>();
 
         for (Component component : components) {
             if (component instanceof JCheckBox) {
@@ -543,7 +542,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	        Font font = new Font("Arial", Font.PLAIN, 14);
 	        g2.setFont(font);
 	        FontMetrics fm = g2.getFontMetrics(font);
-	        List<String> lines = wrapText("Mô tả: " + room.getMoTa(), fm, getWidth() - 2 * margin);
+	        ArrayList<String> lines = wrapText("Mô tả: " + room.getMoTa(), fm, getWidth() - 2 * margin);
 	        for (String line : lines) {
 	            g2.drawString(line, margin, y);
 	            y += fm.getHeight(); // tăng y cho dòng tiếp theo
@@ -572,8 +571,8 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener {
 	        g2.dispose();
 	    }
 	 // Hàm chia chuỗi mô tả dài thành nhiều dòng
-	    private List<String> wrapText(String text, FontMetrics fm, int maxWidth) {
-	        List<String> lines = new ArrayList<>();
+	    private ArrayList<String> wrapText(String text, FontMetrics fm, int maxWidth) {
+	        ArrayList<String> lines = new ArrayList<>();
 	        StringBuilder line = new StringBuilder();
 	        for (String word : text.split(" ")) {
 	            if (fm.stringWidth(line + word + " ") > maxWidth) {

@@ -10,8 +10,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-
 import connectDB.ConnectDB;
 import entity.ChiTietDonDatPhong;
 import entity.DonDatPhong;
@@ -170,9 +168,9 @@ public class ChiTietDonDatPhong_Dao {
 	}
 
 
-	public List<String> layDanhSachPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong)
+	public ArrayList<String> layDanhSachPhongTrong(Timestamp tuNgay, Timestamp denNgay, String loaiPhong)
 			throws SQLException {
-		List<String> danhSachPhong = new ArrayList<>();
+		ArrayList<String> danhSachPhong = new ArrayList<>();
 
 		String sql = """
 				         SELECT soPhong

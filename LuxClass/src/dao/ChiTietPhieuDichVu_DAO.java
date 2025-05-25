@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import connectDB_CuaXien.ConnectDB;
+import connectDB.ConnectDB;
 import entity.ChiTietPhieuDichVu;
 
 public class ChiTietPhieuDichVu_DAO {

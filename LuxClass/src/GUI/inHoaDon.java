@@ -21,7 +21,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.io.File;
-import java.util.List;
+
 
 public class inHoaDon {
     private static BaseFont fontChinh;
@@ -51,7 +51,7 @@ public class inHoaDon {
             String maDonDatPhong, String ngayLap,
             String tenKhachHang, String soDienThoai,
             String ngayNhanPhong, String ngayTraPhong,
-            List<Object[]> danhSachPhongDuocChon,
+            ArrayList<Object[]> danhSachPhongDuocChon,
             double tongTienPhong,
             double tongTienDichVu,
             double tongChiPhiPhatSinh,

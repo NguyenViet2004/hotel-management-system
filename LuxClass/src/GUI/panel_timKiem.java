@@ -9,10 +9,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import dao_CuaXien.DonDatPhong_DAO;
-import dao_CuaXien.Phong_DAO;
-import entity_CuaXien.DonDatPhong;
-import entity_CuaXien.Phong;
+import dao.DonDatPhong_Dao;
+import dao.Phong_Dao;
+import entity.DonDatPhong;
+import entity.Phong;
 import GUI.donDatPhong;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ import java.awt.event.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 public class panel_timKiem extends JPanel {
 	private JFrame frame;
@@ -173,7 +173,7 @@ public class panel_timKiem extends JPanel {
                 	soPhong="";
                 }
 		        if (!soPhong.isEmpty()) {
-		            DonDatPhong_DAO dao = new DonDatPhong_DAO();
+		            DonDatPhong_Dao dao = new DonDatPhong_Dao();
 		            System.out.println(soPhong);
 		    	    DonDatPhong ddp = dao.getDonDatPhongTheoMaP(soPhong);
 		    	    if (ddp != null) {
@@ -234,7 +234,7 @@ public class panel_timKiem extends JPanel {
 		        if (selectedRow != -1) {
 		            String maDonDatPhong = table_DonDatPhong.getValueAt(selectedRow, 0).toString();
 
-		            DonDatPhong_DAO dao = new DonDatPhong_DAO();
+		            DonDatPhong_Dao dao = new DonDatPhong_Dao();
 		            DonDatPhong ddp = dao.getDonDatPhongTheoMa(maDonDatPhong);
 
 		            if (ddp != null) {
@@ -389,8 +389,8 @@ public class panel_timKiem extends JPanel {
 		});
 	}
 	private void loadDanhSachMaPhong() {
-	    Phong_DAO phongDAO = new Phong_DAO(); // Nhớ đã có import dao.PhongDAO;
-	    java.util.List<Phong> danhSach = phongDAO.getPhongChuaThanhToan();
+	    Phong_Dao phongDAO = new Phong_Dao(); // Nhớ đã có import dao.PhongDAO;
+	    ArrayList<Phong> danhSach = phongDAO.getPhongChuaThanhToan();
 
 	    // Cập nhật originalData
 	    originalData = new String[danhSach.size()][1];
@@ -427,13 +427,13 @@ public class panel_timKiem extends JPanel {
 //	    }
 //	}
 	private void loadDonDatPhongTheoTenVaSDT(String tenKH, String sdt) {
-	    DonDatPhong_DAO dao = new DonDatPhong_DAO();
-	    List<DonDatPhong> danhSach = dao.getDonDatPhongTheoTenVaSDT(tenKH, sdt);
+	    DonDatPhong_Dao dao = new DonDatPhong_Dao();
+	    ArrayList<DonDatPhong> danhSach = dao.getDonDatPhongTheoTenVaSDT(tenKH, sdt);
 
 	    DefaultTableModel model = (DefaultTableModel) table_DonDatPhong.getModel();
 	    model.setRowCount(0); // Xóa dữ liệu cũ
         
-	    Phong_DAO phong_DAO= new Phong_DAO();
+	    Phong_Dao phong_DAO= new Phong_Dao();
 	    
 	    if (danhSach.isEmpty()) {
 	        JOptionPane.showMessageDialog(this, "Không tìm thấy đơn đặt phòng cho khách hàng: " + tenKH + ", SDT: " + sdt, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -441,7 +441,7 @@ public class panel_timKiem extends JPanel {
 	    }
 
 	    for (DonDatPhong ddp : danhSach) {
-	    	List<Phong> phong= phong_DAO.getPhongTheoMaDonDatPhong(ddp.getMaDonDatPhong());
+	    	ArrayList<Phong> phong= phong_DAO.getPhongTheoMaDonDatPhong(ddp.getMaDonDatPhong());
 	    	String maPhongStr = phong.stream().map(Phong::getSoPhong) .collect(Collectors.joining(", "));
 	        model.addRow(new Object[] {
 	            ddp.getMaDonDatPhong(),

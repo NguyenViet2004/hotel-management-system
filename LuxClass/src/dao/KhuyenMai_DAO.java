@@ -4,9 +4,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
 
-import connectDB_CuaXien.ConnectDB;
+import connectDB.ConnectDB;
 import entity.KhuyenMai;
 
 

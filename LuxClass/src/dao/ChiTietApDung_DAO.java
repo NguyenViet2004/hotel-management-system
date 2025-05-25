@@ -2,12 +2,11 @@ package dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
-import connectDB_CuaXien.ConnectDB;
-import entity_CuaXien.ChiTietApDung;
-import entity_CuaXien.DonDatPhong;
-import entity_CuaXien.KhuyenMai;
+import connectDB.ConnectDB;
+import entity.ChiTietApDung;
+import entity.DonDatPhong;
+import entity.KhuyenMai;
 
 public class ChiTietApDung_DAO {
 	public boolean addChiTietApDung(ChiTietApDung cta) {
@@ -72,8 +71,8 @@ public class ChiTietApDung_DAO {
 		return false;
 	}
 
-	public List<ChiTietApDung> getDanhSachChiTietApDungTheoMaDon(String maDonDatPhong) {
-		List<ChiTietApDung> danhSach = new ArrayList<>();
+	public ArrayList<ChiTietApDung> getDanhSachChiTietApDungTheoMaDon(String maDonDatPhong) {
+		ArrayList<ChiTietApDung> danhSach = new ArrayList<>();
 		String sql = "SELECT * FROM ChiTietApDung WHERE maDonDatPhong = ?";
 
 		try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -9,22 +9,22 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import dao_CuaXien.ChiTietApDung_DAO;
-import dao_CuaXien.DichVu_DAO;
-import dao_CuaXien.DonDatPhong_DAO;
-import dao_CuaXien.KhachHang_DAO;
-import dao_CuaXien.KhuyenMai_DAO;
-import dao_CuaXien.LoaiPhong_DAO;
-import dao_CuaXien.Phong_DAO;
-import dao_CuaXien.phieuDichVu_DAO;
-import entity_CuaXien.ChiTietApDung;
-import entity_CuaXien.DichVu;
-import entity_CuaXien.DonDatPhong;
-import entity_CuaXien.KhachHang;
-import entity_CuaXien.KhuyenMai;
-import entity_CuaXien.LoaiPhong;
-import entity_CuaXien.PhieuDichVu;
-import entity_CuaXien.Phong;
+import dao.ChiTietApDung_DAO;
+import dao.DichVu_Dao;
+import dao.DonDatPhong_Dao;
+import dao.KhachHang_Dao;
+import dao.KhuyenMai_DAO;
+import dao.LoaiPhong_Dao;
+import dao.Phong_Dao;
+import dao.PhieuDichVu_DAO;
+import entity.ChiTietApDung;
+import entity.DichVu;
+import entity.DonDatPhong;
+import entity.KhachHang;
+import entity.KhuyenMai;
+import entity.LoaiPhong;
+import entity.PhieuDichVu;
+import entity.Phong;
 
 import java.util.Hashtable;
 
@@ -57,7 +57,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -87,7 +86,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	private JPanel hoaDonCT;
 	private JPanel body;
 	private JTextField tongTienPS;
-	private List<Object[]> danhSachPhongDuocChon = new ArrayList<>();
+	private ArrayList<Object[]> danhSachPhongDuocChon = new ArrayList<>();
 	private JTextField amountField;
 	private JLabel qrLabel;
 
@@ -461,7 +460,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 								"Xác nhận xóa", JOptionPane.YES_NO_OPTION);
 
 						if (choice == JOptionPane.YES_OPTION) {
-							phieuDichVu_DAO pdv = new phieuDichVu_DAO();
+							PhieuDichVu_DAO pdv = new PhieuDichVu_DAO();
 							boolean aBoolean = false; // Khởi tạo aBoolean
 
 							try {
@@ -838,8 +837,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 	public void hienThiDanhSachPhong(DonDatPhong ddp) {
 		String maDonDatPhong = ddp.getMaDonDatPhong();
-		Phong_DAO phongDAO = new Phong_DAO();
-		List<Phong> danhSachPhong = phongDAO.getPhongTheoMaDonDatPhong(maDonDatPhong);
+		Phong_Dao phongDAO = new Phong_Dao();
+		ArrayList<Phong> danhSachPhong = phongDAO.getPhongTheoMaDonDatPhong(maDonDatPhong);
 		DefaultTableModel model = (DefaultTableModel) table_phongTra.getModel();
 		model.setRowCount(0);
 		LocalDateTime ngayNhanPhong = ddp.getNgayNhanPhong();
@@ -882,13 +881,13 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		}
 	}
 
-	private phieuDichVu_DAO phieuDichVu_DAO = new phieuDichVu_DAO();
+	private PhieuDichVu_DAO phieuDichVu_DAO = new PhieuDichVu_DAO();
 
 	public void loadTableDichVu(String maDonDatPhong) {
 		DefaultTableModel model = (DefaultTableModel) table_dichVu.getModel();
 		model.setRowCount(0); // Xoá dữ liệu cũ
 
-		List<Object[]> danhSach = phieuDichVu_DAO.getLoaiDichVuVaThanhTienTheoMaDonDatPhong(maDonDatPhong);
+		ArrayList<Object[]> danhSach = phieuDichVu_DAO.getLoaiDichVuVaThanhTienTheoMaDonDatPhong(maDonDatPhong);
 		for (Object[] row : danhSach) {
 			String maPhieuDV = (String) row[0];
 			String tenLoai = (String) row[1];
@@ -978,7 +977,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				if (row >= 0) {
 					// Lấy mã phòng từ dòng được click
 					String maPhong = (String) table_TinhChiPhiPhatSinh.getValueAt(row, 0);
-					LoaiPhong_DAO loaip = new LoaiPhong_DAO();
+					LoaiPhong_Dao loaip = new LoaiPhong_Dao();
 					LoaiPhong loai = loaip.getLoaiPhongBySoPhong(maPhong);
 					// Truyền maDonDatPhong và số thứ tự dòng vào dialog
 					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,
@@ -1033,7 +1032,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		String chiPhiPhatString = tongTienPS.getText();
 		String phiDV = tongTienSDDV.getText();
 
-		KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
+		KhachHang_Dao khachHang_DAO = new KhachHang_Dao();
 		KhachHang khachHang = khachHang_DAO.layKhachHangTheoMaDonDatPhong(mahd);
 		String sdt = khachHang.getSdt();
 
@@ -1496,7 +1495,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				Math.round(321f * frameWidth / 1536f), Math.round(33f * frameHeight / 816f));
 		panel_2.add(tienCoc1);
 
-		DonDatPhong_DAO ddp_DAO = new DonDatPhong_DAO();
+		DonDatPhong_Dao ddp_DAO = new DonDatPhong_Dao();
 		DonDatPhong ddp = ddp_DAO.getDonDatPhongTheoMa(mahd);
 		double tiencoc = ddp.getTienCoc();
 		tienCoc1.setText(String.valueOf(tiencoc).replace(".0", ""));
@@ -1671,8 +1670,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 //			              setPhong
 				
 
-				List<String> maPhongs = layDanhSachMaPhong(table1);
-				Phong_DAO phong_DAO = new Phong_DAO();
+				ArrayList<String> maPhongs = layDanhSachMaPhong(table1);
+				Phong_Dao phong_DAO = new Phong_Dao();
 				for (String ma : maPhongs) {
 					System.out.println(ma);
 					phong_DAO.setTrangThaiPhong(ma, "Trống");
@@ -1681,7 +1680,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				
 //							setDonDatPhong
 				// Kiểm tra trước khi set trạng thái đơn đặt phòng
-				DonDatPhong_DAO ddDatPhong_DAO = new DonDatPhong_DAO();
+				DonDatPhong_Dao ddDatPhong_DAO = new DonDatPhong_Dao();
 				String maDon = maHoaDon1.getText();
 	            ddDatPhong_DAO.setTienCocVeKhong(maDon);
 				
@@ -1690,8 +1689,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 				}
 
 //							SetPhieuDichVu
-				List<Object> maDV = getMaDichVu(table_dichVu);
-				phieuDichVu_DAO pdv = new phieuDichVu_DAO();
+				ArrayList<Object> maDV = getMaDichVu(table_dichVu);
+				PhieuDichVu_DAO pdv = new PhieuDichVu_DAO();
 				for (Object maDichVu : maDV) {
 					pdv.capNhatTrangThai((String) maDichVu, "Đã thanh toán");
 				}
@@ -1731,7 +1730,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 						ex.printStackTrace();
 					}
 
-					List<Object[]> data = getTableData(table1);
+					ArrayList<Object[]> data = getTableData(table1);
 					try {
 						String filePath = "FileTestHoaDon/HoaDon_" + maHoaDon1.getText() + ".pdf";
 
@@ -1759,9 +1758,9 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 					}
 
 				} else if (tienMat.isSelected()) {
-					List<Object[]> data = getTableData(table1);
+					ArrayList<Object[]> data = getTableData(table1);
 					try {
-						String filePath = "C:\\Users\\TOILAXIEN\\OneDrive\\Máy tính\\HoaDon\\HoaDon_" + maHoaDon1.getText() + ".pdf";
+						String filePath = "FileTestHoaDon/HoaDon_" + maHoaDon1.getText() + ".pdf";
 
 						inHoaDon.taoHoaDon(
 						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
@@ -1888,7 +1887,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 	public void loadKhuyenMaiToComboBox(JComboBox<String> comboBox, LocalDate ngayTra, LocalDate ngayNhan,
 			double tongThanhToan) {
 		KhuyenMai_DAO dao = new KhuyenMai_DAO();
-		List<KhuyenMai> danhSachKM = dao.getKhuyenMaiTheoNgay(ngayNhan, ngayTra, tongThanhToan);
+		ArrayList<KhuyenMai> danhSachKM = dao.getKhuyenMaiTheoNgay(ngayNhan, ngayTra, tongThanhToan);
 
 		comboBox.removeAllItems(); // Xóa các item cũ
 //		comboBox.addItem("Không");
@@ -1908,7 +1907,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		if (number == 0)
 			return "không";
 
-		List<Integer> groups = new ArrayList<>();
+		ArrayList<Integer> groups = new ArrayList<>();
 		while (number > 0) {
 			groups.add(number % 1000);
 			number /= 1000;
@@ -2063,8 +2062,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 //		}
 //	}
 
-	public static List<Object[]> getTableData(JTable table) {
-		List<Object[]> data = new ArrayList<>();
+	public static ArrayList<Object[]> getTableData(JTable table) {
+		ArrayList<Object[]> data = new ArrayList<>();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		int rowCount = model.getRowCount();
 		int columnCount = model.getColumnCount();
@@ -2080,8 +2079,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		return data;
 	}
 
-	public static List<Object> getMaDichVu(JTable table) {
-		List<Object> maDichVuList = new ArrayList<>();
+	public static ArrayList<Object> getMaDichVu(JTable table) {
+		ArrayList<Object> maDichVuList = new ArrayList<>();
 
 		// Lấy model của bảng
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -2099,8 +2098,8 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		return maDichVuList;
 	}
 
-	public List<String> layDanhSachMaPhong(JTable table) {
-		List<String> danhSachMaPhong = new ArrayList<>();
+	public ArrayList<String> layDanhSachMaPhong(JTable table) {
+		ArrayList<String> danhSachMaPhong = new ArrayList<>();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		int rowCount = model.getRowCount();
 

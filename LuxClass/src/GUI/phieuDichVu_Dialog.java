@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -25,8 +25,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import dao_CuaXien.DichVu_DAO;
-import entity_CuaXien.DichVu;
+import dao.DichVu_Dao;
+import entity.DichVu;
 
 public class phieuDichVu_Dialog extends JDialog {
 
@@ -193,12 +193,12 @@ public class phieuDichVu_Dialog extends JDialog {
 		tongTienDV.setBounds(415, 466, 321, 27);
 		phieuDichVu.add(tongTienDV);
 	}
-	private DichVu_DAO dichVuDAO = new DichVu_DAO(); // thêm ở đầu class
+	private DichVu_Dao dichVuDAO = new DichVu_Dao(); // thêm ở đầu class
 	public void hienThiChiTietDichVu(String maPhieu, String maLoai) {
 		DefaultTableModel model = (DefaultTableModel) table_PhieuDichVu.getModel();
 		model.setRowCount(0); // clear dữ liệu cũ
 
-        List<DichVu> danhSach = dichVuDAO.getDichVuTheoPhieuVaLoai(maPhieu, maLoai);
+        ArrayList<DichVu> danhSach = dichVuDAO.getDichVuTheoPhieuVaLoai(maPhieu, maLoai);
 		double tongTien = 0;
 
 		for (DichVu dv : danhSach) {
