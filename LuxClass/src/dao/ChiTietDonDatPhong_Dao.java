@@ -368,5 +368,27 @@ public class ChiTietDonDatPhong_Dao {
 
 		return result;
 	}
+	
+	public ArrayList<String> getDanhSachSoPhongTheoDon(String maDonDatPhong) {
+	    ArrayList<String> danhSach = new ArrayList<>();
+	    String sql = "SELECT soPhong FROM ChiTietDonDatPhong WHERE maDonDatPhong = ?";
+
+	    try (Connection con = ConnectDB.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, maDonDatPhong);
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            danhSach.add(rs.getString("soPhong"));
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return danhSach;
+	}
+
 
 }
