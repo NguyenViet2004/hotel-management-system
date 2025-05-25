@@ -122,11 +122,11 @@ public class phieuDichVu_Dialog extends JDialog {
 			new Object[][] {
 			},
 			new String[] {
-				"M\u00E3 d\u1ECBch v\u1EE5", "T\u00EAn d\u1ECBch v\u1EE5", "Gi\u00E1 d\u1ECBch v\u1EE5"
+				"M\u00E3 d\u1ECBch v\u1EE5", "T\u00EAn d\u1ECBch v\u1EE5", "Gi\u00E1 d\u1ECBch v\u1EE5", "Số lượng"
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
-				false, false, false
+				false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -209,11 +209,12 @@ public class phieuDichVu_Dialog extends JDialog {
 			Object[] row = {
 				dv.getMaDV(),
 				dv.getTenDV(),
-				String.format("%,.0f", dv.getGiaDV())
+				String.format("%,.0f", dv.getGiaDV()),
+				ctpdv.getSoLuong()
 			};
 			model.addRow(row);
 			soluong +=ctpdv.getSoLuong();
-			tongTien += (dv.getGiaDV()*soluong);
+			tongTien += (dv.getGiaDV()*ctpdv.getSoLuong());
 		}
 
 		soLuongDichVu.setText(String.valueOf(soluong));

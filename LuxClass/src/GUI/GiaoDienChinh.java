@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import TraPhong_CuaXien.DatDichVu;
 import TraPhong_CuaXien.QuanLyKhachHang;
 
 import java.awt.event.ActionEvent;
@@ -202,8 +203,14 @@ public class GiaoDienChinh extends JFrame{
         Menupanel.add(QuanLyKhachHang);
 
         JMenuItem QuanLyDatDichVu = createMenuItem("Quản lý đặt dịch vụ", w.apply(20), h.apply(140), w.apply(285), h.apply(60));
+        QuanLyDatDichVu.addActionListener(e -> {
+			DatDichVu dialog = new DatDichVu();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+        });
         Menupanel.add(QuanLyDatDichVu);
 
+        
 //        JLabel lblQuanLyCa = createMenuLabel("Quản lý ca", w.apply(30), h.apply(210), w.apply(248), h.apply(60));
 //        Menupanel.add(lblQuanLyCa);
 

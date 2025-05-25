@@ -179,5 +179,30 @@ public class PhieuDichVu_DAO {
             return false;
         }
     }
+	public boolean kiemTraTonTaiPhieuDichVu(String maPhieuDichVu) {
+	    Connection con = ConnectDB.getConnection();
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        String sql = "SELECT 1 FROM PhieuDichVu WHERE maPhieuDichVu = ?";
+	        stmt = con.prepareStatement(sql);
+	        stmt.setString(1, maPhieuDichVu);
+	        rs = stmt.executeQuery();
+
+	        return rs.next(); // nếu có kết quả => tồn tại => true
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (stmt != null) stmt.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return false; // lỗi hoặc không có => false
+	}
 
 }

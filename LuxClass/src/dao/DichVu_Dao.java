@@ -149,4 +149,44 @@ public class DichVu_Dao {
 
         return ds;
     }
+    public ArrayList<DichVu> getDichVuTheoLoai(String maLoaiDV) {
+        ArrayList<DichVu> ds = new ArrayList<>();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+        	String sql = "SELECT dv.maDV, dv.tenDV, dv.moTa, dv.giaDV, "
+        	           + "ldv.maLoai, ldv.tenLoai "
+        	           + "FROM DichVu dv "
+        	           + "JOIN LoaiDichVu ldv ON dv.maLoai = ldv.maLoai "
+        	           + "WHERE ldv.maLoai = ?";
+
+
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maLoaiDV);
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                String maDV = rs.getString("maDV");
+                String tenDV = rs.getString("tenDV"); 
+                String moTa = rs.getString("moTa");
+                double donGia = rs.getDouble("giaDV"); 
+
+                String maLoai = rs.getString("maLoai"); 
+                String tenLoai = rs.getString("tenLoai"); 
+                LoaiDichVu loai = new LoaiDichVu(maLoai, tenLoai);
+
+                DichVu dv = new DichVu(maDV, tenDV, moTa, donGia, loai);
+                ds.add(dv);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try { if (stmt != null) stmt.close(); if (rs != null) rs.close(); } catch (SQLException e) {}
+        }
+
+        return ds;
+    }
+
 }
