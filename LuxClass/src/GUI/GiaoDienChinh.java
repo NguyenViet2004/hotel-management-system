@@ -17,15 +17,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.GeneralPath;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.Timer;
+
+import TraPhong_CuaXien.QuanLyKhachHang;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
@@ -47,7 +52,7 @@ public class GiaoDienChinh extends JFrame{
     private JLabel ngaythangnam;
     private JLabel giophutgiay;
     private Timer timerClock; // Timer cho đồng hồ
-
+    
     /**
      * Launch the application.
      */
@@ -146,11 +151,23 @@ public class GiaoDienChinh extends JFrame{
         help.setBorderPainted(false);
         Header.add(help);
 
-        JLabel lblNewLabel_1 = new JLabel("New label");
-        lblNewLabel_1.setBounds(w.apply(1466), h.apply(29), w.apply(45), h.apply(13));
+        JLabel lblNewLabel_1 = new JLabel();
+     // Tạo ImageIcon từ file ảnh gốc
+        ImageIcon user = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg");
+
+        // Lấy đối tượng Image và resize nó
+        Image resizedImage = user.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH);
+
+        // Tạo lại ImageIcon từ ảnh đã resize
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+        // Gán icon vào label
+        lblNewLabel_1.setIcon(resizedIcon);
+
+        lblNewLabel_1.setBounds(w.apply(1466), h.apply(29), w.apply(45), h.apply(45));
         Header.add(lblNewLabel_1);
 
-        JLabel lblNewLabel_2 = new JLabel("New label");
+        JLabel lblNewLabel_2 = new JLabel("Lễ tân");
         lblNewLabel_2.setBounds(w.apply(1466), h.apply(74), w.apply(45), h.apply(13));
         Header.add(lblNewLabel_2);
 
@@ -177,13 +194,18 @@ public class GiaoDienChinh extends JFrame{
         Menupanel.add(QuanLyDatPhong);
 
         JMenuItem QuanLyKhachHang = createMenuItem("Quản lý khách hàng", w.apply(20), h.apply(70), w.apply(285), h.apply(60));
+        QuanLyKhachHang.addActionListener(e ->{
+        	QuanLyKhachHang dialog = new QuanLyKhachHang();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+        });
         Menupanel.add(QuanLyKhachHang);
 
         JMenuItem QuanLyDatDichVu = createMenuItem("Quản lý đặt dịch vụ", w.apply(20), h.apply(140), w.apply(285), h.apply(60));
         Menupanel.add(QuanLyDatDichVu);
 
-        JLabel lblQuanLyCa = createMenuLabel("Quản lý ca", w.apply(30), h.apply(210), w.apply(248), h.apply(60));
-        Menupanel.add(lblQuanLyCa);
+//        JLabel lblQuanLyCa = createMenuLabel("Quản lý ca", w.apply(30), h.apply(210), w.apply(248), h.apply(60));
+//        Menupanel.add(lblQuanLyCa);
 
         JPanel DongHoPannel = new JPanel();
         DongHoPannel.setBackground(Color.WHITE);
@@ -456,5 +478,6 @@ public class GiaoDienChinh extends JFrame{
     public void showWindow() {
         setVisible(true);
     }
+
 
 }

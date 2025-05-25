@@ -227,10 +227,20 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 
 		JLabel lblNewLabel_8 = new JLabel("New label");
 		lblNewLabel_8.setBounds(Math.round(frameWidth * (1464f / 1536f)), Math.round(frameHeight * (20f / 816f)),
-				Math.round(frameWidth * (45f / 1536f)), Math.round(frameHeight * (13f / 816f)));
+				Math.round(frameWidth * (45f / 1536f)), Math.round(frameHeight * (45f / 816f)));
+		  ImageIcon user = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg");
+
+	        // Lấy đối tượng Image và resize nó
+	        Image resizedImage = user.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH);
+
+	        // Tạo lại ImageIcon từ ảnh đã resize
+	        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+
+	        // Gán icon vào label
+	        lblNewLabel_8.setIcon(resizedIcon);
 		Header.add(lblNewLabel_8);
 
-		JLabel lblNewLabel_9 = new JLabel("New label");
+		JLabel lblNewLabel_9 = new JLabel("Lễ tân");
 		lblNewLabel_9.setBounds(Math.round(frameWidth * (1464f / 1536f)), Math.round(frameHeight * (62f / 816f)),
 				Math.round(frameWidth * (45f / 1536f)), Math.round(frameHeight * (13f / 816f)));
 		Header.add(lblNewLabel_9);
