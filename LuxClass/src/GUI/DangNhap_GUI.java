@@ -38,6 +38,7 @@ import connectDB.ConnectDB;
 import dao.TaiKhoan_Dao;
 import entity.NhanVien;
 import entity.TaiKhoan;
+import viet.GDQuanLy_Gui;
 
 import java.awt.BorderLayout;
 import javax.swing.JCheckBox;
@@ -256,9 +257,9 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 				String chucVu= tk.getNhanVien().getChucVu();
 				System.out.println("Chức vụ: " + chucVu);
 				if(chucVu.equals("Quản lý")) {
-					//Mở giao diện quản lý
 					this.dispose();
-					new QuanLyDatPhong_GUI().setVisible(true);
+					GDQuanLy_Gui gdQuanLy = new GDQuanLy_Gui();
+					gdQuanLy.showWindow();
 				}else if (chucVu.equals("Lễ tân")) {
 					  // <- thêm dòng này 
 	                this.dispose();

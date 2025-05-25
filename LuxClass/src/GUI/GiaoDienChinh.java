@@ -271,23 +271,23 @@ public class GiaoDienChinh extends JFrame{
             }
         });
 
-        JPanel DangSuatpanel = new CustomRoundedPanel(15, 15, 15, 15);
-        DangSuatpanel.setBackground(Color.WHITE);
-        DangSuatpanel.setBounds(w.apply(5), h.apply(610), w.apply(330), h.apply(80));
-        DangSuatpanel.setBorder(new RoundedBorder(20));
-        DangSuatpanel.setLayout(null);
-        Body.add(DangSuatpanel);
+        JPanel DangXuatpanel = new CustomRoundedPanel(15, 15, 15, 15);
+        DangXuatpanel.setBackground(Color.WHITE);
+        DangXuatpanel.setBounds(w.apply(5), h.apply(610), w.apply(330), h.apply(80));
+        DangXuatpanel.setBorder(new RoundedBorder(20));
+        DangXuatpanel.setLayout(null);
+        Body.add(DangXuatpanel);
 
-        JButton DangSuat = new JButton("Đăng Suất");
-        DangSuat.setBounds(w.apply(30), h.apply(10), w.apply(285), h.apply(59));
-        DangSuat.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/exit.png"));
-        DangSuat.setHorizontalAlignment(SwingConstants.LEFT);
-        DangSuat.setFont(new Font("Times New Roman", Font.BOLD, h.apply(28)));
-        DangSuat.setBackground(Color.WHITE);
-        DangSuat.setBorderPainted(false);
-        DangSuat.setOpaque(false);
-        DangSuatpanel.add(DangSuat);
-        DangSuat.addActionListener(e -> {
+        JButton DangXuat = new JButton("Đăng Xuất");
+        DangXuat.setBounds(w.apply(30), h.apply(10), w.apply(285), h.apply(59));
+        DangXuat.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/exit.png"));
+        DangXuat.setHorizontalAlignment(SwingConstants.LEFT);
+        DangXuat.setFont(new Font("Times New Roman", Font.BOLD, h.apply(28)));
+        DangXuat.setBackground(Color.WHITE);
+        DangXuat.setBorderPainted(false);
+        DangXuat.setOpaque(false);
+        DangXuatpanel.add(DangXuat);
+        DangXuat.addActionListener(e -> {
         	this.dispose();
         	new DangNhap_GUI();
         });

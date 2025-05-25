@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
+import GUI.DangNhap_GUI;
 import GUI.RoundedBorder;
 
 import java.awt.*;
@@ -13,7 +14,7 @@ import java.awt.geom.GeneralPath;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class GDQuanLy_Gui {
+public class GDQuanLy_Gui{
     private JFrame frame;
     private JPanel mainPanel;
     private CardLayout cardLayout;
@@ -150,22 +151,26 @@ public class GDQuanLy_Gui {
         giophutgiay.setBounds(94, 54, 183, 35);
         DongHoPannel.add(giophutgiay);
 
-        JPanel DangSuatpanel = new CustomRoundedPanel(15, 15, 15, 15);
-        DangSuatpanel.setBackground(Color.WHITE);
-        DangSuatpanel.setBounds(5, 610, (int) (frameWidth * 0.215), (int) (frameHeight * 0.1));
-        DangSuatpanel.setBorder(new RoundedBorder(20));
-        DangSuatpanel.setLayout(null);
-        Body.add(DangSuatpanel);
+        JPanel DangXuatpanel = new CustomRoundedPanel(15, 15, 15, 15);
+        DangXuatpanel.setBackground(Color.WHITE);
+        DangXuatpanel.setBounds(5, 610, (int) (frameWidth * 0.215), (int) (frameHeight * 0.1));
+        DangXuatpanel.setBorder(new RoundedBorder(20));
+        DangXuatpanel.setLayout(null);
+        Body.add(DangXuatpanel);
 
-        JButton DangSuat = new JButton("Đăng Xuất");
-        DangSuat.setBounds(30, 10, 285, 59);
-        DangSuat.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/exit.png"));
-        DangSuat.setHorizontalAlignment(SwingConstants.LEFT);
-        DangSuat.setFont(new Font("Times New Roman", Font.BOLD, 28));
-        DangSuat.setBackground(Color.WHITE);
-        DangSuat.setBorderPainted(false);
-        DangSuat.setOpaque(false);
-        DangSuatpanel.add(DangSuat);
+        JButton DangXuat = new JButton("Đăng Xuất");
+        DangXuat.setBounds(30, 10, 285, 59);
+        DangXuat.setIcon(new ImageIcon("img/HinhAnhGiaoDienChinh/exit.png"));
+        DangXuat.setHorizontalAlignment(SwingConstants.LEFT);
+        DangXuat.setFont(new Font("Times New Roman", Font.BOLD, 28));
+        DangXuat.setBackground(Color.WHITE);
+        DangXuat.setBorderPainted(false);
+        DangXuat.setOpaque(false);
+        DangXuatpanel.add(DangXuat);
+        DangXuat.addActionListener(e -> {
+        	frame.dispose();
+        	new DangNhap_GUI();
+        });
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -187,7 +192,7 @@ public class GDQuanLy_Gui {
         }
     }
 
-    private void addMenuButton(JPanel panel, String text, int y, ActionListener action) {
+	private void addMenuButton(JPanel panel, String text, int y, ActionListener action) {
         JButton button = new JButton(text);
         button.setBounds(20, y, 285, 50);
         button.setFont(new Font("Times New Roman", Font.BOLD, 24));
@@ -243,5 +248,9 @@ public class GDQuanLy_Gui {
             path.closePath();
             g2.fill(path);
         }
+
+    }
+    public void showWindow() {
+        frame.setVisible(true);
     }
 }
