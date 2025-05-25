@@ -25,7 +25,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import dao.ChiTietPhieuDichVu_DAO;
 import dao.DichVu_Dao;
+import entity.ChiTietPhieuDichVu;
 import entity.DichVu;
 
 public class phieuDichVu_Dialog extends JDialog {
@@ -200,18 +202,21 @@ public class phieuDichVu_Dialog extends JDialog {
 
         ArrayList<DichVu> danhSach = dichVuDAO.getDichVuTheoPhieuVaLoai(maPhieu, maLoai);
 		double tongTien = 0;
-
+		int soluong=0;
+		ChiTietPhieuDichVu_DAO ctpdv_DAO= new ChiTietPhieuDichVu_DAO();
 		for (DichVu dv : danhSach) {
+			ChiTietPhieuDichVu ctpdv= ctpdv_DAO.getChiTietPhieuDichVu(maPhieu, dv.getMaDV());
 			Object[] row = {
 				dv.getMaDV(),
 				dv.getTenDV(),
 				String.format("%,.0f", dv.getGiaDV())
 			};
 			model.addRow(row);
-			tongTien += dv.getGiaDV();
+			soluong +=ctpdv.getSoLuong();
+			tongTien += (dv.getGiaDV()*soluong);
 		}
 
-		soLuongDichVu.setText(String.valueOf(danhSach.size()));
+		soLuongDichVu.setText(String.valueOf(soluong));
 		tongTienDV.setText(String.format("%,.0f", tongTien));
 	}
 
