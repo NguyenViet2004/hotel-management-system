@@ -185,10 +185,11 @@ go
 INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
 VALUES 
 ('2025LT001', N'Nguyễn Thị Xuyến', '1990-01-01', '0981234567', N'Hà Nội', '123456789012', N'Lễ tân', N'Sáng'),
-('2025KT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Lễ tân', N'Chiều');
+('2025LT002', N'Phạm Văn Yến', '1988-05-12', '0972345678', N'Đà Nẵng', '123456789013', N'Lễ tân', N'Chiều'),
+('2025QL001', N'Lê Phan Trung', '1988-05-12', '0972345679', N'Hồ Chí Minh', '123456789014', N'Quản lý', N'Chiều');
 go
 INSERT INTO TaiKhoan (tenDangNhap, matKhau, trangThai, maNV)
-VALUES ('nv001', '123456', N'Hoạt động', '2025LT001');
+VALUES ('nv001', '123456', N'Hoạt động', '2025LT001'),('ql001', '123456', N'Hoạt động', '2025QL001');
 go
 -- Chèn dữ liệu vào bảng LoaiDichVu
 INSERT INTO LoaiDichVu (maLoai, tenLoai)
