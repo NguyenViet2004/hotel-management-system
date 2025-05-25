@@ -2,10 +2,13 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import connectDB.ConnectDB;
 import entity.ChiTietPhieuDichVu;
+import entity.DichVu;
+import entity.PhieuDichVu;
 
 public class ChiTietPhieuDichVu_DAO {
 
@@ -42,5 +45,33 @@ public class ChiTietPhieuDichVu_DAO {
             e.printStackTrace();
             return false;
         }
+    }
+    public ChiTietPhieuDichVu getChiTietPhieuDichVu(String maPhieuDichVu, String maDichVu) {
+        ChiTietPhieuDichVu chiTiet = null;
+
+        String sql = "SELECT soLuong FROM ChiTietPhieuDichVu WHERE maPhieuDichVu = ? AND maDichVu = ?";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, maPhieuDichVu);
+            stmt.setString(2, maDichVu);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int soLuong = rs.getInt("soLuong");
+
+                PhieuDichVu phieu = new PhieuDichVu(maPhieuDichVu); // cần constructor phù hợp
+                DichVu dv = new DichVu(maDichVu);                   // cần constructor phù hợp
+
+                chiTiet = new ChiTietPhieuDichVu(phieu, dv, soLuong);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return chiTiet;
     }
 }

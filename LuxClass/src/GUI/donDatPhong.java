@@ -401,6 +401,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 			}
 		};
 		table_dichVu.setModel(model_dv);
+		table_dichVu.getColumnModel().getColumn(0).setPreferredWidth(Math.round(130f)); // Ví dụ: 15% chiều rộng
 		table_dichVu.setShowVerticalLines(false);
 		table_dichVu.setShowHorizontalLines(false);
 		table_dichVu.setShowGrid(false);

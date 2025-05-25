@@ -33,6 +33,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.UIManager;
 
+import TraPhong_CuaXien.quenMatKhau_dialog;
 import connectDB.ConnectDB;
 import dao.TaiKhoan_Dao;
 import entity.NhanVien;
@@ -40,6 +41,8 @@ import entity.TaiKhoan;
 
 import java.awt.BorderLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+
 import java.awt.SystemColor;
 
 public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener {
@@ -108,6 +111,19 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 	    
 	    jButton_ForgotPassword.setBounds(570, 367, 150, 34); // Điều chỉnh vị trí
 	    jButton_ForgotPassword.setBorderPainted(false);
+	    jButton_ForgotPassword.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				dispose();
+				quenMatKhau_dialog dialog = new quenMatKhau_dialog();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				
+			}
+		});
+	    
 	    jPanel_Login.add(jButton_ForgotPassword);
 
 		jButton_Login = new JButton("Đăng nhập");
