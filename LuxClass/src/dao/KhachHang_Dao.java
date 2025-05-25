@@ -237,5 +237,19 @@ public class KhachHang_Dao {
 	        return khachHang;
 	    }
 
+	 public boolean suaCCCD(KhachHang kh) {
+		    try (Connection con = ConnectDB.getConnection()) {
+		        String sql = "UPDATE KhachHang SET soCCCD = ? WHERE maKH = ?";
+		        PreparedStatement stmt = con.prepareStatement(sql);
+		        stmt.setString(1, kh.getSoCCCD());
+		        stmt.setString(2, kh.getMaKH());
+
+		        int n = stmt.executeUpdate();
+		        return n > 0;
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        return false;
+		    }
+		}
 
 }
