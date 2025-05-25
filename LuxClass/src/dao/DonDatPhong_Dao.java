@@ -450,5 +450,32 @@ public class DonDatPhong_Dao {
 
 	    return danhSach;
 	}
+	
+	public LocalDateTime layNgayNhanPhong(String maDonDatPhong) {
+	    String sql = """
+	        SELECT ngayNhanPhong FROM DonDatPhong WHERE maDonDatPhong = ?
+	    """;
+
+	    try (Connection con = ConnectDB.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, maDonDatPhong);
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            Timestamp ts = rs.getTimestamp("ngayNhanPhong");
+	            if (ts != null) {
+	                return ts.toLocalDateTime(); 
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null; 
+	}
+
+
 
 }
