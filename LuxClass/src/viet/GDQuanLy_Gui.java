@@ -185,7 +185,7 @@ public class GDQuanLy_Gui{
         mainPanel.add(new JLabel("Quản lý dịch vụ"), "QLDV");
         mainPanel.add(new JLabel("Quản lý phòng"), "QLP");
         mainPanel.add(new QuanLyKhuyenMai_Panel(), "QLKM");
-        mainPanel.add(new JLabel("Thống kê doanh thu"), "TKDT");
+        mainPanel.add(new ThongKeDoanhThuGUI(), "TKDT");
 
         if (!menuButtons.isEmpty()) {
             menuButtons.get(0).doClick();
