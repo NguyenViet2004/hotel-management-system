@@ -1,13 +1,15 @@
+// File: QuanLyTaiKhoan_Panel.java
 package viet;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 import entity.NhanVien;
 import entity.TaiKhoan;
+import dao.TaiKhoan_Dao;
+import dao.NhanVien_Dao;
 
 public class QuanLyTaiKhoan_Panel extends JPanel {
     private JTable table;
@@ -18,33 +20,50 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
 
     public QuanLyTaiKhoan_Panel() {
         setLayout(new BorderLayout());
-        add(createMainPanel(), BorderLayout.CENTER);
-    }
 
-    private JPanel createMainPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(Color.WHITE);
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(null);
+        contentPanel.setBackground(new Color(240, 240, 240));
+        add(contentPanel, BorderLayout.CENTER);
 
-        JLabel title = new JLabel("Quản lý tài khoản", SwingConstants.LEFT);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        panel.add(title, BorderLayout.NORTH);
+        JLabel lblTitle = new JLabel("Quản lý tài khoản");
+        lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        lblTitle.setBounds(450, 0, 300, 30);
+        contentPanel.add(lblTitle);
+
+        JPanel tablePanel = new JPanel(null);
+        tablePanel.setBounds(30, 60, 1140, 580);
+        tablePanel.setBackground(Color.WHITE);
+        contentPanel.add(tablePanel);
+
+        JLabel lblDanhSach = new JLabel("Danh sách tài khoản nhân viên");
+        lblDanhSach.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        lblDanhSach.setBounds(400, 10, 400, 30);
+        tablePanel.add(lblDanhSach);
+
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 50, 1100, 500);
+        tablePanel.add(scrollPane);
 
         String[] columns = {"Mã NV", "Họ tên", "Chức vụ", "Tài khoản", "Trạng thái", "Chức năng"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
-        table.setRowHeight(40);
-        table.setFont(new Font("Arial", Font.PLAIN, 14));
-        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        table.setRowHeight(30);
+        table.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 
-        loadTableData();
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("Arial", Font.BOLD, 15));
+        header.setPreferredSize(new Dimension(header.getWidth(), 35));
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
 
         table.getColumn("Chức năng").setCellRenderer(new ButtonRenderer());
-        table.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), dsNhanVien, tkDao));
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        return panel;
+        scrollPane.setViewportView(table);
+        loadTableData();
     }
 
     private void loadTableData() {
@@ -54,9 +73,10 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
             String tenTK = (tk != null) ? tk.getTenDangNhap() : "Chưa có";
             String trangThai = (tk != null) ? tk.getTrangThai() : "";
             model.addRow(new Object[]{
-                    nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), tenTK, trangThai, "Quản lý"
+                nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), tenTK, trangThai, "Quản lý"
             });
         }
+        table.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), dsNhanVien, tkDao));
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
