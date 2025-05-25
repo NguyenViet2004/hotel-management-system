@@ -1,6 +1,7 @@
 package Duong;
 
 import javax.imageio.ImageIO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,7 +10,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import GUI.QuanLyDatPhong_GUI;
+import Duong.QuanLyDatPhong_GUI;
 import dao.ChiTietApDung_DAO;
 import dao.DichVu_Dao;
 import dao.DonDatPhong_Dao;
@@ -1747,17 +1748,23 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 						System.err.println("Lỗi khi tạo hóa đơn:");
 						e1.printStackTrace();
 					}
-					int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo",
-					        JOptionPane.OK_CANCEL_OPTION);
+					int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công. Đặt phòng tiếp?", "Thông báo", JOptionPane.OK_CANCEL_OPTION);
 
 					if (option == JOptionPane.OK_OPTION) {
-					    Window window = SwingUtilities.getWindowAncestor(thanhToan); // lấy cửa sổ cha của component thanhToan
+					    Window window = SwingUtilities.getWindowAncestor(thanhToan); // Lấy dialog hiện tại
 					    if (window != null) {
-					        window.dispose(); // đóng cửa sổ hiện tại
+					        window.dispose(); // Đóng dialog hiện tại
 					    }
 
-					
+					    // Lấy JFrame cha
+					    JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(thanhToan);
+					    
+					    // Mở dialog mới
+					    Duong.DatPhong_GUI datPhongDialog = new DatPhong_GUI(parentFrame);
+					    datPhongDialog.setLocationRelativeTo(parentFrame);
+					    datPhongDialog.setVisible(true);
 					}
+
 				} else if (tienMat.isSelected()) {
 					ArrayList<Object[]> data = getTableData(table1);
 					try {
