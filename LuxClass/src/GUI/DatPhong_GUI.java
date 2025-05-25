@@ -2112,7 +2112,9 @@ public class DatPhong_GUI extends JDialog {
 		                    coLoi = true;
 		                    break;
 		                }
-		                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đang ở");
+				        if (kieuDat.equals("Trực tiếp")) {
+			                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đang ở");
+				        } 
 		            }
 
 		            if (coLoi) {
