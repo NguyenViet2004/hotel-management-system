@@ -237,5 +237,37 @@ public class TaiKhoan_Dao {
         }
         return n > 0;
     }
+
+    public boolean capNhatTaiKhoan(String mk, String tenDangNhap) throws SQLException {
+        String sql = "UPDATE TaiKhoan SET matKhau = ? WHERE tenDangNhap = ?";
+        try (  Connection con = ConnectDB.getConnection();
+        		PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, mk);
+            stmt.setString(2, tenDangNhap);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        }
+    }
+
+    public boolean kiemTraMatKhauCu(String tenDangNhap, String matKhauMoi) {
+        String sql = "SELECT 1 FROM TaiKhoan WHERE tenDangNhap = ? AND matKhau = ?";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+
+            stmt.setString(1, tenDangNhap);
+            stmt.setString(2, matKhauMoi);  // So sánh mật khẩu mới với mật khẩu cũ trong DB
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();  // Nếu có, nghĩa là mật khẩu mới bị trùng
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     
 }

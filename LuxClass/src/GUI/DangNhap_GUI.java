@@ -255,17 +255,23 @@ public class DangNhap_GUI extends JFrame implements KeyListener, ActionListener 
 				TaiKhoan_Dao tK= new TaiKhoan_Dao();
 				TaiKhoan tk= tK.getTaiKhoan(tkNhapVao, mkNhapVao);
 				String chucVu= tk.getNhanVien().getChucVu();
+				
 				System.out.println("Chức vụ: " + chucVu);
-				if(chucVu.equals("Quản lý")) {
-					this.dispose();
-					GDQuanLy_Gui gdQuanLy = new GDQuanLy_Gui();
-					gdQuanLy.showWindow();
-				}else if (chucVu.equals("Lễ tân")) {
-					  // <- thêm dòng này 
-	                this.dispose();
-	                GiaoDienChinh giaoDien = new GiaoDienChinh();
-	                giaoDien.showWindow();
+				if(tk.getTrangThai().equals("Vô hiệu hóa")) {
+					JOptionPane.showMessageDialog(null, "Tài khoản đã bị vô hiệu hóa!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
+				}else {
+					if(chucVu.equals("Quản lý")) {
+						this.dispose();
+						GDQuanLy_Gui gdQuanLy = new GDQuanLy_Gui();
+						gdQuanLy.showWindow();
+					}else if (chucVu.equals("Lễ tân")) {
+						  // <- thêm dòng này 
+		                this.dispose();
+		                GiaoDienChinh giaoDien = new GiaoDienChinh();
+		                giaoDien.showWindow();
+					}
 				}
+
 			}else {
 		        // Trường hợp không tìm thấy tài khoản
 		        JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
