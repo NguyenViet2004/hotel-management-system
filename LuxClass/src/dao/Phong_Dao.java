@@ -439,6 +439,13 @@ public class Phong_Dao {
             return false;
         }
     }
+    public boolean existsSoPhong(String soPhong, String excludeSoPhong) throws Exception {
+        // Implementation: Check if soPhong exists in the database, excluding excludeSoPhong
+        // Example SQL: SELECT COUNT(*) FROM Phong WHERE soPhong = ? AND soPhong != ?
+       ArrayList<Phong> list = getAllPhongNew();
+        return list.stream().anyMatch(p -> p.getSoPhong().equalsIgnoreCase(soPhong) && 
+                (excludeSoPhong == null || !p.getSoPhong().equalsIgnoreCase(excludeSoPhong)));
+    }
 
 }
    
