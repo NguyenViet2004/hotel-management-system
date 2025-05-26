@@ -274,6 +274,7 @@ public class LoaiPhong_Dao {
         }
     }
     public boolean existsTenLoaiPhong(String tenLoai, String excludeMaLoai) throws Exception {
+//    	
         // Implementation: Check if room type name exists (excluding given maLoaiPhong)
         ArrayList<LoaiPhong> list = getAllLoaiPhongNew();
         return list.stream().anyMatch(lp -> lp.getTenLoai().equalsIgnoreCase(tenLoai) && !lp.getMaLoaiPhong().equals(excludeMaLoai));
