@@ -1,7 +1,9 @@
 package doiPhong;
 
 import dao.ChiTietDonDatPhong_Dao;
+import dao.ChiTietSuDungPhong_Dao;
 import dao.DonDatPhong_Dao;
+import entity.ChiTietSuDungPhong;
 import entity.DonDatPhong;
 
 

@@ -1,4 +1,4 @@
-package doiPhong;
+package entity;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,7 @@
-package doiPhong;
+package dao;
 
 import connectDB.ConnectDB;
+import entity.ChiTietSuDungPhong;
 
 import java.sql.*;
 import java.time.LocalDateTime;
