@@ -38,7 +38,7 @@ import connectDB.ConnectDB;
 import dao.TaiKhoan_Dao;
 import entity.NhanVien;
 import entity.TaiKhoan;
-import viet.GDQuanLy_Gui;
+import quanLy.GDQuanLy_Gui;
 
 import java.awt.BorderLayout;
 import javax.swing.JCheckBox;

@@ -1,5 +1,5 @@
 // File: GDQuanLy_Gui.java
-package viet;
+package quanLy;
 
 import javax.swing.*;
 import javax.swing.Timer;

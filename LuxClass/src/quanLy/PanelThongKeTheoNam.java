@@ -1,5 +1,5 @@
-// File: PanelThongKeTheoNgay.java
-package viet;
+// File: PanelThongKeTheoNam.java
+package quanLy;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -11,24 +11,22 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import org.jdatepicker.impl.*;
 import connectDB.ConnectDB;
 
-public class PanelThongKeTheoNgay extends JPanel {
+public class PanelThongKeTheoNam extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private JLabel lblTongDoanhThu;
-    private JDatePickerImpl datePicker;
+    private JComboBox<Integer> cboNam;
     private JPanel contentPanel;
     private CardLayout cardLayout;
     JScrollPane tablePanel;
     private JPanel chartPanel;
     private final DecimalFormat currencyFormat = new DecimalFormat("#,### VND");
-    private final DateTimeFormatter displayFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private int selectedYear;
+    private long tongDoanhThuNam;
 
-    private LocalDate currentSelectedDate;
-
-    public PanelThongKeTheoNgay() {
+    public PanelThongKeTheoNam() {
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(15, 20, 15, 20));
         setBackground(Color.WHITE);
@@ -36,11 +34,9 @@ public class PanelThongKeTheoNgay extends JPanel {
         add(createTopPanel(), BorderLayout.NORTH);
         add(createContentPanel(), BorderLayout.CENTER);
 
-        LocalDate today = LocalDate.now();
-        currentSelectedDate = today;
-        datePicker.getModel().setDate(today.getYear(), today.getMonthValue() - 1, today.getDayOfMonth());
-        datePicker.getModel().setSelected(true);
-        loadData(today);
+        selectedYear = LocalDate.now().getYear();
+        cboNam.setSelectedItem(selectedYear);
+        loadData(selectedYear);
     }
 
     private JPanel createTopPanel() {
@@ -50,28 +46,17 @@ public class PanelThongKeTheoNgay extends JPanel {
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT));
         left.setOpaque(false);
 
-        JLabel lbl = new JLabel("Chọn ngày:");
-        left.add(lbl);
+        left.add(new JLabel("Chọn năm:"));
+        cboNam = new JComboBox<>();
+        int year = LocalDate.now().getYear();
+        for (int i = year - 5; i <= year + 1; i++) cboNam.addItem(i);
+        left.add(cboNam);
 
-        UtilDateModel model = new UtilDateModel();
-        Properties p = new Properties();
-        p.put("text.today", "Hôm nay");
-        p.put("text.month", "Tháng");
-        p.put("text.year", "Năm");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-
-        datePicker.addActionListener(e -> {
-            Object selectedObj = datePicker.getModel().getValue();
-            if (selectedObj instanceof java.util.Date) {
-                java.util.Date utilDate = (java.util.Date) selectedObj;
-                LocalDate selected = utilDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                currentSelectedDate = selected;
-                loadData(selected);
-            }
+        cboNam.addActionListener(e -> {
+            selectedYear = (int) cboNam.getSelectedItem();
+            loadData(selectedYear);
         });
 
-        left.add(datePicker);
         panel.add(left, BorderLayout.WEST);
 
         lblTongDoanhThu = new JLabel("Tổng: 0 VND");
@@ -126,8 +111,17 @@ public class PanelThongKeTheoNgay extends JPanel {
         table.setFont(new Font("Arial", Font.PLAIN, 13));
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
+        DefaultTableCellRenderer centerAlign = new DefaultTableCellRenderer();
+        centerAlign.setHorizontalAlignment(JLabel.CENTER);
+
         DefaultTableCellRenderer rightAlign = new DefaultTableCellRenderer();
         rightAlign.setHorizontalAlignment(JLabel.RIGHT);
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(150);
+        table.getColumnModel().getColumn(0).setCellRenderer(centerAlign);
+        table.getColumnModel().getColumn(1).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setCellRenderer(centerAlign);
+        table.getColumnModel().getColumn(2).setPreferredWidth(180);
         table.getColumnModel().getColumn(2).setCellRenderer(rightAlign);
 
         return new JScrollPane(table);
@@ -136,6 +130,7 @@ public class PanelThongKeTheoNgay extends JPanel {
     private JPanel createChartPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(0, 300));
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.LIGHT_GRAY),
             new EmptyBorder(10, 10, 10, 10)));
@@ -148,33 +143,32 @@ public class PanelThongKeTheoNgay extends JPanel {
         };
         chartCanvas.setPreferredSize(new Dimension(500, 250));
         chartCanvas.setBackground(Color.WHITE);
-
         panel.add(chartCanvas, BorderLayout.CENTER);
         return panel;
     }
 
-    private void loadData(LocalDate date) {
+    private void loadData(int year) {
         model.setRowCount(0);
-        double total = 0;
+        tongDoanhThuNam = 0;
 
         String query = "SELECT ddp.MaDonDatPhong, ddp.NgayTraPhong, " +
                 "ISNULL(SUM(ctad.tongThanhToanSauApDung), 0) AS TongThanhToanSauApDung " +
                 "FROM DonDatPhong ddp " +
                 "LEFT JOIN ChiTietApDung ctad ON ddp.MaDonDatPhong = ctad.MaDonDatPhong " +
-                "WHERE CONVERT(date, ddp.NgayTraPhong) = ? " +
+                "WHERE YEAR(ddp.NgayTraPhong) = ? " +
                 "GROUP BY ddp.MaDonDatPhong, ddp.NgayTraPhong";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setDate(1, java.sql.Date.valueOf(date));
+            stmt.setInt(1, year);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 String ma = rs.getString("MaDonDatPhong");
-                String ngay = displayFormat.format(rs.getDate("NgayTraPhong").toLocalDate());
-                double tien = rs.getDouble("TongThanhToanSauApDung");
-                total += tien;
+                String ngay = rs.getDate("NgayTraPhong").toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                long tien = rs.getLong("TongThanhToanSauApDung");
+                tongDoanhThuNam += tien;
                 model.addRow(new Object[]{ma, ngay, currencyFormat.format(tien)});
             }
 
@@ -182,27 +176,27 @@ public class PanelThongKeTheoNgay extends JPanel {
             JOptionPane.showMessageDialog(this, "Lỗi truy vấn: " + e.getMessage());
         }
 
-        lblTongDoanhThu.setText("Tổng: " + currencyFormat.format(total));
+        lblTongDoanhThu.setText("Tổng: " + currencyFormat.format(tongDoanhThuNam));
         chartPanel.repaint();
     }
 
     private void drawChart(Graphics2D g2) {
-        LocalDate selectedDate = currentSelectedDate;
+        int year = selectedYear;
+        ArrayList<Long> doanhThuList = new ArrayList<>();
+        ArrayList<String> labels = new ArrayList<>();
 
-        ArrayList<Double> doanhThuList = new ArrayList<>();
-        ArrayList<String> nhan = new ArrayList<>();
         try (Connection conn = ConnectDB.getConnection()) {
             for (int i = -4; i <= 0; i++) {
-                LocalDate d = selectedDate.plusDays(i);
+                int y = year + i;
                 String sql = "SELECT ISNULL(SUM(ctad.tongThanhToanSauApDung), 0) AS Tong FROM DonDatPhong ddp " +
                         "LEFT JOIN ChiTietApDung ctad ON ddp.MaDonDatPhong = ctad.MaDonDatPhong " +
-                        "WHERE CONVERT(date, ddp.NgayTraPhong) = ?";
+                        "WHERE YEAR(ddp.NgayTraPhong) = ?";
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setDate(1, java.sql.Date.valueOf(d));
+                    ps.setInt(1, y);
                     ResultSet rs = ps.executeQuery();
                     if (rs.next()) {
-                        doanhThuList.add(rs.getDouble("Tong"));
-                        nhan.add(d.format(DateTimeFormatter.ofPattern("dd/MM")));
+                        doanhThuList.add(rs.getLong("Tong"));
+                        labels.add(String.valueOf(y));
                     }
                 }
             }
@@ -213,15 +207,21 @@ public class PanelThongKeTheoNgay extends JPanel {
 
         int width = chartPanel.getWidth();
         int height = chartPanel.getHeight();
-        int barWidth = width / 8;
-        int max = doanhThuList.stream().mapToInt(Double::intValue).max().orElse(1);
+        int margin = 40;
+        int spacing = 20;
+        int totalBars = doanhThuList.size();
+        int availableWidth = width - 2 * margin - spacing * (totalBars - 1);
+        int barWidth = availableWidth / totalBars;
+        long max = doanhThuList.stream().mapToLong(Long::longValue).max().orElse(1);
+
         FontMetrics fm = g2.getFontMetrics();
 
         for (int i = 0; i < doanhThuList.size(); i++) {
             int barHeight = (int) ((doanhThuList.get(i) * 1.0 / max) * (height - 60));
-            int x = 40 + i * (barWidth + 20);
-            int y = height - barHeight - 30;
-            g2.setColor((i == 4) ? new Color(255, 100, 100) : new Color(100, 150, 255));
+            int x = margin + i * (barWidth + spacing);
+            int y = height - barHeight - 40;
+
+            g2.setColor(i == doanhThuList.size() - 1 ? new Color(255, 100, 100) : new Color(100, 150, 255));
             g2.fillRect(x, y, barWidth, barHeight);
 
             g2.setColor(Color.BLACK);
@@ -229,28 +229,9 @@ public class PanelThongKeTheoNgay extends JPanel {
             int tw = fm.stringWidth(text);
             g2.drawString(text, x + (barWidth - tw) / 2, y - 5);
 
-            String label = nhan.get(i);
+            String label = labels.get(i);
             int lw = fm.stringWidth(label);
             g2.drawString(label, x + (barWidth - lw) / 2, height - 10);
-        }
-    }
-
-    private class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
-        private final String pattern = "dd/MM/yyyy";
-        private final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern);
-
-        @Override
-        public Object stringToValue(String text) throws java.text.ParseException {
-            return formatter.parse(text);
-        }
-
-        @Override
-        public String valueToString(Object value) throws java.text.ParseException {
-            if (value != null && value instanceof Calendar) {
-                Calendar cal = (Calendar) value;
-                return formatter.format(cal.getTime());
-            }
-            return "";
         }
     }
 }

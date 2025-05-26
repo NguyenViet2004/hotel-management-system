@@ -1,5 +1,5 @@
 // File: PanelThongKeTheoThang.java
-package viet;
+package quanLy;
 
 import javax.swing.*;
 import javax.swing.border.*;

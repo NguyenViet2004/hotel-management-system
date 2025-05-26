@@ -1,4 +1,4 @@
-package viet;
+package quanLy;
 
 import javax.swing.*;
 import java.awt.*;

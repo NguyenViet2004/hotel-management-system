@@ -1,5 +1,5 @@
 // File: QuanLyTaiKhoan_Panel.java
-package viet;
+package quanLy;
 
 import javax.swing.*;
 import javax.swing.table.*;
