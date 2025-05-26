@@ -329,10 +329,13 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 			else if ("Đơn tạm".equals(ddp.getTrangThai())) {
 				if (ddp.getThoiGianCoc() != null && !thoiGianHienTai.isAfter(ddp.getThoiGianCoc())) {
 			        modelTamThoi.addRow(row);
+			    } else {
+			    	dao.setTrangThaiDonDatPhong(ddp.getMaDonDatPhong(), "Đã hủy");
 			    }
 		}
 		System.out.println("Số đơn 'Đã đặt': " + modelDaDat.getRowCount());
-		System.out.println("Số đơn 'Đơn tạm': " + modelTamThoi.getRowCount());}
+		System.out.println("Số đơn 'Đơn tạm': " + modelTamThoi.getRowCount());
+		}
 	}
 	
 	private void capNhatVaReload(Runnable capNhatTacVu) {
