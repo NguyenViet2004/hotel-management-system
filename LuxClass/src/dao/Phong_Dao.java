@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -309,4 +311,51 @@ public class Phong_Dao {
 			return false;
 		}
 	}
+	public ArrayList<String> getPhongTrongTheoLoaiVaThoiGian(String tenLoai, LocalDateTime thoiDiem) {
+	    ArrayList<String> ds = new ArrayList<>();
+	    String sql = """
+	        SELECT p.soPhong
+	        FROM Phong p
+	        JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong
+	        WHERE lp.tenLoai = ?
+	          AND p.soPhong NOT IN (
+	              SELECT soPhong
+	              FROM ChiTietSuDungPhong
+	              WHERE ? BETWEEN ngayBatDau AND ngayKetThuc
+	          )
+	    """;
+
+	    try (Connection con = ConnectDB.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, tenLoai);
+	        ps.setTimestamp(2, Timestamp.valueOf(thoiDiem));
+
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            ds.add(rs.getString("soPhong"));
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return ds;
+	}
+
+
+	public String getTenLoaiTheoSoPhong(String soPhong) {
+		String sql = "SELECT lp.tenLoai FROM Phong p JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong WHERE p.soPhong = ?";
+		try (Connection con = ConnectDB.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setString(1, soPhong);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("tenLoai");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

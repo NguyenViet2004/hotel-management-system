@@ -69,4 +69,34 @@ public class ChiTietSuDungPhong_Dao {
         }
         return ds;
     }
+    
+    public ArrayList<ChiTietSuDungPhong> getDanhSachPhongDangO() {
+        ArrayList<ChiTietSuDungPhong> ds = new ArrayList<>();
+        String sql = "SELECT * FROM ChiTietSuDungPhong WHERE ? BETWEEN ngayBatDau AND ngayKetThuc";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            ps.setTimestamp(1, now);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ChiTietSuDungPhong ct = new ChiTietSuDungPhong(
+                    rs.getString("maDonDatPhong"),
+                    rs.getString("soPhong"),
+                    rs.getTimestamp("ngayBatDau").toLocalDateTime(),
+                    rs.getTimestamp("ngayKetThuc").toLocalDateTime(),
+                    rs.getString("ghiChu")
+                );
+                ds.add(ct);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ds;
+    }
+
 }

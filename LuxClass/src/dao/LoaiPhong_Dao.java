@@ -97,5 +97,23 @@ private ArrayList<LoaiPhong> dslp;
         }
         return loaiPhong;
     }
+    public ArrayList<String> getDanhSachTenLoai() {
+        ArrayList<String> ds = new ArrayList<>();
+        String sql = "SELECT tenLoai FROM LoaiPhong";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ds.add(rs.getString("tenLoai"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ds;
+    }
 
 }
