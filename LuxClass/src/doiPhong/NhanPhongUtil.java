@@ -18,7 +18,7 @@ public class NhanPhongUtil {
         DonDatPhong don = donDatPhongDao.getDonDatPhongTheoMa(maDonDatPhong);
         if (don == null) return;
 
-        LocalDateTime batDau = don.getNgayNhanPhong(); // Đã là LocalDateTime
+        LocalDateTime batDau = LocalDateTime.now(); // Đã là LocalDateTime
         LocalDateTime ketThuc = don.getNgayTraPhong(); // Đã là LocalDateTime
 
         ArrayList<String> dsPhong = chiTietDonDao.getDanhSachSoPhongTheoDon(maDonDatPhong);
