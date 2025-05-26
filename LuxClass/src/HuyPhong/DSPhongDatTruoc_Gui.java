@@ -197,6 +197,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 				JOptionPane.showMessageDialog(null, "Đã nhận phòng cho đơn đã đặt.");
 			} else if (tabIndex == 1) {
 				dao.setTrangThaiDonDatPhong(maDon, "Đã đặt");
+				dondatphong.capNhatThoiGianCoc(maDon, thoiGianHienTai);
 				JOptionPane.showMessageDialog(null, "Đã xác nhận đặt phòng từ đơn tạm.");
 			}
 		});
