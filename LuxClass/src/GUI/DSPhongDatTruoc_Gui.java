@@ -51,14 +51,30 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 	}
 
 	private JPanel createTitlePanel() {
-		JLabel lblTieuDe = new JLabel("Tìm kiếm đơn đặt phòng theo SĐT", SwingConstants.CENTER);
-		lblTieuDe.setFont(new Font("Times New Roman", Font.BOLD, 28));
+	    JLabel lblTieuDe = new JLabel("Tìm kiếm đơn đặt phòng theo SĐT", SwingConstants.CENTER);
+	    lblTieuDe.setFont(new Font("Times New Roman", Font.BOLD, 28));
 
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBackground(Color.WHITE);
-		panel.add(lblTieuDe, BorderLayout.CENTER);
-		return panel;
+	    JButton btnClose = new JButton("X");
+	    btnClose.setFont(new Font("Arial", Font.BOLD, 18));
+	    btnClose.setForeground(Color.BLACK);
+	    btnClose.setBorderPainted(false);
+	    btnClose.setContentAreaFilled(false);
+	    btnClose.setFocusPainted(false);
+
+	    btnClose.addActionListener(e -> {
+	        Window window = SwingUtilities.getWindowAncestor(this);
+	        if (window != null) {
+	            window.dispose();
+	        }
+	    });
+
+	    JPanel panel = new JPanel(new BorderLayout());
+	    panel.setBackground(Color.WHITE);
+	    panel.add(lblTieuDe, BorderLayout.CENTER);
+	    panel.add(btnClose, BorderLayout.EAST); // nút "X" ở góc phải
+	    return panel;
 	}
+
 
 	private JPanel createSearchPanel() {
 		JPanel panelTimKiem = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
