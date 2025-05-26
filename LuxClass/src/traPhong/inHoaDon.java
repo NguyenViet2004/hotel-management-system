@@ -1,4 +1,4 @@
-package GUI;
+package traPhong;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;

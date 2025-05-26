@@ -1,4 +1,4 @@
-package GUI;
+package traPhong;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,8 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import GUI.panel_timKiem;
 public class timKiemDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;

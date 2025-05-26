@@ -1,4 +1,4 @@
-package GUI;
+package traPhong;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -13,7 +13,6 @@ import dao.DonDatPhong_Dao;
 import dao.Phong_Dao;
 import entity.DonDatPhong;
 import entity.Phong;
-import GUI.donDatPhong;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -184,7 +183,7 @@ public class panel_timKiem extends JPanel {
 		                }
 
 		                EventQueue.invokeLater(() -> {
-		                    donDatPhong chiTiet= new donDatPhong(ddp);
+		                    TraPhong chiTiet= new TraPhong(ddp);
 		                    chiTiet.setVisible(true);
 		                    parent.dispose();
 		                });
@@ -245,7 +244,7 @@ public class panel_timKiem extends JPanel {
 		                }
 
 		                EventQueue.invokeLater(() -> {
-		                    donDatPhong chiTiet= new donDatPhong(ddp);
+		                    TraPhong chiTiet= new TraPhong(ddp);
 //		                    chiTiet = new donDatPhong(ddp);
 		                    chiTiet.setVisible(true);
 		                    parent.dispose();

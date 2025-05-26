@@ -1,4 +1,4 @@
-package GUI;
+package traPhong;
 
 import java.awt.*;
 

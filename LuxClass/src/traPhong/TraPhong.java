@@ -1,32 +1,4 @@
-package GUI;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import com.google.zxing.*;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-
-import dao.ChiTietApDung_DAO;
-import dao.DichVu_Dao;
-import dao.DonDatPhong_Dao;
-import dao.KhachHang_Dao;
-import dao.KhuyenMai_DAO;
-import dao.LoaiPhong_Dao;
-import dao.Phong_Dao;
-import dao.PhieuDichVu_DAO;
-import entity.ChiTietApDung;
-import entity.DichVu;
-import entity.DonDatPhong;
-import entity.KhachHang;
-import entity.KhuyenMai;
-import entity.LoaiPhong;
-import entity.PhieuDichVu;
-import entity.Phong;
-
-import java.util.Hashtable;
+package traPhong;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -46,11 +17,12 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.GeneralPath;
+import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,6 +30,25 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -70,7 +61,22 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhatSinhListener {
+import GUI.QuanLyDatPhong_GUI;
+import dao.ChiTietApDung_DAO;
+import dao.DonDatPhong_Dao;
+import dao.KhachHang_Dao;
+import dao.KhuyenMai_DAO;
+import dao.LoaiPhong_Dao;
+import dao.PhieuDichVu_DAO;
+import dao.Phong_Dao;
+import entity.ChiTietApDung;
+import entity.DonDatPhong;
+import entity.KhachHang;
+import entity.KhuyenMai;
+import entity.LoaiPhong;
+import entity.Phong;
+
+public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhatSinhListener {
 	private JTextField maDon;
 	private JTextField hoVaTen;
 	private JTextField ngayNhan;
@@ -95,7 +101,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 			public void run() {
 				try {
 					DonDatPhong ddp = new DonDatPhong();
-					donDatPhong window = new donDatPhong(ddp);
+					TraPhong window = new TraPhong(ddp);
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -104,7 +110,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 		});
 	}
 
-	public donDatPhong(DonDatPhong ddp) {
+	public TraPhong(DonDatPhong ddp) {
 		this.currentDonDatPhong = ddp;
 		initialize(currentDonDatPhong);
 		themSuKienCheckbox();
@@ -994,7 +1000,7 @@ public class donDatPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiP
 					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,
 							maPhong, loai.getTenLoai());
 
-					dialog.setChiPhiPhatSinhListener(donDatPhong.this); // Thiết lập donDatPhong làm listener
+					dialog.setChiPhiPhatSinhListener(TraPhong.this); // Thiết lập donDatPhong làm listener
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setUndecorated(true);
 					dialog.setLocationRelativeTo(null);
