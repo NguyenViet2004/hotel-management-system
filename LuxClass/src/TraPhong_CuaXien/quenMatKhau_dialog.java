@@ -154,7 +154,7 @@ public class quenMatKhau_dialog extends JDialog implements KeyListener {
 			    }
 
 			    try {
-			        tKhoan_DAO.capNhatTaiKhoan(tenTK, mkNew);
+			        tKhoan_DAO.capNhatTaiKhoan(mkNew, tenTK);
 			        JOptionPane.showMessageDialog(null, "Cập nhật mật khẩu thành công!", "Thông báo",
 			                JOptionPane.INFORMATION_MESSAGE);
                      dispose();
