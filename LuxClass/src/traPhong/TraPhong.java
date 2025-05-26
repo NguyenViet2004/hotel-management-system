@@ -26,9 +26,12 @@ import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -63,6 +66,7 @@ import javax.swing.table.TableColumnModel;
 
 import GUI.QuanLyDatPhong_GUI;
 import dao.ChiTietApDung_DAO;
+import dao.ChiTietSuDungPhong_Dao;
 import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
 import dao.KhuyenMai_DAO;
@@ -70,6 +74,7 @@ import dao.LoaiPhong_Dao;
 import dao.PhieuDichVu_DAO;
 import dao.Phong_Dao;
 import entity.ChiTietApDung;
+import entity.ChiTietSuDungPhong;
 import entity.DonDatPhong;
 import entity.KhachHang;
 import entity.KhuyenMai;
@@ -95,12 +100,15 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 	private ArrayList<Object[]> danhSachPhongDuocChon = new ArrayList<>();
 	private JTextField amountField;
 	private JLabel qrLabel;
+	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					DonDatPhong ddp = new DonDatPhong();
+					DonDatPhong_Dao dao = new DonDatPhong_Dao();
+					ddp = dao.getDonDatPhongTheoMa("26052025LT001006");
 					TraPhong window = new TraPhong(ddp);
 					window.setVisible(true);
 				} catch (Exception e) {
@@ -208,10 +216,10 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 		Home.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					dispose(); // đóng frame hiện tại
-					QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
-					frame.setVisible(true);
-				}
+				dispose(); // đóng frame hiện tại
+				QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
+				frame.setVisible(true);
+			}
 		});
 		Header.add(Home);
 
@@ -234,16 +242,16 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 		JLabel lblNewLabel_8 = new JLabel("New label");
 		lblNewLabel_8.setBounds(Math.round(frameWidth * (1464f / 1536f)), Math.round(frameHeight * (20f / 816f)),
 				Math.round(frameWidth * (45f / 1536f)), Math.round(frameHeight * (45f / 816f)));
-		  ImageIcon user = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg");
+		ImageIcon user = new ImageIcon("img/HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg");
 
-	        // Lấy đối tượng Image và resize nó
-	        Image resizedImage = user.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH);
+		// Lấy đối tượng Image và resize nó
+		Image resizedImage = user.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH);
 
-	        // Tạo lại ImageIcon từ ảnh đã resize
-	        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+		// Tạo lại ImageIcon từ ảnh đã resize
+		ImageIcon resizedIcon = new ImageIcon(resizedImage);
 
-	        // Gán icon vào label
-	        lblNewLabel_8.setIcon(resizedIcon);
+		// Gán icon vào label
+		lblNewLabel_8.setIcon(resizedIcon);
 		Header.add(lblNewLabel_8);
 
 		JLabel lblNewLabel_9 = new JLabel("Lễ tân");
@@ -485,6 +493,12 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 								if (aBoolean) {
 									((DefaultTableModel) table_dichVu.getModel()).removeRow(row);
 
+									if (table_dichVu.isEditing())
+										table_dichVu.getCellEditor().stopCellEditing(); // ❗ Hủy trạng thái editing
+
+									((DefaultTableModel) table_dichVu.getModel()).fireTableDataChanged(); // ❗ Refresh
+																											// bảng
+
 									table_dichVu.clearSelection();
 									table_dichVu.revalidate();
 									table_dichVu.repaint();
@@ -494,10 +508,10 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 										table_dichVu.revalidate();
 										table_dichVu.repaint();
 									}
-									capNhatTongTien(); // Cập nhật tổng tiền sau khi xóa thành công
-								} else {
-									JOptionPane.showMessageDialog(null, "Xóa dịch vụ thất bại. Vui lòng kiểm tra lại.");
+
+									capNhatTongTien(); // Cập nhật tổng tiền
 								}
+
 							} catch (SQLException e1) {
 								e1.printStackTrace();
 								JOptionPane.showMessageDialog(null,
@@ -520,7 +534,8 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 						String loaiDV = table_dichVu.getValueAt(row, 1).toString();
 						String ngayLapPhieu = table_dichVu.getValueAt(row, 2).toString();
 
-						phieuDichVu_Dialog dialog = new phieuDichVu_Dialog(maPhieu, loaiDV, ngayLapPhieu, TraPhong.this, true);
+						phieuDichVu_Dialog dialog = new phieuDichVu_Dialog(maPhieu, loaiDV, ngayLapPhieu, TraPhong.this,
+								true);
 						dialog.setLocationRelativeTo(null);
 						dialog.hienThiChiTietDichVu(maPhieu, loaiDV);
 						dialog.setVisible(true);
@@ -641,9 +656,10 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 		table_phongTra.setShowHorizontalLines(false);
 		table_phongTra.setBackground(new Color(255, 255, 255));
 		table_phongTra.setFillsViewportHeight(true);
-		table_phongTra.setRowHeight(Math.round(frameHeight * (30f / 816f)));
+		table_phongTra.setRowHeight(Math.round(frameHeight * (34f / 816f))); // Tăng chiều cao dòng để phù hợp nội dung
 		table_phongTra.setBorder(null);
 		table_phongTra.setShowGrid(false);
+
 		Object[][] data = {};
 		String[] columnNames = { "", "Mã phòng", "Loại phòng", "Thời gian", "Đơn giá", "Thành tiền" };
 		DefaultTableModel model = new DefaultTableModel(data, columnNames) {
@@ -681,6 +697,7 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 				return panel;
 			}
 		});
+
 		JTableHeader header = table_phongTra.getTableHeader();
 		header.setBackground(new Color(220, 255, 220));
 		header.setPreferredSize(new Dimension(header.getWidth(), Math.round(frameHeight * (40f / 816f))));
@@ -725,10 +742,12 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 			table_phongTra.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
 
-		table_phongTra.setFont(new Font("Times New Roman", Font.PLAIN,
-				Math.round(17f * Math.min(frameWidth / 1536, frameHeight / 816))));
-		header.setFont(new Font("Times New Roman", Font.BOLD,
-				Math.round(20f * Math.min(frameWidth / 1536, frameHeight / 816))));
+		int fontSize = Math.round(16f * Math.min(frameWidth / 1536f, frameHeight / 816f));
+		table_phongTra.setFont(new Font("Times New Roman", Font.PLAIN, fontSize));
+		header.setFont(new Font("Times New Roman", Font.BOLD, fontSize + 2));
+
+		// Tăng độ rộng cho cột thời gian để hiển thị đủ
+		columnModel.getColumn(3).setPreferredWidth(Math.round(frameWidth * (230f / 1536f)));
 
 		JScrollPane scrollPane = new JScrollPane(table_phongTra);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -847,55 +866,60 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 	private void hienThiThongTin(DonDatPhong ddp) {
 		maDon.setText(ddp.getMaDonDatPhong());
 		hoVaTen.setText(ddp.getKhachHang().getHoTen());
-		ngayNhan.setText(ddp.getNgayNhanPhong().toString());
-		ngayTra.setText(ddp.getNgayTraPhong().toString());
+		ngayNhan.setText(ddp.getNgayNhanPhong().format(dtf));
+		ngayTra.setText(ddp.getNgayTraPhong().format(dtf));
 		soLuongKhach.setText(String.valueOf(ddp.getSoKhach()));
 	}
 
 	public void hienThiDanhSachPhong(DonDatPhong ddp) {
 		String maDonDatPhong = ddp.getMaDonDatPhong();
 		Phong_Dao phongDAO = new Phong_Dao();
-		ArrayList<Phong> danhSachPhong = phongDAO.getPhongTheoMaDonDatPhong(maDonDatPhong);
+		ChiTietSuDungPhong_Dao chiTietSuDungPhongDAO = new ChiTietSuDungPhong_Dao();
+
+		ArrayList<ChiTietSuDungPhong> danhSachPhong = chiTietSuDungPhongDAO.getTheoMaDon(maDonDatPhong);
+		danhSachPhong.sort(Comparator.comparing(ChiTietSuDungPhong::getNgayBatDau));
+
+		Map<String, Double> tienTungPhong = TinhTienUtil.tinhTienTungPhong(maDonDatPhong);
 		DefaultTableModel model = (DefaultTableModel) table_phongTra.getModel();
 		model.setRowCount(0);
-		LocalDateTime ngayNhanPhong = ddp.getNgayNhanPhong();
-		LocalDateTime ngayTraPhong = ddp.getNgayTraPhong();
-		for (Phong p : danhSachPhong) {
-			String maPhong = p.getSoPhong();
-			String loaiPhong = p.getLoaiPhong().getTenLoai();
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm dd/MM");
+		double tongThanhTien = 0.0;
+
+		for (ChiTietSuDungPhong ct : danhSachPhong) {
+			Phong phong = phongDAO.getPhongTheoMa(ct.getSoPhong());
+			String maPhong = phong.getSoPhong();
+			String loaiPhong = phong.getLoaiPhong().getTenLoai();
+
+			LocalDateTime batDau = ct.getNgayBatDau();
+			LocalDateTime ketThuc = ct.getNgayKetThuc();
+
+			String thoiGian = batDau.format(dtf) + " → " + ketThuc.format(dtf);
+
 			double donGia = 0.0;
-			double thanhTien = 0.0;
-			String thoiGian = "";
-			String hinhThuc = ddp.getLoaiDon();
-			switch (hinhThuc) {
+			switch (ddp.getLoaiDon()) {
 			case "Theo giờ":
-				long soGio = ChronoUnit.HOURS.between(ngayNhanPhong, ngayTraPhong);
-				if (soGio == 0)
-					soGio = 1; // Tối thiểu 1 giờ
-				donGia = p.getLoaiPhong().getGiaTheoGio();
-				thanhTien = donGia * soGio;
-				thoiGian = soGio + " giờ";
+				donGia = phong.getLoaiPhong().getGiaTheoGio();
 				break;
 			case "Theo đêm":
-				// Giả sử giá qua đêm cố định
-				donGia = p.getLoaiPhong().getGiaTheoDem();
-				thanhTien = donGia;
-				thoiGian = "Qua đêm";
+				donGia = phong.getLoaiPhong().getGiaTheoDem();
 				break;
 			case "Theo ngày":
 			default:
-				long soNgay = ChronoUnit.DAYS.between(ngayNhanPhong.toLocalDate(), ngayTraPhong.toLocalDate());
-				if (soNgay == 0)
-					soNgay = 1; // Tối thiểu 1 ngày
-				donGia = p.getLoaiPhong().getGiaTheoNgay();
-				thanhTien = donGia * soNgay;
-				thoiGian = soNgay + " ngày";
+				donGia = phong.getLoaiPhong().getGiaTheoNgay();
 				break;
 			}
+
+			double thanhTien = tienTungPhong.getOrDefault(maPhong, 0.0);
+			tongThanhTien += thanhTien;
+
 			Object[] rowData = { false, maPhong, loaiPhong, thoiGian, String.format("%.0f", donGia),
 					String.format("%.0f", thanhTien) };
 			model.addRow(rowData);
 		}
+
+		// có thể cập nhật lbl_tongTien hoặc label tương ứng nếu có
+		// lblTongTien.setText(String.format("%.0f VND", tongThanhTien));
 	}
 
 	private PhieuDichVu_DAO phieuDichVu_DAO = new PhieuDichVu_DAO();
@@ -997,8 +1021,9 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					LoaiPhong_Dao loaip = new LoaiPhong_Dao();
 					LoaiPhong loai = loaip.getLoaiPhongBySoPhong(maPhong);
 					// Truyền maDonDatPhong và số thứ tự dòng vào dialog
-					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,maPhong, loai.getTenLoai(), TraPhong.this, true);
-					dialog.setChiPhiPhatSinhListener(TraPhong.this);
+					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,
+							maPhong, loai.getTenLoai(), TraPhong.this, true);
+					dialog.setChiPhiPhatSinhListener(TraPhong.this); // Thiết lập donDatPhong làm listener
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setUndecorated(true);
 					dialog.setLocationRelativeTo(null);
@@ -1683,7 +1708,6 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 				double tienCoc = Double.parseDouble(tienCoc1.getText());
 				double thanhTien = Double.parseDouble(thanhTien1.getText());
 //			              setPhong
-				
 
 				ArrayList<String> maPhongs = layDanhSachMaPhong(table1);
 				Phong_Dao phong_DAO = new Phong_Dao();
@@ -1692,13 +1716,12 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					phong_DAO.setTrangThaiPhong(ma, "Trống");
 				}
 
-				
 //							setDonDatPhong
 				// Kiểm tra trước khi set trạng thái đơn đặt phòng
 				DonDatPhong_Dao ddDatPhong_DAO = new DonDatPhong_Dao();
 				String maDon = maHoaDon1.getText();
-	            ddDatPhong_DAO.setTienCocVeKhong(maDon);
-				
+				ddDatPhong_DAO.setTienCocVeKhong(maDon);
+
 				if (ddDatPhong_DAO.coTheCapNhatTrangThai(maDon)) {
 					ddDatPhong_DAO.setTrangThaiDonDatPhong(maDon, "Đã thanh toán");
 				}
@@ -1710,10 +1733,10 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					pdv.capNhatTrangThai((String) maDichVu, "Đã thanh toán");
 				}
 				JLabel qrLabel = new JLabel("", JLabel.CENTER);
-				String maKM=(String) khuyenMai.getSelectedItem();
+				String maKM = (String) khuyenMai.getSelectedItem();
 				System.out.println(maKM.split("-")[0].trim());
-				ChiTietApDung ctap= new ChiTietApDung(maDon, maKM.split("-")[0].trim(),(float) thanhTien);
-				ChiTietApDung_DAO chiTietApDung_DAO= new ChiTietApDung_DAO();
+				ChiTietApDung ctap = new ChiTietApDung(maDon, maKM.split("-")[0].trim(), (float) thanhTien);
+				ChiTietApDung_DAO chiTietApDung_DAO = new ChiTietApDung_DAO();
 				chiTietApDung_DAO.addChiTietApDung(ctap);
 				if (chuyenKhoan.isSelected()) {
 					qrLabel.setSize(Math.round(150f * frameWidth / 1536f), Math.round(150f * frameHeight / 816f));
@@ -1749,26 +1772,25 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					try {
 						String filePath = "FileTestHoaDon/HoaDon_" + maHoaDon1.getText() + ".pdf";
 
-						inHoaDon.taoHoaDon(
-						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
-						    dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
-						    (String) khuyenMai.getSelectedItem(), thanhTien, filePath
-						);
+						inHoaDon.taoHoaDon(maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
+								dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
+								(String) khuyenMai.getSelectedItem(), thanhTien, filePath);
 						System.out.println("Đã tạo hóa đơn thành công!");
 					} catch (Exception e1) {
 						System.err.println("Lỗi khi tạo hóa đơn:");
 						e1.printStackTrace();
 					}
 					int option = JOptionPane.showConfirmDialog(null, "Thanh toán thành công!", "Thông báo",
-					        JOptionPane.OK_CANCEL_OPTION);
+							JOptionPane.OK_CANCEL_OPTION);
 
 					if (option == JOptionPane.OK_OPTION) {
-					    // Đóng cửa sổ hiện tại
-					    Window window = SwingUtilities.getWindowAncestor(thanhToan);
-					    if (window != null) window.dispose();
+						// Đóng cửa sổ hiện tại
+						Window window = SwingUtilities.getWindowAncestor(thanhToan);
+						if (window != null)
+							window.dispose();
 
-					    // Mở trang DatPhong_GUI
-					    QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
+						// Mở trang DatPhong_GUI
+						QuanLyDatPhong_GUI frame = new QuanLyDatPhong_GUI();
 						frame.setVisible(true);
 					}
 
@@ -1777,11 +1799,9 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					try {
 						String filePath = "FileTestHoaDon/HoaDon_" + maHoaDon1.getText() + ".pdf";
 
-						inHoaDon.taoHoaDon(
-						    maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
-						    dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
-						    (String) khuyenMai.getSelectedItem(), thanhTien, filePath
-						);
+						inHoaDon.taoHoaDon(maHoaDon1.getText(), ngayString, tenKhach1.getText(), sdt, dayNhanString,
+								dayTraString, data, tienPhong, tienDichVu, chiPhiPhatSinh, tienCoc,
+								(String) khuyenMai.getSelectedItem(), thanhTien, filePath);
 						System.out.println("Đã tạo hóa đơn thành công!");
 					} catch (Exception e1) {
 						System.err.println("Lỗi khi tạo hóa đơn:");
@@ -1820,10 +1840,10 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 				Math.round(321f * frameWidth / 1536f), Math.round(28f * frameHeight / 816f));
 		khuyenMai.setBorder(BorderFactory.createEmptyBorder()); // Tắt viền
 		khuyenMai.setBackground(null); // Tắt màu nền
-		khuyenMai.setOpaque(false); 
+		khuyenMai.setOpaque(false);
 		panel_2.add(khuyenMai);
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 		LocalDateTime dateTimeTra = LocalDateTime.parse(dayTraString, formatter);
 		// Lấy ra phần ngày
@@ -1861,35 +1881,35 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 				// chuẩn hoá -> double
 				String clean = a.replaceAll("[^\\d,\\.]", "").replace(".", "").replace(",", ".");
 				System.out.println(clean);
-			    tong = clean.isEmpty() ? 0.0 : Double.parseDouble(clean);
+				tong = clean.isEmpty() ? 0.0 : Double.parseDouble(clean);
 				System.out.println(tong);
 				loadKhuyenMaiToComboBox(khuyenMai, ngayTra, ngayNhan, tong);
-				tienCoc = Double.parseDouble(tienCoc1.getText()); 
+				tienCoc = Double.parseDouble(tienCoc1.getText());
 				phanTramGiam = "0%";
 				khuyenMai.addActionListener(new ActionListener() {
-				    @Override
-				    public void actionPerformed(ActionEvent e) {
-				        String selected = (String) khuyenMai.getSelectedItem();
-				        if (selected != null) {
-				            if (selected.equals("Không")) {
-				                phanTramGiam = "0%";
-				            } else if (selected.contains(" - ")) {
-				                String[] parts = selected.split(" - ");
-				                String maKhuyenMai = parts[0];
-				                phanTramGiam = parts[1];  // Gán vào biến toàn cục
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						String selected = (String) khuyenMai.getSelectedItem();
+						if (selected != null) {
+							if (selected.equals("Không")) {
+								phanTramGiam = "0%";
+							} else if (selected.contains(" - ")) {
+								String[] parts = selected.split(" - ");
+								String maKhuyenMai = parts[0];
+								phanTramGiam = parts[1]; // Gán vào biến toàn cục
 
-				            }
-				        }
+							}
+						}
 //				        System.out.println("Phần trăm giảm: " + phanTramGiam);
 //				        System.out.println("Tổng chi phí: " + tong);
 //				        System.out.println("Tiền cọc: " + tienCoc);
 
-				        // Xử lý tính thành tiền nếu cần
-				        double tileGiam = Double.parseDouble(phanTramGiam.replace("%", "")) / 100.0;
-				        double thanhTien = tong - tienCoc - (tong * tileGiam);
-				        thanhTien1.setText(String.format("%.0f", thanhTien).replace(".0", ""));
-				        
-				    }
+						// Xử lý tính thành tiền nếu cần
+						double tileGiam = Double.parseDouble(phanTramGiam.replace("%", "")) / 100.0;
+						double thanhTien = tong - tienCoc - (tong * tileGiam);
+						thanhTien1.setText(String.format("%.0f", thanhTien).replace(".0", ""));
+
+					}
 
 				});
 			}
@@ -1907,12 +1927,12 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 		comboBox.removeAllItems(); // Xóa các item cũ
 //		comboBox.addItem("Không");
 		for (KhuyenMai km : danhSachKM) {
-	        if (km.getMaKhuyenMai().equalsIgnoreCase("Không")) {
-	            comboBox.addItem("Không");
-	        } else {
-	            comboBox.addItem(km.getMaKhuyenMai() + " - " + km.getGiaTriKhuyenMai() + "%");
-	        }
-	    }
+			if (km.getMaKhuyenMai().equalsIgnoreCase("Không")) {
+				comboBox.addItem("Không");
+			} else {
+				comboBox.addItem(km.getMaKhuyenMai() + " - " + km.getGiaTriKhuyenMai() + "%");
+			}
+		}
 	}
 
 	private String convertNumberToWords(int number) {

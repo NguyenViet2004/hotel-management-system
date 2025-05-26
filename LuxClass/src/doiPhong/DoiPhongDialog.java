@@ -38,8 +38,8 @@ public class DoiPhongDialog extends JDialog {
     private Phong_Dao phongDAO = new Phong_Dao();
     private LoaiPhong_Dao loaiPhongDAO = new LoaiPhong_Dao();
 
-    public DoiPhongDialog(JFrame parent, String maDonDatPhong, String soPhongCu, LocalDateTime ngayKetThucCu) {
-        super(parent, "Đổi phòng", true);
+    public DoiPhongDialog(Window parent, String maDonDatPhong, String soPhongCu, LocalDateTime ngayKetThucCu) {
+        super(parent, "Đổi phòng", ModalityType.APPLICATION_MODAL);
         this.maDonDatPhong = maDonDatPhong;
         this.soPhongCu = soPhongCu;
         this.ngayKetThucCu = ngayKetThucCu;

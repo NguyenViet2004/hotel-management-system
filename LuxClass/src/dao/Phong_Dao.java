@@ -81,6 +81,8 @@ public class Phong_Dao {
                 String moTa = rs.getString("moTa");
 
                 LoaiPhong loaiPhong = new LoaiPhong(loaiPhongMa);
+                LoaiPhong_Dao loaiPhong_Dao = new LoaiPhong_Dao();
+                loaiPhong = loaiPhong_Dao.getLoaiPhongTheoMa(loaiPhongMa);
                 phong = new Phong(soPhong, trangThai, loaiPhong, moTa);
             }
         } catch (SQLException e) {
@@ -151,8 +153,8 @@ public class Phong_Dao {
         try {
             con = ConnectDB.getConnection();
             String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
-                    + "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
-                    + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE ctd.maDonDatPhong = ?";
+                    + "JOIN ChiTietSuDungPhong ctsd ON p.soPhong = ctsd.soPhong "
+                    + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE ctsd.maDonDatPhong = ?";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, maDonDatPhong);
             rs = stmt.executeQuery();
