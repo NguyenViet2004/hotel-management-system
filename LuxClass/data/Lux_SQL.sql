@@ -134,6 +134,16 @@ CREATE TABLE ChiTietApDung (
     CONSTRAINT FK_ChiTietApDung_KhuyenMai FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai)
 );
 GO
+CREATE TABLE ChiTietSuDungPhong (
+    maDonDatPhong VARCHAR(20) NOT NULL,
+    soPhong VARCHAR(20) NOT NULL,
+    ngayBatDau DATETIME NOT NULL,
+    ngayKetThuc DATETIME NOT NULL,
+    ghiChu NVARCHAR(255),
+    PRIMARY KEY (maDonDatPhong, soPhong, ngayBatDau),
+    FOREIGN KEY (maDonDatPhong) REFERENCES DonDatPhong(maDonDatPhong),
+    FOREIGN KEY (soPhong) REFERENCES Phong(soPhong)
+);
 go
 INSERT INTO LoaiPhong (maLoaiPhong, tenLoai, soLuong, dienTich, giaTheoGio, giaTheoNgay, giaTheoDem, phuThuQuaGio)
 VALUES 
@@ -319,3 +329,4 @@ INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
 ('DVThueXeDay', N'Thuê xe đẩy em bé', N'Thuê xe đẩy em bé', 50000, 'DichVuKhac'),
 ('DVBaoMau', N'Phí bảo mẫu', N'Phí bảo mẫu', 40000, 'DichVuKhac'),
 ('DVNoiEmBe', N'Nôi em bé', N'Nôi em bé', 30000, 'DichVuKhac');
+go
