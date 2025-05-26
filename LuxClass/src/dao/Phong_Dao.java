@@ -14,12 +14,13 @@ import entity.LoaiPhong;
 import entity.Phong;
 
 public class Phong_Dao {
-	private ArrayList<Phong> dsp;
-    
+    private ArrayList<Phong> dsp;
+
     public Phong_Dao() {
         dsp = new ArrayList<Phong>();
     }
 
+    // Existing methods (unchanged)
     public ArrayList<Phong> getAllPhong() {
         try (Connection con = ConnectDB.getConnection()) {
             String sql = "SELECT * FROM Phong";
@@ -32,7 +33,7 @@ public class Phong_Dao {
                 LoaiPhong loaiPhong = new LoaiPhong(rs.getString(3));
                 String moTa = rs.getString(4);
 
-                Phong p = new Phong(soPhong,trangThai,loaiPhong,moTa);
+                Phong p = new Phong(soPhong, trangThai, loaiPhong, moTa);
                 dsp.add(p);
             }
         } catch (SQLException e) {
@@ -40,9 +41,9 @@ public class Phong_Dao {
         }
         return dsp;
     }
-    
+
     public ArrayList<Phong> getDanhSachPhongTheoLoai(String maLoaiPhong) {
-    	ArrayList<Phong> danhSachPhong = new ArrayList<>();
+        ArrayList<Phong> danhSachPhong = new ArrayList<>();
         String sql = "SELECT * FROM Phong WHERE loaiPhong = ?";
         
         try (Connection conn = ConnectDB.getConnection();
@@ -65,245 +66,245 @@ public class Phong_Dao {
         }
         return danhSachPhong;
     }
-    
+
     public Phong getPhongTheoMa(String soPhong) {
         Phong phong = null;
-        Connection conn = ConnectDB.getConnection(); 
-        String sql = "SELECT * FROM Phong WHERE soPhong = ?"; 
+        Connection conn = ConnectDB.getConnection();
+        String sql = "SELECT * FROM Phong WHERE soPhong = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, soPhong); 
+            stmt.setString(1, soPhong);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) { // Nếu có kết quả
+            if (rs.next()) {
                 String trangThai = rs.getString("trangThai");
-                String loaiPhongMa = rs.getString("loaiPhong"); 
+                String loaiPhongMa = rs.getString("loaiPhong");
                 String moTa = rs.getString("moTa");
-                
 
                 LoaiPhong loaiPhong = new LoaiPhong(loaiPhongMa);
-                
-                // Tạo đối tượng Phong từ kết quả truy vấn
                 phong = new Phong(soPhong, trangThai, loaiPhong, moTa);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
         
-        return phong; // Trả về null nếu không tìm thấy phòng
+        return phong;
     }
-    
-	public ArrayList<Phong> getPhongTheoMaDonDatPhong(String maDonDatPhong) {
-		ArrayList<Phong> dsPhong = new ArrayList<>();
-		Connection con = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
 
-		try {
-			con = ConnectDB.getConnection();
-			String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
-					+ "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
-					+ "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
-					+ "WHERE ctd.maDonDatPhong = ? AND p.trangThai = ?";
-			stmt = con.prepareStatement(sql);
-			stmt.setString(1, maDonDatPhong);
-			stmt.setString(2, "Đang ở");
-			rs = stmt.executeQuery();
+    public ArrayList<Phong> getPhongTheoMaDonDatPhong(String maDonDatPhong) {
+        ArrayList<Phong> dsPhong = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-			while (rs.next()) {
-				// Dữ liệu phòng
-				String soPhong = rs.getString("soPhong");
-				String trangThai = rs.getString("trangThai");
-				String mota = rs.getString("moTa");
+        try {
+            con = ConnectDB.getConnection();
+            String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
+                    + "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
+                    + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
+                    + "WHERE ctd.maDonDatPhong = ? AND p.trangThai = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maDonDatPhong);
+            stmt.setString(2, "Đang ở");
+            rs = stmt.executeQuery();
 
-				// Dữ liệu loại phòng đầy đủ
-				String maLoai = rs.getString("maLoaiPhong");
-				String tenLoai = rs.getString("tenLoai");
-				int soLuong = rs.getInt("soLuong");
-				float dienTich = rs.getFloat("dienTich");
-				double giaGio = rs.getDouble("giaTheoGio");
-				double giaNgay = rs.getDouble("giaTheoNgay");
-				double giaDem = rs.getDouble("giaTheoDem");
-				double phuThu = rs.getDouble("phuThuQuaGio");
+            while (rs.next()) {
+                String soPhong = rs.getString("soPhong");
+                String trangThai = rs.getString("trangThai");
+                String mota = rs.getString("moTa");
 
-				// Tạo LoaiPhong
-				LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                String maLoai = rs.getString("maLoaiPhong");
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaGio = rs.getDouble("giaTheoGio");
+                double giaNgay = rs.getDouble("giaTheoNgay");
+                double giaDem = rs.getDouble("giaTheoDem");
+                double phuThu = rs.getDouble("phuThuQuaGio");
 
-				// Tạo Phong
-				Phong p = new Phong(soPhong, trangThai, lp, mota);
-				dsPhong.add(p);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace(); // hoặc log lỗi
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
-			}
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-			}
-			try {
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-			}
-		}
+                LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                Phong p = new Phong(soPhong, trangThai, lp, mota);
+                dsPhong.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {}
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {}
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {}
+        }
 
-		return dsPhong;
-	}
+        return dsPhong;
+    }
 
-	public ArrayList<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
-		ArrayList<Phong> dsPhong = new ArrayList<>();
-		Connection con = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+    public ArrayList<Phong> getPhongTheoMaDonDatPhong1(String maDonDatPhong) {
+        ArrayList<Phong> dsPhong = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-		try {
-			con = ConnectDB.getConnection();
-			String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
-					+ "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
-					+ "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE ctd.maDonDatPhong = ?";
-			stmt = con.prepareStatement(sql);
-			stmt.setString(1, maDonDatPhong);
-			rs = stmt.executeQuery();
+        try {
+            con = ConnectDB.getConnection();
+            String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
+                    + "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
+                    + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE ctd.maDonDatPhong = ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, maDonDatPhong);
+            rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				// Dữ liệu phòng
-				String soPhong = rs.getString("soPhong");
-				String trangThai = rs.getString("trangThai");
-				String mota = rs.getString("moTa");
+            while (rs.next()) {
+                String soPhong = rs.getString("soPhong");
+                String trangThai = rs.getString("trangThai");
+                String mota = rs.getString("moTa");
 
-				// Dữ liệu loại phòng đầy đủ
-				String maLoai = rs.getString("maLoaiPhong");
-				String tenLoai = rs.getString("tenLoai");
-				int soLuong = rs.getInt("soLuong");
-				float dienTich = rs.getFloat("dienTich");
-				double giaGio = rs.getDouble("giaTheoGio");
-				double giaNgay = rs.getDouble("giaTheoNgay");
-				double giaDem = rs.getDouble("giaTheoDem");
-				double phuThu = rs.getDouble("phuThuQuaGio");
+                String maLoai = rs.getString("maLoaiPhong");
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaGio = rs.getDouble("giaTheoGio");
+                double giaNgay = rs.getDouble("giaTheoNgay");
+                double giaDem = rs.getDouble("giaTheoDem");
+                double phuThu = rs.getDouble("phuThuQuaGio");
 
-				// Tạo LoaiPhong
-				LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                Phong p = new Phong(soPhong, trangThai, lp, mota);
+                dsPhong.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {}
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {}
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {}
+        }
 
-				// Tạo Phong
-				Phong p = new Phong(soPhong, trangThai, lp, mota);
-				dsPhong.add(p);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace(); // hoặc log lỗi
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-			} catch (SQLException e) {
-			}
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-			}
-			try {
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-			}
-		}
+        return dsPhong;
+    }
 
-		return dsPhong;
-	}
+    public Phong getPhongBySoPhong(String soPhong) {
+        Phong phong = null;
+        String sql = "SELECT p.soPhong, p.trangThai, p.moTa, lp.maLoaiPhong, lp.tenLoai, lp.soLuong, lp.dienTich, lp.giaTheoGio, lp.giaTheoNgay, lp.giaTheoDem, lp.phuThuQuaGio "
+                + "FROM Phong p JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE p.soPhong = ?";
 
-	public Phong getPhongBySoPhong(String soPhong) {
-		Phong phong = null;
-		String sql = "SELECT p.soPhong, p.trangThai, p.moTa, lp.maLoaiPhong, lp.tenLoaiPhong, lp.donGia "
-				+ "FROM Phong p JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong " + "WHERE p.soPhong = ?";
+        try (Connection conn = ConnectDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, soPhong);
+            ResultSet rs = ps.executeQuery();
 
-		try (Connection conn = ConnectDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            if (rs.next()) {
+                String trangThai = rs.getString("trangThai");
+                String mota = rs.getString("moTa");
 
-			ps.setString(1, soPhong);
-			ResultSet rs = ps.executeQuery();
+                String maLoai = rs.getString("maLoaiPhong");
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaGio = rs.getDouble("giaTheoGio");
+                double giaNgay = rs.getDouble("giaTheoNgay");
+                double giaDem = rs.getDouble("giaTheoDem");
+                double phuThu = rs.getDouble("phuThuQuaGio");
 
-			if (rs.next()) {
+                LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                phong = new Phong(soPhong, trangThai, lp, mota);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return phong;
+    }
 
-				String trangThai = rs.getString("trangThai");
-				String mota = rs.getString("moTa");
+    public ArrayList<Phong> getPhongChuaThanhToan() {
+        ArrayList<Phong> danhSach = new ArrayList<>();
+        String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
+                + "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
+                + "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
+                + "JOIN DonDatPhong ddp ON ctd.maDonDatPhong = ddp.maDonDatPhong "
+                + "WHERE ddp.trangThai = ? AND p.trangThai = ?";
 
-				// Dữ liệu loại phòng đầy đủ
-				String maLoai = rs.getString("maLoaiPhong");
-				String tenLoai = rs.getString("tenLoai");
-				int soLuong = rs.getInt("soLuong");
-				float dienTich = rs.getFloat("dienTich");
-				double giaGio = rs.getDouble("giaTheoGio");
-				double giaNgay = rs.getDouble("giaTheoNgay");
-				double giaDem = rs.getDouble("giaTheoDem");
-				double phuThu = rs.getDouble("phuThuQuaGio");
+        try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "Nhận phòng");
+            stmt.setString(2, "Đang ở");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String soPhong = rs.getString("soPhong");
+                    String trangThai = rs.getString("trangThai");
+                    String mota = rs.getString("moTa");
 
-				// Tạo LoaiPhong
-				LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                    String maLoai = rs.getString("maLoaiPhong");
+                    String tenLoai = rs.getString("tenLoai");
+                    int soLuong = rs.getInt("soLuong");
+                    float dienTich = rs.getFloat("dienTich");
+                    double giaGio = rs.getDouble("giaTheoGio");
+                    double giaNgay = rs.getDouble("giaTheoNgay");
+                    double giaDem = rs.getDouble("giaTheoDem");
+                    double phuThu = rs.getDouble("phuThuQuaGio");
 
-				// Tạo Phong
-				Phong p = new Phong(soPhong, trangThai, lp, mota);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return phong;
-	}
+                    LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                    Phong p = new Phong(soPhong, trangThai, lp, mota);
+                    danhSach.add(p);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-	public ArrayList<Phong> getPhongChuaThanhToan() {
-		ArrayList<Phong> danhSach = new ArrayList<>();
-		String sql = "SELECT p.soPhong, p.trangThai, lp.*, p.moTa " + "FROM Phong p "
-				+ "JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong "
-				+ "JOIN ChiTietDonDatPhong ctd ON p.soPhong = ctd.soPhong "
-				+ "JOIN DonDatPhong ddp ON ctd.maDonDatPhong = ddp.maDonDatPhong "
-				+ "WHERE ddp.trangThai = ? AND p.trangThai = ?"; // "Chưa thanh toán"
+        return danhSach;
+    }
 
-		try (Connection conn = ConnectDB.getConnection(); // Thay ConnectDB bằng class kết nối DB của bạn
-				PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, "Nhận phòng");
-			stmt.setString(2, "Đang ở");
-			try (ResultSet rs = stmt.executeQuery()) {
-				while (rs.next()) {
-					// Dữ liệu phòng
-					String soPhong = rs.getString("soPhong");
-					String trangThai = rs.getString("trangThai");
-					String mota = rs.getString("moTa");
+    public boolean setTrangThaiPhong(String soPhong, String trangThai) {
+        String sql = "UPDATE Phong SET trangThai = ? WHERE soPhong = ?";
 
-					// Dữ liệu loại phòng đầy đủ
-					String maLoai = rs.getString("maLoaiPhong");
-					String tenLoai = rs.getString("tenLoai");
-					int soLuong = rs.getInt("soLuong");
-					float dienTich = rs.getFloat("dienTich");
-					double giaGio = rs.getDouble("giaTheoGio");
-					double giaNgay = rs.getDouble("giaTheoNgay");
-					double giaDem = rs.getDouble("giaTheoDem");
-					double phuThu = rs.getDouble("phuThuQuaGio");
+        try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, trangThai);
+            stmt.setString(2, soPhong);
 
-					// Tạo LoaiPhong
-					LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-					// Tạo Phong
-					Phong p = new Phong(soPhong, trangThai, lp, mota);
-					danhSach.add(p);
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    public ArrayList<LoaiPhong> getAllLoaiPhong() {
+        ArrayList<LoaiPhong> dsLoaiPhong = new ArrayList<>();
+        String sql = "SELECT * FROM LoaiPhong";
 
-		return danhSach;
-	}
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-	public boolean setTrangThaiPhong(String soPhong, String trangThai) {
-		String sql = "UPDATE Phong SET trangThai = ? WHERE soPhong = ?";
+            while (rs.next()) {
+                LoaiPhong lp = new LoaiPhong(
+                    rs.getString("maLoaiPhong"),
+                    rs.getString("tenLoai"),
+                    rs.getInt("soLuong"),
+                    rs.getFloat("dienTich"),
+                    rs.getDouble("giaTheoGio"),
+                    rs.getDouble("giaTheoNgay"),
+                    rs.getDouble("giaTheoDem"),
+                    rs.getDouble("phuThuQuaGio")
+                );
+                dsLoaiPhong.add(lp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		try (Connection conn = ConnectDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, trangThai);
-			stmt.setString(2, soPhong);
+        return dsLoaiPhong;
+    }
 
+<<<<<<< HEAD
 			int rowsAffected = stmt.executeUpdate();
 			return rowsAffected > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
 		} catch (SQLException e) {
@@ -358,4 +359,102 @@ public class Phong_Dao {
 		return null;
 	}
 
+=======
+    // New methods to address duplicate data issue
+    public ArrayList<Phong> getAllPhongNew() {
+        ArrayList<Phong> danhSachPhong = new ArrayList<>();
+        String sql = "SELECT p.soPhong, p.trangThai, p.moTa, lp.maLoaiPhong, lp.tenLoai, lp.soLuong, lp.dienTich, lp.giaTheoGio, lp.giaTheoNgay, lp.giaTheoDem, lp.phuThuQuaGio " +
+                     "FROM Phong p JOIN LoaiPhong lp ON p.loaiPhong = lp.maLoaiPhong";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String soPhong = rs.getString("soPhong");
+                String trangThai = rs.getString("trangThai");
+                String moTa = rs.getString("moTa");
+
+                String maLoai = rs.getString("maLoaiPhong");
+                String tenLoai = rs.getString("tenLoai");
+                int soLuong = rs.getInt("soLuong");
+                float dienTich = rs.getFloat("dienTich");
+                double giaGio = rs.getDouble("giaTheoGio");
+                double giaNgay = rs.getDouble("giaTheoNgay");
+                double giaDem = rs.getDouble("giaTheoDem");
+                double phuThu = rs.getDouble("phuThuQuaGio");
+
+                LoaiPhong lp = new LoaiPhong(maLoai, tenLoai, soLuong, dienTich, giaGio, giaNgay, giaDem, phuThu);
+                Phong p = new Phong(soPhong, trangThai, lp, moTa);
+                danhSachPhong.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return danhSachPhong;
+    }
+
+    public boolean themPhongNew(Phong phong) {
+        // Check if room with soPhong already exists
+        if (getPhongBySoPhong(phong.getSoPhong()) != null) {
+            return false; // Room already exists
+        }
+
+        String sql = "INSERT INTO Phong (soPhong, trangThai, loaiPhong, moTa) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, phong.getSoPhong());
+            pst.setString(2, phong.getTrangThai());
+            pst.setString(3, phong.getLoaiPhong().getMaLoaiPhong());
+            pst.setString(4, phong.getMoTa());
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhatPhongNew(Phong phong) {
+        String sql = "UPDATE Phong SET trangThai = ?, loaiPhong = ?, moTa = ? WHERE soPhong = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, phong.getTrangThai());
+            stmt.setString(2, phong.getLoaiPhong().getMaLoaiPhong());
+            stmt.setString(3, phong.getMoTa());
+            stmt.setString(4, phong.getSoPhong());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaPhongNew(String soPhong) {
+        String sql = "DELETE FROM Phong WHERE soPhong = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, soPhong);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean existsSoPhong(String soPhong, String excludeSoPhong) throws Exception {
+        // Implementation: Check if soPhong exists in the database, excluding excludeSoPhong
+        // Example SQL: SELECT COUNT(*) FROM Phong WHERE soPhong = ? AND soPhong != ?
+       ArrayList<Phong> list = getAllPhongNew();
+        return list.stream().anyMatch(p -> p.getSoPhong().equalsIgnoreCase(soPhong) && 
+                (excludeSoPhong == null || !p.getSoPhong().equalsIgnoreCase(excludeSoPhong)));
+    }
+>>>>>>> branch 'main' of https://github.com/NguyenViet2004/hotel-management-system.git
 }
+   
