@@ -304,14 +304,6 @@ public class Phong_Dao {
         return dsLoaiPhong;
     }
 
-<<<<<<< HEAD
-			int rowsAffected = stmt.executeUpdate();
-			return rowsAffected > 0; // true nếu có ít nhất 1 dòng bị ảnh hưởng
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 	public ArrayList<String> getPhongTrongTheoLoaiVaThoiGian(String tenLoai, LocalDateTime thoiDiem) {
 	    ArrayList<String> ds = new ArrayList<>();
 	    String sql = """
@@ -359,7 +351,6 @@ public class Phong_Dao {
 		return null;
 	}
 
-=======
     // New methods to address duplicate data issue
     public ArrayList<Phong> getAllPhongNew() {
         ArrayList<Phong> danhSachPhong = new ArrayList<>();
@@ -448,13 +439,6 @@ public class Phong_Dao {
             return false;
         }
     }
-    public boolean existsSoPhong(String soPhong, String excludeSoPhong) throws Exception {
-        // Implementation: Check if soPhong exists in the database, excluding excludeSoPhong
-        // Example SQL: SELECT COUNT(*) FROM Phong WHERE soPhong = ? AND soPhong != ?
-       ArrayList<Phong> list = getAllPhongNew();
-        return list.stream().anyMatch(p -> p.getSoPhong().equalsIgnoreCase(soPhong) && 
-                (excludeSoPhong == null || !p.getSoPhong().equalsIgnoreCase(excludeSoPhong)));
-    }
->>>>>>> branch 'main' of https://github.com/NguyenViet2004/hotel-management-system.git
+
 }
    
