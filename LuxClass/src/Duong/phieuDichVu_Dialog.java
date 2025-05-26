@@ -198,7 +198,7 @@ public class phieuDichVu_Dialog extends JDialog {
 		DefaultTableModel model = (DefaultTableModel) table_PhieuDichVu.getModel();
 		model.setRowCount(0); // clear dữ liệu cũ
 
-        ArrayList<DichVu> danhSach = dichVuDAO.getDichVuTheoPhieuVaLoai(maPhieu, maLoai);
+        ArrayList<DichVu> danhSach = (ArrayList<DichVu>) dichVuDAO.getDichVuTheoPhieuVaLoai(maPhieu, maLoai);
 		double tongTien = 0;
 
 		for (DichVu dv : danhSach) {

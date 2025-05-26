@@ -6,6 +6,7 @@ import entity.LoaiDichVu;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DichVu_Dao {
 
@@ -188,5 +189,34 @@ public class DichVu_Dao {
 
         return ds;
     }
+    public List<DichVu> getAllDichVu1() {
+        List<DichVu> listDichVu = new ArrayList<>();
+        String sql = """
+            SELECT dv.maDV, dv.tenDV, dv.moTa, dv.giaDV, dv.maLoai, ldv.tenLoai
+            FROM DichVu dv
+            JOIN LoaiDichVu ldv ON dv.maLoai = ldv.maLoai
+        """;
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String maDV = rs.getString("maDV");
+                String tenDV = rs.getString("tenDV");
+                String moTa = rs.getString("moTa");
+                double giaDV = rs.getDouble("giaDV");
+                String maLoai = rs.getString("maLoai");
+                String tenLoai = rs.getString("tenLoai");
+
+                LoaiDichVu loaiDichVu = new LoaiDichVu(maLoai, tenLoai);
+                DichVu dichVu = new DichVu(maDV, tenDV, moTa, giaDV, loaiDichVu);
+                listDichVu.add(dichVu);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return listDichVu;
+    }
+
 
 }
