@@ -33,11 +33,11 @@ import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.UIManager;
 
+import TraPhong_CuaXien.quenMatKhau_dialog;
 import connectDB.ConnectDB;
 import dao.TaiKhoan_Dao;
 import entity.NhanVien;
 import entity.TaiKhoan;
-import motSoCNLT.quenMatKhau_dialog;
 import quanLy.GDQuanLy_Gui;
 
 import java.awt.BorderLayout;

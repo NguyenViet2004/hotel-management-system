@@ -23,8 +23,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import motSoCNLT.DatDichVu;
-import motSoCNLT.QuanLyKhachHang;
+import TraPhong_CuaXien.DatDichVu;
+import TraPhong_CuaXien.QuanLyKhachHang;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
