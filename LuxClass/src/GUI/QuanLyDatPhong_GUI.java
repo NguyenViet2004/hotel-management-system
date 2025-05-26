@@ -423,6 +423,14 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		btnHome.setOpaque(false);
 		btnHome.setAlignmentX(Component.LEFT_ALIGNMENT);
 		btnHome.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnHome.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					dispose(); // đóng frame hiện tại
+	                GiaoDienChinh window = new GiaoDienChinh();
+	                window.setVisible(true);
+				}
+		});
 
 		homePanel.add(lblTitleHeader);
 		homePanel.add(Box.createVerticalStrut(5));
@@ -477,30 +485,6 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		gbc.anchor = GridBagConstraints.LINE_END;
 		headerPanel.add(userPanel, gbc);
 
-		// Cột 7: Nút Close (X) góc phải trên
-		JButton btnClose = new JButton("X");
-		btnClose.setFont(new Font("Arial", Font.BOLD, 22));
-		btnClose.setForeground(Color.black);
-		btnClose.setBackground(Color.white);
-		btnClose.setFocusPainted(false);
-		btnClose.setBorderPainted(false);
-		btnClose.setPreferredSize(new Dimension(40, 40));
-		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnClose.addActionListener(e -> {
-			int result = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn thoát?", "Xác nhận thoát",
-					JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			if (result == JOptionPane.YES_OPTION) {
-				System.exit(0);
-			}
-		});
-
-		gbc.gridx = 7;
-		gbc.anchor = GridBagConstraints.NORTHEAST;
-		gbc.insets = new Insets(5, 10, 5, 5);
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.fill = GridBagConstraints.NONE;
-		headerPanel.add(btnClose, gbc);
 
 		return headerPanel;
 	}
