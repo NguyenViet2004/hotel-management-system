@@ -101,6 +101,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	private JCheckBox cbAllRooms;
 	private List<JCheckBox> loaiPhongCheckBoxes = new ArrayList<>();
 	private List<RoomPanel> allRoomPanelsList = new ArrayList<>();
+	private RoundedButton btnHuy;
 	private static final String ICON_PATH_PREFIX = "img/";
 	// Define Colors and Fonts (adjust as needed)
 	private static final Color COLOR_MEDIUM_GRAY_BORDER = new Color(200, 200, 200);
@@ -287,7 +288,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
         btnTra.setFont(buttonFont);
         panelCenterButtons.add(btnTra);
 
-        RoundedButton btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
+        btnHuy = new RoundedButton("Xử lý đơn đặt trước", 20);
         btnHuy.setPreferredSize(new Dimension(200, 40));
         btnHuy.setFont(buttonFont);
         btnHuy.addActionListener(this);
