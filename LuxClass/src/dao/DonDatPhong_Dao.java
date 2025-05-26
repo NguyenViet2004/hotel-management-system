@@ -476,6 +476,50 @@ public class DonDatPhong_Dao {
 	    return null; 
 	}
 
+	public boolean capNhatThoiGianCoc(String maDonDatPhong, LocalDateTime thoiGianCocMoi) {
+	    String sql = """
+	        UPDATE DonDatPhong
+	        SET thoiGianCoc = ?
+	        WHERE maDonDatPhong = ?
+	    """;
 
+	    try (Connection con = ConnectDB.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setTimestamp(1, Timestamp.valueOf(thoiGianCocMoi));
+	        ps.setString(2, maDonDatPhong);
+
+	        int rowsAffected = ps.executeUpdate();
+	        return rowsAffected > 0;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	public LocalDateTime layThoiGianCoc(String maDonDatPhong) {
+	    String sql = """
+	        SELECT thoiGianCoc FROM DonDatPhong WHERE maDonDatPhong = ?
+	    """;
+
+	    try (Connection con = ConnectDB.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, maDonDatPhong);
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            Timestamp ts = rs.getTimestamp("thoiGianCoc");
+	            if (ts != null) {
+	                return ts.toLocalDateTime(); 
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null; 
+	}
 
 }
