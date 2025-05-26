@@ -139,40 +139,41 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 
 		KhachHang kh = khachhangdao.timKhachHangTheoSoDienThoai(sdt);
 
-		if (kh.getSoCCCD() == null || kh.getSoCCCD().trim().isEmpty()) {
-			boolean daNhapDung = false;
-			while (!daNhapDung) {
-				String nhapCCCD = JOptionPane.showInputDialog(null,
-						"Khách hàng chưa có CCCD.\nVui lòng nhập CCCD (12 số, đúng định dạng):", "Nhập CCCD",
-						JOptionPane.WARNING_MESSAGE);
-
-				if (nhapCCCD == null || nhapCCCD.trim().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "Không thể nhận phòng khi chưa có CCCD!", "Lỗi",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-
-				nhapCCCD = nhapCCCD.trim();
-				if (!nhapCCCD.matches(regexCccd)) {
-					JOptionPane.showMessageDialog(null,
-							"CCCD không đúng định dạng! Vui lòng nhập lại.\n(12 số, bắt đầu bằng mã tỉnh hợp lệ)",
-							"Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
-				} else {
-					// Hợp lệ → cập nhật
-					kh.setSoCCCD(nhapCCCD);
-					khachhangdao.suaCCCD(kh);
-					daNhapDung = true;
-				}
-			}
-		}
 
 		DonDatPhong_Dao dao = new DonDatPhong_Dao();
 
 		capNhatVaReload(() -> {
 			if (tabIndex == 0) {
-				LocalDateTime ngayNhan = dao.layNgayNhanPhong(maDon);
+				// Kiểm tra CCCD chỉ khi nhận phòng
+				if (kh.getSoCCCD() == null || kh.getSoCCCD().trim().isEmpty()) {
+					boolean daNhapDung = false;
+					while (!daNhapDung) {
+						String nhapCCCD = JOptionPane.showInputDialog(null,
+								"Khách hàng chưa có CCCD.\nVui lòng nhập CCCD (12 số, đúng định dạng):", "Nhập CCCD",
+								JOptionPane.WARNING_MESSAGE);
 
-				// Chỉ cho nhận phòng nếu đã đến hoặc sắp tới giờ nhận (trong vòng 2 tiếng)
+						if (nhapCCCD == null || nhapCCCD.trim().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Không thể nhận phòng khi chưa có CCCD!", "Lỗi",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						nhapCCCD = nhapCCCD.trim();
+						if (!nhapCCCD.matches(regexCccd)) {
+							JOptionPane.showMessageDialog(null,
+									"CCCD không đúng định dạng! Vui lòng nhập lại.\n(12 số, bắt đầu bằng mã tỉnh hợp lệ)",
+									"Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+						} else {
+							// Hợp lệ → cập nhật
+							kh.setSoCCCD(nhapCCCD);
+							khachhangdao.suaCCCD(kh);
+							daNhapDung = true;
+						}
+					}
+				}
+
+				// Kiểm tra thời gian và xử lý nhận phòng
+				LocalDateTime ngayNhan = dao.layNgayNhanPhong(maDon);
 				if (thoiGianHienTai.isBefore(ngayNhan.minusHours(2))) {
 					JOptionPane.showMessageDialog(null,
 							"Chưa đến giờ nhận phòng.\nChỉ được nhận sớm tối đa 2 tiếng trước giờ nhận.", "Thông báo",
@@ -180,7 +181,6 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 					return;
 				}
 
-				// Được phép nhận phòng
 				dao.setTrangThaiDonDatPhong(maDon, "Nhận phòng");
 				ArrayList<String> danhSachPhong = chitietdondatphongdao.getDanhSachSoPhongTheoDon(maDon);
 
@@ -201,6 +201,7 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 				JOptionPane.showMessageDialog(null, "Đã xác nhận đặt phòng từ đơn tạm.");
 			}
 		});
+
 
 	}
 
