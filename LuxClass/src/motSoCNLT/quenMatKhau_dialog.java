@@ -1,4 +1,4 @@
-package TraPhong_CuaXien;
+package motSoCNLT;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 
 import GUI.DangNhap_GUI;
 import dao.NhanVien_Dao;
+import dao.TaiKhoan_Dao;
 import entity.NhanVien;
 
 import javax.swing.JLabel;
@@ -142,7 +143,7 @@ public class quenMatKhau_dialog extends JDialog implements KeyListener {
 					matKhauMoi.setText("");
 					return;
 				}
-			    TaiKhoan_DAO tKhoan_DAO = new TaiKhoan_DAO();
+			    TaiKhoan_Dao tKhoan_DAO = new TaiKhoan_Dao();
 			    boolean trungMatKhauCu = tKhoan_DAO.kiemTraMatKhauCu(tenTK, mkNew);
 
 			    if (trungMatKhauCu) {
@@ -278,7 +279,7 @@ public class quenMatKhau_dialog extends JDialog implements KeyListener {
 					return;
 				}
 
-				NhanVien_DAO nVien_DAO = new NhanVien_DAO();
+				NhanVien_Dao nVien_DAO = new NhanVien_Dao();
 				try {
 					NhanVien aNhanVien = nVien_DAO.timNhanVien(maNV, cCCD, SDT, tenTK);
 					if (aNhanVien != null) {

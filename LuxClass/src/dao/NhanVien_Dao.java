@@ -220,4 +220,36 @@ public class NhanVien_Dao {
 	    }
 	    return dsLeTan;
 	}
+	
+	 public NhanVien timNhanVien(String maNV, String soCCCD, String sdt, String tenDangNhap) throws SQLException {
+	        String sql = "SELECT nv.* " +
+	                     "FROM NhanVien nv " +
+	                     "LEFT JOIN TaiKhoan tk ON nv.maNV = tk.maNV " +
+	                     "WHERE nv.maNV = ? OR nv.soCCCD = ? OR nv.sdt = ? OR tk.tenDangNhap = ?";
+
+	        try (Connection con = ConnectDB.getConnection(); 
+	        	PreparedStatement stmt = con.prepareStatement(sql)) {
+	            stmt.setString(1, maNV);
+	            stmt.setString(2, soCCCD);
+	            stmt.setString(3, sdt);
+	            stmt.setString(4, tenDangNhap);
+
+	            try (ResultSet rs = stmt.executeQuery()) {
+	                if (rs.next()) {
+	                    NhanVien nv = new NhanVien();
+	                    nv.setMaNV(rs.getString("maNV"));
+	                    nv.setHoTen(rs.getString("hoTen"));
+	                    nv.setNgaySinh(rs.getDate("ngaySinh").toLocalDate());
+	                    nv.setSdt(rs.getString("sdt"));
+	                    nv.setDiaChi(rs.getString("diaChi"));
+	                    nv.setSoCCCD(rs.getString("soCCCD"));
+	                    nv.setChucVu(rs.getString("chucVu"));
+	                    nv.setCaLamViec(rs.getString("caLamViec"));
+	                    return nv;
+	                }
+	            }
+	        }
+
+	        return null; // Không tìm thấy
+	    }
 }
