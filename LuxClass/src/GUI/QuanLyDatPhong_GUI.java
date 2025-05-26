@@ -89,7 +89,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	private Phong_Dao dsPhong;
 	private LoaiPhong_Dao dsLoaiPhong;
 	private Map<String, ArrayList<Phong>> roomCategoriesMap; // Renamed to avoid conflict
-	private RoundedButton btnTra, btnDoi;
+	private RoundedButton btnTra, btnDoi, btnNhan;
 	// Filter components as class members
 	private JRadioButton rbPhongTrong;
 	private JRadioButton rbPhongDaDat;
@@ -285,10 +285,11 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		btnTra.setFont(buttonFont);
 		panelCenterButtons.add(btnTra);
 
-		RoundedButton btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
-		btnHuy.setPreferredSize(new Dimension(230, 40));
-		btnHuy.setFont(buttonFont);
-		panelCenterButtons.add(btnHuy);
+		btnNhan = new RoundedButton("Nhận phòng", 20);
+		btnNhan.setPreferredSize(new Dimension(230, 40));
+		btnNhan.addActionListener(this);
+		btnNhan.setFont(buttonFont);
+		panelCenterButtons.add(btnNhan);
 
 		// Panel South - Room display area
 		panelSouth = new CustomRoundedPanel(15, 15, 15, 15);
@@ -951,6 +952,20 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 			dialog.setSize(929, 629);
 			dialog.setResizable(false);
 			dialog.setVisible(true);
+		}
+		if (e.getSource() == btnNhan) {
+			// Sửa tên class đúng là DSPhongDatTruoc_Gui, dùng trong JDialog
+	        JDialog dialog = new JDialog();
+	        dialog.setTitle("Nhận phòng");
+	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	        dialog.setUndecorated(true);
+	        dialog.setSize(929, 629);
+	        dialog.setLocationRelativeTo(null);
+	        dialog.setResizable(false);
+
+	        // Thêm giao diện DSPhongDatTruoc_Gui vào dialog
+	        dialog.setContentPane(new DSPhongDatTruoc_Gui());
+	        dialog.setVisible(true);
 		}
 	}
 
