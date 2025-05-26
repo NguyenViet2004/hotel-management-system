@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
@@ -28,7 +29,8 @@ public class ThanhToanChiTiet extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			ThanhToanChiTiet dialog = new ThanhToanChiTiet();
+			JFrame aFrame= new JFrame();
+			ThanhToanChiTiet dialog = new ThanhToanChiTiet(aFrame, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setThongTinDatPhong("DP001", "Nguyễn Văn A", "0123456789", "P102, P102", "2025-05-20", "2025-05-22",
 					"2025-05-25", "KM2025", "2,500,000 VND");
@@ -38,7 +40,8 @@ public class ThanhToanChiTiet extends JDialog {
 		}
 	}
 
-	public ThanhToanChiTiet() {
+	public ThanhToanChiTiet(JFrame parent, boolean modal) {
+		super(parent, true);
 		setBounds(100, 100, 627, 616);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(255, 255, 255));

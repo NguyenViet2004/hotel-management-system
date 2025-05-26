@@ -21,6 +21,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -75,7 +76,8 @@ public class chiPhiPhatSinh_Dialog extends JDialog {
      */
     public static void main(String[] args) {
         try {
-            chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog("a", 1, "P101", "a");
+        	JFrame aFrame= new JFrame();
+            chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog("a", 1, "P101", "a", aFrame, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setUndecorated(true);
 			dialog.setLocationRelativeTo(null);
@@ -90,7 +92,8 @@ public class chiPhiPhatSinh_Dialog extends JDialog {
     /**
      * Create the dialog.
      */
-    public chiPhiPhatSinh_Dialog(String maDonDatPhong, int a, String maPhong, String loaiPhong) {
+    public chiPhiPhatSinh_Dialog(String maDonDatPhong, int a, String maPhong, String loaiPhong, JFrame parent, boolean modal) {
+    	super(parent, modal);
         this.maDonDatPhong = maDonDatPhong;
         this.rowIndex = a; // Khởi tạo rowIndex
         this.maPhong= maPhong;

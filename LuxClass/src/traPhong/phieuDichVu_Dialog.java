@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -46,18 +47,23 @@ public class phieuDichVu_Dialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			phieuDichVu_Dialog dialog = new phieuDichVu_Dialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			dialog.setLocationRelativeTo(null);
-			dialog.setResizable(false);
-			dialog.setVisible(true);
+//			phieuDichVu_Dialog dialog = new phieuDichVu_Dialog();
+//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//			dialog.setVisible(true);
+//			dialog.setLocationRelativeTo(null);
+//			dialog.setResizable(false);
+//			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public phieuDichVu_Dialog(String maPhieu, String loaiDV, String ngayLap) {
-		this(); // gọi constructor mặc định để tạo giao diện
+	public phieuDichVu_Dialog(JFrame parent, boolean modal) {
+        super(parent, modal); // GỌI super tại đây
+        phieuDichVu();
+
+    }
+	public phieuDichVu_Dialog(String maPhieu, String loaiDV, String ngayLap, JFrame parent, boolean modal) {
+		this(parent, true); 
 		maPhieuDichVu.setText(maPhieu);
 		loaiDichVu.setText(loaiDV);
 		ngayLapPhieu.setText(ngayLap);
@@ -68,7 +74,7 @@ public class phieuDichVu_Dialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public phieuDichVu_Dialog() {
+	public void phieuDichVu() {
 		setBounds(100, 100, 775, 524);
 		setUndecorated(true);
 		getContentPane().setLayout(new BorderLayout());

@@ -196,7 +196,7 @@ public class GiaoDienChinh extends JFrame{
 
         JMenuItem QuanLyKhachHang = createMenuItem("Quản lý khách hàng", w.apply(20), h.apply(70), w.apply(285), h.apply(60));
         QuanLyKhachHang.addActionListener(e ->{
-        	QuanLyKhachHang dialog = new QuanLyKhachHang();
+        	QuanLyKhachHang dialog = new QuanLyKhachHang(this, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
         });
@@ -204,7 +204,7 @@ public class GiaoDienChinh extends JFrame{
 
         JMenuItem QuanLyDatDichVu = createMenuItem("Quản lý đặt dịch vụ", w.apply(20), h.apply(140), w.apply(285), h.apply(60));
         QuanLyDatDichVu.addActionListener(e -> {
-			DatDichVu dialog = new DatDichVu();
+			DatDichVu dialog = new DatDichVu(this, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
         });

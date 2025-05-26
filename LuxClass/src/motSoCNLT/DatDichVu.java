@@ -25,6 +25,7 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -95,7 +96,8 @@ public class DatDichVu extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			DatDichVu dialog = new DatDichVu();
+			JFrame aFrame= new JFrame();
+			DatDichVu dialog = new DatDichVu(aFrame, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -106,7 +108,8 @@ public class DatDichVu extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public DatDichVu() {
+	public DatDichVu(JFrame parent, Boolean modal) {
+		super(parent, modal);
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setBounds(100, 100, 1300, 770);
 		getContentPane().setLayout(null);

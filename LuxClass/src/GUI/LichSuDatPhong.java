@@ -8,6 +8,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -57,7 +58,8 @@ public class LichSuDatPhong extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			LichSuDatPhong dialog = new LichSuDatPhong();
+			JFrame aFrame= new JFrame();
+			LichSuDatPhong dialog = new LichSuDatPhong(aFrame, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -68,8 +70,8 @@ public class LichSuDatPhong extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public LichSuDatPhong() {
-
+	public LichSuDatPhong(JFrame parent, Boolean modal) {
+		super(parent, modal);
 		setBounds(100, 100, 1084, 636);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(255, 255, 255));

@@ -27,7 +27,7 @@ public class timKiemDialog extends JDialog {
 	public static void main(String[] args) {
 	    try {	    	
 	    	JFrame aFrame= new JFrame();
-	        timKiemDialog dialog = new timKiemDialog(aFrame);
+	        timKiemDialog dialog = new timKiemDialog(aFrame, true);
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	        dialog.setVisible(true);
 	    } catch (Exception e) {
@@ -39,7 +39,8 @@ public class timKiemDialog extends JDialog {
 	 * Create the dialog.
 	 */
 
-	public timKiemDialog(JFrame parent) {
+	public timKiemDialog(JFrame parent, boolean modal) {
+		super(parent, modal);
 	    setUndecorated(true); // ✅ Phải là dòng đầu tiên
 	    getContentPane().setLayout(null);
 	    contentPanel.setLayout(new FlowLayout());

@@ -300,7 +300,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
         btnLichSu.addActionListener(this);
         panelCenterButtons.add(btnLichSu);
         btnLichSu.addActionListener(e -> {
-            LichSuDatPhong dialog = new LichSuDatPhong(); // Tạo dialog
+            LichSuDatPhong dialog = new LichSuDatPhong(this, true); // Tạo dialog
             dialog.setLocationRelativeTo(null); // Canh giữa màn hình
             dialog.setVisible(true); // Hiển thị dialog
         });
@@ -935,7 +935,7 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 			frameDatPhong.setVisible(true);
 		}
 		if (e.getSource() == btnTra) {
-			timKiemDialog dialog = new timKiemDialog(this);
+			timKiemDialog dialog = new timKiemDialog(this, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setUndecorated(true);
 			dialog.setLocationRelativeTo(null);
@@ -944,7 +944,7 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 			dialog.setVisible(true);
 		}
 		if (e.getSource() == btnDoi) {
-			timKiemDialog dialog = new timKiemDialog(this);
+			timKiemDialog dialog = new timKiemDialog(this, true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setUndecorated(true);
 			dialog.setLocationRelativeTo(null);

@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -51,9 +52,9 @@ public class QuanLyKhachHang extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			QuanLyKhachHang dialog = new QuanLyKhachHang();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
+//			QuanLyKhachHang dialog = new QuanLyKhachHang();
+//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -62,7 +63,8 @@ public class QuanLyKhachHang extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public QuanLyKhachHang() {
+	public QuanLyKhachHang(JFrame parent, boolean modal) {
+		super(parent, modal);
 		setBounds(100, 100, 1107, 700);
 		getContentPane().setLayout(null);
 		

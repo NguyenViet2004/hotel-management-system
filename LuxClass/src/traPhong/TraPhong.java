@@ -520,7 +520,7 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 						String loaiDV = table_dichVu.getValueAt(row, 1).toString();
 						String ngayLapPhieu = table_dichVu.getValueAt(row, 2).toString();
 
-						phieuDichVu_Dialog dialog = new phieuDichVu_Dialog(maPhieu, loaiDV, ngayLapPhieu);
+						phieuDichVu_Dialog dialog = new phieuDichVu_Dialog(maPhieu, loaiDV, ngayLapPhieu, TraPhong.this, true);
 						dialog.setLocationRelativeTo(null);
 						dialog.hienThiChiTietDichVu(maPhieu, loaiDV);
 						dialog.setVisible(true);
@@ -997,10 +997,8 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 					LoaiPhong_Dao loaip = new LoaiPhong_Dao();
 					LoaiPhong loai = loaip.getLoaiPhongBySoPhong(maPhong);
 					// Truyền maDonDatPhong và số thứ tự dòng vào dialog
-					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,
-							maPhong, loai.getTenLoai());
-
-					dialog.setChiPhiPhatSinhListener(TraPhong.this); // Thiết lập donDatPhong làm listener
+					chiPhiPhatSinh_Dialog dialog = new chiPhiPhatSinh_Dialog(currentDonDatPhong.getMaDonDatPhong(), row,maPhong, loai.getTenLoai(), TraPhong.this, true);
+					dialog.setChiPhiPhatSinhListener(TraPhong.this);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setUndecorated(true);
 					dialog.setLocationRelativeTo(null);
