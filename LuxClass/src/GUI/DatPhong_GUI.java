@@ -2106,7 +2106,6 @@ public class DatPhong_GUI extends JDialog {
 		        if (themDonThanhCong) {
 		            System.out.println("Thêm đơn đặt phòng thành công");
 		    		NhanPhongUtil np = new NhanPhongUtil();
-		    		np.insertChiTietKhiDatTrucTiep(maDon);
 		            boolean coLoi = false;
 
 		            for (int i = 0; i < danhSachSoPhongDuocChon.length; i++) {
@@ -2119,6 +2118,7 @@ public class DatPhong_GUI extends JDialog {
 			                phongdao.setTrangThaiPhong(danhSachSoPhongDuocChon[i], "Đang ở");
 				        } 
 		            }
+		            np.insertChiTietKhiDatTrucTiep(maDon);
 
 		            if (coLoi) {
 		                // Nếu có lỗi, xóa DonDatPhong đã thêm
