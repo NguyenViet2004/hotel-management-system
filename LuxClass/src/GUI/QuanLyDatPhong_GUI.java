@@ -50,11 +50,13 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import HuyPhong.DSPhongDatTruoc_Gui;
 import connectDB.ConnectDB;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import dao.LoaiPhong_Dao;
 import dao.Phong_Dao;
+import doiPhong.DialogPhongDangO;
 import entity.ChiTietDonDatPhong;
 import entity.DonDatPhong;
 import entity.LoaiPhong;
@@ -101,7 +103,6 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	private JCheckBox cbAllRooms;
 	private List<JCheckBox> loaiPhongCheckBoxes = new ArrayList<>();
 	private List<RoomPanel> allRoomPanelsList = new ArrayList<>();
-	private RoundedButton btnHuy;
 	private static final String ICON_PATH_PREFIX = "img/";
 	// Define Colors and Fonts (adjust as needed)
 	private static final Color COLOR_MEDIUM_GRAY_BORDER = new Color(200, 200, 200);
@@ -288,11 +289,11 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
         btnTra.setFont(buttonFont);
         panelCenterButtons.add(btnTra);
 
-        btnHuy = new RoundedButton("Xử lý đơn đặt trước", 20);
-        btnHuy.setPreferredSize(new Dimension(200, 40));
-        btnHuy.setFont(buttonFont);
-        btnHuy.addActionListener(this);
-        panelCenterButtons.add(btnHuy);
+        btnNhan = new RoundedButton("Xử lý đơn đặt trước", 20);
+        btnNhan.setPreferredSize(new Dimension(200, 40));
+        btnNhan.setFont(buttonFont);
+        btnNhan.addActionListener(this);
+        panelCenterButtons.add(btnNhan);
 
         btnLichSu = new RoundedButton("Lịch sử đặt phòng", 20);
         btnLichSu.setPreferredSize(new Dimension(200, 40));
@@ -944,20 +945,18 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 			dialog.setVisible(true);
 		}
 		if (e.getSource() == btnDoi) {
-			timKiemDialog dialog = new timKiemDialog(this, true);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setUndecorated(true);
-			dialog.setLocationRelativeTo(null);
-			dialog.setSize(929, 629);
-			dialog.setResizable(false);
-			dialog.setVisible(true);
+		    DialogPhongDangO dialog = new DialogPhongDangO(this);  // this = Frame cha hiện tại
+		    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		    dialog.setLocationRelativeTo(null);
+		    dialog.setSize(950, 550); // kích thước phù hợp
+		    dialog.setResizable(false);
+		    dialog.setVisible(true);
 		}
 		if (e.getSource() == btnNhan) {
 			// Sửa tên class đúng là DSPhongDatTruoc_Gui, dùng trong JDialog
 	        JDialog dialog = new JDialog();
 	        dialog.setTitle("Nhận phòng");
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	        dialog.setUndecorated(true);
 	        dialog.setSize(929, 629);
 	        dialog.setLocationRelativeTo(null);
 	        dialog.setResizable(false);

@@ -3,7 +3,6 @@ package doiPhong;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.format.DateTimeFormatter;
@@ -14,17 +13,18 @@ import dao.DonDatPhong_Dao;
 import entity.ChiTietSuDungPhong;
 import entity.DonDatPhong;
 
-public class PanelPhongDangO extends JPanel {
+public class DialogPhongDangO extends JDialog {
     private JTable table;
     private DefaultTableModel model;
     private JTextField txtTimKiem;
 
-    public PanelPhongDangO() {
+    public DialogPhongDangO(Frame owner) {
+        super(owner, "Danh sách phòng đang ở", true);
+        setSize(950, 550);
+        setLocationRelativeTo(owner);
         setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        setBackground(Color.WHITE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // Tiêu đề
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
 
@@ -32,9 +32,7 @@ public class PanelPhongDangO extends JPanel {
         lblTitle.setFont(new Font("Serif", Font.BOLD, 26));
         topPanel.add(lblTitle, BorderLayout.NORTH);
 
-        // Thanh tìm kiếm
-        JPanel searchPanel = new JPanel();
-        searchPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 15));
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
         searchPanel.setBackground(Color.WHITE);
         JLabel lblSoPhong = new JLabel("Số phòng:");
         lblSoPhong.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -43,14 +41,11 @@ public class PanelPhongDangO extends JPanel {
         searchPanel.add(lblSoPhong);
         searchPanel.add(txtTimKiem);
         searchPanel.add(btnTimKiem);
-
         topPanel.add(searchPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.NORTH);
 
-        // Bảng dữ liệu
         String[] columnNames = {"Mã đơn", "Số phòng", "Ngày nhận", "Ngày trả", "Hành động"};
         model = new DefaultTableModel(columnNames, 0) {
-            @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4;
             }
@@ -58,28 +53,18 @@ public class PanelPhongDangO extends JPanel {
 
         table = new JTable(model);
         table.setRowHeight(30);
-
-        table.getColumn("Hành động").setCellRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                                                           boolean isSelected, boolean hasFocus, int row, int column) {
-                return (Component) value;
-            }
-        });
-
+        table.getColumn("Hành động").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> (Component) value);
         table.getColumn("Hành động").setCellEditor(new ButtonEditor());
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
 
-        taiDuLieuPhongDangO(null);
-
-        // Sự kiện tìm kiếm
         btnTimKiem.addActionListener(e -> {
             String soPhongCanTim = txtTimKiem.getText().trim();
             taiDuLieuPhongDangO(soPhongCanTim.isEmpty() ? null : soPhongCanTim);
         });
+
+        taiDuLieuPhongDangO(null);
     }
 
     private void taiDuLieuPhongDangO(String soPhongTim) {
@@ -98,35 +83,25 @@ public class PanelPhongDangO extends JPanel {
             if (don != null && "Nhận phòng".equals(don.getTrangThai())) {
                 JButton btnDoiPhong = new JButton("Đổi phòng");
 
-                btnDoiPhong.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        new DoiPhongDialog(null, ct.getMaDonDatPhong(), ct.getSoPhong(), ct.getNgayKetThuc()).setVisible(true);
-                        taiDuLieuPhongDangO(null);
-                    }
+                btnDoiPhong.addActionListener(e -> {
+                    new DoiPhongDialog(this, ct.getMaDonDatPhong(), ct.getSoPhong(), ct.getNgayKetThuc()).setVisible(true);
+                    taiDuLieuPhongDangO(null); // reload
                 });
 
                 model.addRow(new Object[]{
-                    ct.getMaDonDatPhong(),
-                    ct.getSoPhong(),
-                    ct.getNgayBatDau().format(dtf),
-                    ct.getNgayKetThuc().format(dtf),
-                    btnDoiPhong
+                        ct.getMaDonDatPhong(),
+                        ct.getSoPhong(),
+                        ct.getNgayBatDau().format(dtf),
+                        ct.getNgayKetThuc().format(dtf),
+                        btnDoiPhong
                 });
             }
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Tìm đơn đặt phòng theo số phòng");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(950, 550);
-            frame.setLocationRelativeTo(null);
-
-            PanelPhongDangO panel = new PanelPhongDangO();
-            frame.add(panel);
-
-            frame.setVisible(true);
-        });
+    // Gọi dialog từ nơi khác
+    public static void showDialog(Frame owner) {
+        DialogPhongDangO dialog = new DialogPhongDangO(owner);
+        dialog.setVisible(true);
     }
 }
