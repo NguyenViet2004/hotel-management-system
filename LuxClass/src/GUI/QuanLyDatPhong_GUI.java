@@ -68,11 +68,13 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints; // Added import
 import java.awt.GridBagLayout; // Added import
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets; // Added import
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
@@ -89,7 +91,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	private Phong_Dao dsPhong;
 	private LoaiPhong_Dao dsLoaiPhong;
 	private Map<String, ArrayList<Phong>> roomCategoriesMap; // Renamed to avoid conflict
-	private RoundedButton btnTra, btnDoi, btnNhan;
+	private RoundedButton btnTra, btnDoi, btnNhan,btnLichSu;
 	// Filter components as class members
 	private JRadioButton rbPhongTrong;
 	private JRadioButton rbPhongDaDat;
@@ -121,19 +123,19 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		dsLoaiPhong = new LoaiPhong_Dao();
 		roomCategoriesMap = new HashMap<>();
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setResizable(false);
+		// Set bounds to respect taskbar
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle maxBounds = ge.getMaximumWindowBounds();
+        setBounds(maxBounds);
+        setResizable(false);
 
-		contentPane = new JPanel();
-		contentPane.setBackground(Color.LIGHT_GRAY);
-		contentPane.setLayout(null);
-		setContentPane(contentPane);
+        contentPane = new JPanel();
+        contentPane.setBackground(Color.LIGHT_GRAY);
+        contentPane.setLayout(null);
+        setContentPane(contentPane);
 
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int screenWidth = (int) screenSize.getWidth();
-		int screenHeight = (int) screenSize.getHeight();
-
+        int screenWidth = maxBounds.width;
+        int screenHeight = maxBounds.height;
 		// Panel North (Thanh tiêu đề)
 		// Changed to use the new createHeaderPanel method
 		JPanel headerPanel = createHeaderPanel();
@@ -254,42 +256,52 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		cbAllRooms.addItemListener(loaiPhongItemListener);
 		panelWest.add(cbAllRooms);
 
-		// Panel Center (for buttons like Đặt phòng, Đổi phòng, etc.)
-		CustomRoundedPanel panelCenterButtons = new CustomRoundedPanel(15, 15, 15, 15);
-		int centerButtonsWidth = screenWidth - westWidth - 20;
-		int centerButtonsHeight = (int) (screenHeight * 0.08);
-		// Adjust Y position of panelCenterButtons to be below panelNorth
-		panelCenterButtons.setBounds(westWidth + 10, (int) (screenHeight * 0.10) + 5, centerButtonsWidth,
-				centerButtonsHeight - 10);
-		panelCenterButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
-		panelCenterButtons.setBackground(Color.lightGray);
-		contentPane.add(panelCenterButtons);
+		// Panel Center (Buttons)
+        CustomRoundedPanel panelCenterButtons = new CustomRoundedPanel(15, 15, 15, 15);
+        int centerButtonsWidth = screenWidth - westWidth - 20;
+        int centerButtonsHeight = (int) (screenHeight * 0.08);
+        panelCenterButtons.setBounds(westWidth + 10, (int) (screenHeight * 0.10) + 5, centerButtonsWidth, centerButtonsHeight - 10);
+        panelCenterButtons.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        panelCenterButtons.setBackground(Color.LIGHT_GRAY);
+        contentPane.add(panelCenterButtons);
 
-		Font buttonFont = new Font("Arial", Font.BOLD, 16);
+        Font buttonFont = new Font("Arial", Font.BOLD, 16);
 
-		btnDat = new RoundedButton("Đặt phòng", 20);
-		btnDat.addActionListener(this);
-		btnDat.setPreferredSize(new Dimension(150, 40));
-		btnDat.setFont(buttonFont);
-		panelCenterButtons.add(btnDat);
+        btnDat = new RoundedButton("Đặt phòng", 20);
+        btnDat.addActionListener(this);
+        btnDat.setPreferredSize(new Dimension(140, 40));
+        btnDat.setFont(buttonFont);
+        panelCenterButtons.add(btnDat);
 
-		btnDoi = new RoundedButton("Đổi phòng", 20);
-		btnDoi.addActionListener(this);
-		btnDoi.setPreferredSize(new Dimension(150, 40));
-		btnDoi.setFont(buttonFont);
-		panelCenterButtons.add(btnDoi);
+        btnDoi = new RoundedButton("Đổi phòng", 20);
+        btnDoi.addActionListener(this);
+        btnDoi.setPreferredSize(new Dimension(140, 40));
+        btnDoi.setFont(buttonFont);
+        panelCenterButtons.add(btnDoi);
 
-		btnTra = new RoundedButton("Trả phòng", 20);
-		btnTra.setPreferredSize(new Dimension(150, 40));
-		btnTra.addActionListener(this);
-		btnTra.setFont(buttonFont);
-		panelCenterButtons.add(btnTra);
+        btnTra = new RoundedButton("Trả phòng", 20);
+        btnTra.setPreferredSize(new Dimension(140, 40));
+        btnTra.addActionListener(this);
+        btnTra.setFont(buttonFont);
+        panelCenterButtons.add(btnTra);
 
-		btnNhan = new RoundedButton("Nhận phòng", 20);
-		btnNhan.setPreferredSize(new Dimension(230, 40));
-		btnNhan.addActionListener(this);
-		btnNhan.setFont(buttonFont);
-		panelCenterButtons.add(btnNhan);
+        RoundedButton btnHuy = new RoundedButton("Hủy đơn đặt phòng", 20);
+        btnHuy.setPreferredSize(new Dimension(200, 40));
+        btnHuy.setFont(buttonFont);
+        btnHuy.addActionListener(this);
+        panelCenterButtons.add(btnHuy);
+
+        btnLichSu = new RoundedButton("Lịch sử đặt phòng", 20);
+        btnLichSu.setPreferredSize(new Dimension(200, 40));
+        btnLichSu.setFont(buttonFont);
+        btnLichSu.addActionListener(this);
+        panelCenterButtons.add(btnLichSu);
+        btnLichSu.addActionListener(e -> {
+            LichSuDatPhong dialog = new LichSuDatPhong(); // Tạo dialog
+            dialog.setLocationRelativeTo(null); // Canh giữa màn hình
+            dialog.setVisible(true); // Hiển thị dialog
+        });
+
 
 		// Panel South - Room display area
 		panelSouth = new CustomRoundedPanel(15, 15, 15, 15);
