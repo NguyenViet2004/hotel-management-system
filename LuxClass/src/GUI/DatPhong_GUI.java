@@ -22,6 +22,7 @@ import dao.DonDatPhong_Dao;
 import dao.KhachHang_Dao;
 import dao.PhieuDichVu_DAO;
 import dao.Phong_Dao;
+import doiPhong.NhanPhongUtil;
 import entity.ChiTietPhieuDichVu;
 import entity.DichVu;
 import entity.DonDatPhong;
@@ -2104,6 +2105,8 @@ public class DatPhong_GUI extends JDialog {
 
 		        if (themDonThanhCong) {
 		            System.out.println("Thêm đơn đặt phòng thành công");
+		    		NhanPhongUtil np = new NhanPhongUtil();
+		    		np.insertChiTietKhiDatTrucTiep(maDon);
 		            boolean coLoi = false;
 
 		            for (int i = 0; i < danhSachSoPhongDuocChon.length; i++) {
