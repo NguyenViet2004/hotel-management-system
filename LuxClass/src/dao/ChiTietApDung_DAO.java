@@ -24,11 +24,11 @@ public class ChiTietApDung_DAO {
 				try (ResultSet rs = checkStmt.executeQuery()) {
 					if (rs.next()) {
 						// Đã tồn tại → cộng dồn
-						float tongCu = rs.getFloat("tongThanhToanSauApDung");
-						float tongMoi = tongCu + cta.getTongThanhToanSauApDung();
+						double tongCu = rs.getDouble("tongThanhToanSauApDung");
+						double tongMoi = tongCu + cta.getTongThanhToanSauApDung();
 
 						try (PreparedStatement updateStmt = con.prepareStatement(sqlUpdate)) {
-							updateStmt.setFloat(1, tongMoi);
+							updateStmt.setDouble(1, tongMoi);
 							updateStmt.setString(2, cta.getMaDonDatPhong());
 							updateStmt.setString(3, cta.getMaKhuyenMai());
 							return updateStmt.executeUpdate() > 0;
@@ -39,7 +39,7 @@ public class ChiTietApDung_DAO {
 						try (PreparedStatement insertStmt = con.prepareStatement(sqlInsert)) {
 							insertStmt.setString(1, cta.getMaDonDatPhong());
 							insertStmt.setString(2, cta.getMaKhuyenMai());
-							insertStmt.setFloat(3, cta.getTongThanhToanSauApDung());
+							insertStmt.setDouble(3, cta.getTongThanhToanSauApDung());
 							return insertStmt.executeUpdate() > 0;
 						}
 					}
@@ -81,7 +81,7 @@ public class ChiTietApDung_DAO {
 			try (ResultSet rs = stmt.executeQuery()) {
 				while (rs.next()) {
 					String maKhuyenMai = rs.getString("maKhuyenMai");
-					float tongThanhToanSauApDung = rs.getFloat("tongThanhToanSauApDung");
+					double tongThanhToanSauApDung = rs.getDouble("tongThanhToanSauApDung");
 
 					ChiTietApDung chiTiet = new ChiTietApDung(maDonDatPhong, maKhuyenMai, tongThanhToanSauApDung);
 					danhSach.add(chiTiet);
