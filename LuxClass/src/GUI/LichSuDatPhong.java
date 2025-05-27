@@ -153,6 +153,10 @@ public class LichSuDatPhong extends JDialog {
 		JButton taiLai = new JButton("Tải lại");
 		taiLai.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		taiLai.setBackground(new Color(128, 255, 128));
+        taiLai.setBackground(new Color(0, 255, 128));
+        taiLai.setOpaque(true);
+        taiLai.setContentAreaFilled(true);
+        taiLai.setBorderPainted(false);
 		taiLai.setBounds(933, 10, 107, 41);
 		taiLai.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -219,6 +223,10 @@ public class LichSuDatPhong extends JDialog {
 		JButton tim = new JButton("Tìm");
 		tim.setBackground(new Color(128, 255, 128));
 		tim.setFont(new Font("Times New Roman", Font.BOLD, 22));
+        tim.setBackground(new Color(0, 255, 128));
+        tim.setOpaque(true);
+        tim.setContentAreaFilled(true);
+        tim.setBorderPainted(false);
 		tim.setBounds(398, 135, 74, 32);
 
 		tim.addActionListener(new ActionListener() {

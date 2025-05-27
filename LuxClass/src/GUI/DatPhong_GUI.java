@@ -383,11 +383,12 @@ public class DatPhong_GUI extends JDialog {
 		// Nút theo ngày
 		JButton theoNgayButton = new JButton("Theo ngày");
 		theoNgayButton.setFont(fontButton);
-		theoNgayButton.setBackground(Color.decode("#00C853")); // Xanh lá đậm thay cho Color.GREEN
+		theoNgayButton.setBackground(new Color(0, 255, 128));// Xanh lá đậm thay cho Color.GREEN
 		theoNgayButton.setForeground(Color.BLACK);
 		theoNgayButton.setFocusPainted(false);
 		theoNgayButton.setOpaque(true);
 		theoNgayButton.setContentAreaFilled(true);
+		theoNgayButton.setBorderPainted(false);
 		theoNgayButton.setBorder(new CompoundBorder(
 		    new LineBorder(Color.BLACK, 2),
 		    new EmptyBorder(5, 15, 5, 15)
@@ -404,6 +405,7 @@ public class DatPhong_GUI extends JDialog {
 		theoGioButton.setFocusPainted(false);
 		theoGioButton.setOpaque(true);
 		theoGioButton.setContentAreaFilled(true);
+		theoGioButton.setBorderPainted(false);
 		theoGioButton.setBorder(new CompoundBorder(
 		    new LineBorder(Color.BLACK, 2),
 		    new EmptyBorder(5, 15, 5, 15)
@@ -420,6 +422,7 @@ public class DatPhong_GUI extends JDialog {
 		theoDemButton.setFocusPainted(false);
 		theoDemButton.setOpaque(true);
 		theoDemButton.setContentAreaFilled(true);
+		theoDemButton.setBorderPainted(false);
 		theoDemButton.setBorder(new CompoundBorder(
 		    new LineBorder(Color.BLACK, 2),
 		    new EmptyBorder(5, 15, 5, 15)
@@ -791,11 +794,12 @@ public class DatPhong_GUI extends JDialog {
 
 		JButton confirmButton = new JButton("Xác nhận");
 		confirmButton.setFont(fontButton1);
-		confirmButton.setForeground(Color.WHITE);
-		confirmButton.setBackground(new Color(0, 180, 0)); // Xanh lá đậm
+		confirmButton.setForeground(Color.BLACK);
+		confirmButton.setBackground(new Color(0, 255, 128)); // Xanh lá đậm
 		confirmButton.setFocusPainted(false);
 		confirmButton.setOpaque(true);
 		confirmButton.setContentAreaFilled(true);
+        confirmButton.setBorderPainted(false);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
 
 		confirmButton.addActionListener(e -> {

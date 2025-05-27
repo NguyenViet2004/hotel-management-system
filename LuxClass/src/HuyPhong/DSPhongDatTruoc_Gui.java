@@ -76,6 +76,10 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 
 		JButton btnTimKiem = new JButton("Tìm kiếm");
 		btnTimKiem.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        btnTimKiem.setBackground(new Color(0, 255, 128));
+        btnTimKiem.setOpaque(true);
+        btnTimKiem.setContentAreaFilled(true);
+        btnTimKiem.setBorderPainted(false);
 
 		btnTimKiem.addActionListener(e -> timKiemDonDatPhongTheoSDT());
 

@@ -86,6 +86,10 @@ public class HuyPhong_GUI extends JDialog implements ActionListener {
         btnConfirm.setBackground(Color.RED);
         btnConfirm.setForeground(Color.WHITE);
         btnConfirm.setFont(new Font("Arial", Font.BOLD, 14));
+        btnConfirm.setBackground(new Color(0, 255, 128));
+        btnConfirm.setOpaque(true);
+        btnConfirm.setContentAreaFilled(true);
+        btnConfirm.setBorderPainted(false);
         buttonPanel.add(btnConfirm);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(buttonPanel);

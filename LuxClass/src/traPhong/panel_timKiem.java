@@ -198,6 +198,10 @@ public class panel_timKiem extends JPanel {
 		timKiem.setBackground(new Color(0, 255, 128));
 		timKiem.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		timKiem.setBounds(753, 320, 121, 38);
+        timKiem.setBackground(new Color(0, 255, 128));
+        timKiem.setOpaque(true);
+        timKiem.setContentAreaFilled(true);
+        timKiem.setBorderPainted(false);
 		add(timKiem);
 		
 		JLabel lblDanhSchn = new JLabel("Danh sách đơn đặt phòng");
@@ -275,8 +279,8 @@ public class panel_timKiem extends JPanel {
 
 		JTableHeader header11 = table_DonDatPhong.getTableHeader();
 		header11.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		header11.setForeground(Color.WHITE); 
-		header11.setBackground(new Color(22, 160, 133)); 
+		header11.setForeground(Color.BLACK); 
+		header11.setBackground(Color.GRAY); 
 
 		// Căn giữa nội dung trong bảng
 		DefaultTableCellRenderer centerRenderer11 = new DefaultTableCellRenderer();

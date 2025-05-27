@@ -53,6 +53,7 @@ public class DialogPhongDangO extends JDialog {
         btnTimKiem.setFocusPainted(false);
         btnTimKiem.setOpaque(true);
         btnTimKiem.setContentAreaFilled(true);
+        btnTimKiem.setBorderPainted(false);
         btnTimKiem.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         searchPanel.add(lblSoPhong);
@@ -117,6 +118,7 @@ public class DialogPhongDangO extends JDialog {
                 btnDoiPhong.setFocusPainted(false);
                 btnDoiPhong.setOpaque(true);
                 btnDoiPhong.setContentAreaFilled(true);
+                btnDoiPhong.setBorderPainted(false);
                 btnDoiPhong.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
                 btnDoiPhong.addActionListener(e -> {
