@@ -2,7 +2,8 @@ package doiPhong;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.format.DateTimeFormatter;
@@ -25,19 +26,35 @@ public class DialogPhongDangO extends JDialog {
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        Font fontTitle = new Font("Times New Roman", Font.BOLD, 24);
+        Font fontLabel = new Font("Times New Roman", Font.PLAIN, 18);
+        Font fontButton = new Font("Times New Roman", Font.BOLD, 16);
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
 
         JLabel lblTitle = new JLabel("Tìm kiếm phòng đang ở", SwingConstants.CENTER);
-        lblTitle.setFont(new Font("Serif", Font.BOLD, 26));
+        lblTitle.setFont(fontTitle);
         topPanel.add(lblTitle, BorderLayout.NORTH);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 15));
         searchPanel.setBackground(Color.WHITE);
+
         JLabel lblSoPhong = new JLabel("Số phòng:");
-        lblSoPhong.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblSoPhong.setFont(fontLabel);
+
         txtTimKiem = new JTextField(15);
+        txtTimKiem.setFont(fontLabel);
+
         JButton btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.setFont(fontButton);
+        btnTimKiem.setBackground(new Color(0, 123, 255));
+        btnTimKiem.setForeground(Color.WHITE);
+        btnTimKiem.setFocusPainted(false);
+        btnTimKiem.setOpaque(true);
+        btnTimKiem.setContentAreaFilled(true);
+        btnTimKiem.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+
         searchPanel.add(lblSoPhong);
         searchPanel.add(txtTimKiem);
         searchPanel.add(btnTimKiem);
@@ -52,7 +69,19 @@ public class DialogPhongDangO extends JDialog {
         };
 
         table = new JTable(model);
+        table.setFont(fontLabel);
         table.setRowHeight(30);
+
+        JTableHeader header = table.getTableHeader();
+        header.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        header.setPreferredSize(new Dimension(header.getWidth(), 30));
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
         table.getColumn("Hành động").setCellRenderer((table, value, isSelected, hasFocus, row, column) -> (Component) value);
         table.getColumn("Hành động").setCellEditor(new ButtonEditor());
 
@@ -82,6 +111,13 @@ public class DialogPhongDangO extends JDialog {
             DonDatPhong don = donDao.getDonDatPhongTheoMa(ct.getMaDonDatPhong());
             if (don != null && "Nhận phòng".equals(don.getTrangThai())) {
                 JButton btnDoiPhong = new JButton("Đổi phòng");
+                btnDoiPhong.setFont(new Font("Times New Roman", Font.BOLD, 14));
+                btnDoiPhong.setBackground(new Color(255, 153, 0));
+                btnDoiPhong.setForeground(Color.WHITE);
+                btnDoiPhong.setFocusPainted(false);
+                btnDoiPhong.setOpaque(true);
+                btnDoiPhong.setContentAreaFilled(true);
+                btnDoiPhong.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
                 btnDoiPhong.addActionListener(e -> {
                     new DoiPhongDialog(this, ct.getMaDonDatPhong(), ct.getSoPhong(), ct.getNgayKetThuc()).setVisible(true);
@@ -99,7 +135,6 @@ public class DialogPhongDangO extends JDialog {
         }
     }
 
-    // Gọi dialog từ nơi khác
     public static void showDialog(Frame owner) {
         DialogPhongDangO dialog = new DialogPhongDangO(owner);
         dialog.setVisible(true);

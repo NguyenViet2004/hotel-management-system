@@ -19,6 +19,9 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
     public QuanLyTaiKhoan_Panel() {
         setLayout(new BorderLayout());
 
+        Font fontChuan = new Font("Times New Roman", Font.PLAIN, 18);
+        Font fontDam = new Font("Times New Roman", Font.BOLD, 18);
+
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(null);
         contentPanel.setBackground(new Color(240, 240, 240));
@@ -39,12 +42,6 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
         lblDanhSach.setBounds(400, 10, 400, 30);
         tablePanel.add(lblDanhSach);
 
-//        JButton btnRefresh = new JButton("Làm mới");
-//        btnRefresh.setFont(new Font("Times New Roman", Font.BOLD, 18));
-//        btnRefresh.setBounds(20, 10, 200, 30);
-//        btnRefresh.addActionListener(e -> refreshTable());
-//        tablePanel.add(btnRefresh);
-
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(20, 50, 1100, 500);
         tablePanel.add(scrollPane);
@@ -52,11 +49,11 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
         String[] columns = {"Mã NV", "Họ tên", "Chức vụ", "Tài khoản", "Trạng thái", "Chức năng"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
+        table.setFont(fontChuan);
         table.setRowHeight(30);
-        table.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 
         JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Arial", Font.BOLD, 15));
+        header.setFont(fontDam);
         header.setPreferredSize(new Dimension(header.getWidth(), 35));
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -73,8 +70,7 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
     public void refreshTable() {
         try {
             model.setRowCount(0);
-            dsNhanVien = nvDao.getAllNhanVien(); // Use getAllNhanVien() to show all employees
-            // If you want only Lễ tân, use: dsNhanVien = nvDao.getAllLeTan();
+            dsNhanVien = nvDao.getAllNhanVien();
             for (NhanVien nv : dsNhanVien) {
                 TaiKhoan tk = tkDao.getTaiKhoanByMaNV(nv.getMaNV());
                 String tenTK = (tk != null) ? tk.getTenDangNhap() : "Chưa có";
@@ -83,7 +79,7 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
                     nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), tenTK, trangThai, "Quản lý"
                 });
             }
-            model.fireTableDataChanged(); // Ensure table updates visually
+            model.fireTableDataChanged();
             System.out.println("refreshTable: Loaded " + dsNhanVien.size() + " employees");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + e.getMessage());
@@ -99,6 +95,7 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setText("Quản lý");
+            setFont(new Font("Times New Roman", Font.BOLD, 16));
             setOpaque(true);
         }
 
@@ -121,7 +118,12 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
             this.tkDao = tkDao;
 
             button = new JButton("Quản lý");
+            button.setFont(new Font("Times New Roman", Font.BOLD, 16));
+            button.setBackground(new Color(173, 216, 230));
             button.setOpaque(true);
+            button.setContentAreaFilled(true);
+            button.setBorderPainted(false);
+
             button.addActionListener(e -> {
                 fireEditingStopped();
                 NhanVien nv = dsNhanVien.get(row);

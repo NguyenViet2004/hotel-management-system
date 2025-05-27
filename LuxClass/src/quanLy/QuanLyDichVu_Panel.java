@@ -46,35 +46,54 @@ public class QuanLyDichVu_Panel extends JPanel {
         int labelWidth = 170, fieldWidth = 250, height = 30, spacingY = 40;
         int leftX = 40, rightX = 600;
 
+        Font fontChuan = new Font("Times New Roman", Font.PLAIN, 18);
+        Font fontDam = new Font("Times New Roman", Font.BOLD, 18);
+
         JLabel lbMaDV = new JLabel("Mã dịch vụ:");
+        lbMaDV.setFont(fontDam);
         lbMaDV.setBounds(leftX, 20, labelWidth, height);
+
         tfMaDV = new JTextField();
+        tfMaDV.setFont(fontChuan);
         tfMaDV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMaDV.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
 
         JLabel lbTenDV = new JLabel("Tên dịch vụ:");
+        lbTenDV.setFont(fontDam);
         lbTenDV.setBounds(leftX, 20 + spacingY, labelWidth, height);
+
         tfTenDV = new JTextField();
+        tfTenDV.setFont(fontChuan);
         tfTenDV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfTenDV.setBounds(leftX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
 
         JLabel lbMoTa = new JLabel("Mô tả:");
+        lbMoTa.setFont(fontDam);
         lbMoTa.setBounds(leftX, 20 + 2 * spacingY, labelWidth, height);
+
         tfMoTa = new JTextField();
+        tfMoTa.setFont(fontChuan);
         tfMoTa.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMoTa.setBounds(leftX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
 
         JLabel lbGiaDV = new JLabel("Giá dịch vụ:");
+        lbGiaDV.setFont(fontDam);
         lbGiaDV.setBounds(rightX, 20, labelWidth, height);
+
         tfGiaDV = new JTextField();
+        tfGiaDV.setFont(fontChuan);
         tfGiaDV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfGiaDV.setBounds(rightX + labelWidth + 10, 20, fieldWidth, height);
 
         JLabel lbLoaiDV = new JLabel("Loại dịch vụ:");
+        lbLoaiDV.setFont(fontDam);
         lbLoaiDV.setBounds(rightX, 20 + spacingY, labelWidth, height);
+
         cbLoaiDV = new JComboBox<>();
+        cbLoaiDV.setFont(fontChuan);
         cbLoaiDV.setBounds(rightX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
         loadLoaiDichVu();
+
 
         // Buttons
         int buttonWidth = 170, buttonHeight = 35, buttonGap = 10; // Adjusted buttonWidth to 130
@@ -83,27 +102,40 @@ public class QuanLyDichVu_Panel extends JPanel {
 
         JButton btnThem = new JButton("Thêm dịch vụ");
         btnThem.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        btnThem.setBackground(new Color(0, 255, 128));
+        btnThem.setBackground(new Color(0, 255, 128)); // Màu xanh lá tươi
+        btnThem.setOpaque(true);
+        btnThem.setContentAreaFilled(true);
+        btnThem.setBorderPainted(false);
         btnThem.setBounds(buttonStartX, buttonY, buttonWidth, buttonHeight);
         btnThem.addActionListener(this::handleAdd);
 
         JButton btnSua = new JButton("Sửa dịch vụ");
         btnSua.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        btnSua.setBackground(new Color(255, 165, 0));
+        btnSua.setBackground(new Color(255, 165, 0)); // Màu cam nhạt
+        btnSua.setOpaque(true);
+        btnSua.setContentAreaFilled(true);
+        btnSua.setBorderPainted(false);
         btnSua.setBounds(buttonStartX + buttonWidth + buttonGap, buttonY, buttonWidth, buttonHeight);
         btnSua.addActionListener(this::handleUpdate);
 
         JButton btnXoa = new JButton("Xóa dịch vụ");
         btnXoa.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        btnXoa.setBackground(new Color(255, 69, 0));
+        btnXoa.setBackground(new Color(255, 69, 0)); // Màu đỏ
+        btnXoa.setOpaque(true);
+        btnXoa.setContentAreaFilled(true);
+        btnXoa.setBorderPainted(false);
         btnXoa.setBounds(buttonStartX + 2 * (buttonWidth + buttonGap), buttonY, buttonWidth, buttonHeight);
         btnXoa.addActionListener(this::handleDelete);
 
         JButton btnXoaTrang = new JButton("Xóa trắng");
         btnXoaTrang.setFont(new Font("Times New Roman", Font.BOLD, 18));
-        btnXoaTrang.setBackground(new Color(128, 128, 128)); // Gray color for clear button
+        btnXoaTrang.setBackground(new Color(128, 128, 128)); // Màu xám
+        btnXoaTrang.setOpaque(true);
+        btnXoaTrang.setContentAreaFilled(true);
+        btnXoaTrang.setBorderPainted(false);
         btnXoaTrang.setBounds(buttonStartX + 3 * (buttonWidth + buttonGap), buttonY, buttonWidth, buttonHeight);
         btnXoaTrang.addActionListener(e -> clearForm());
+
 
         Component[] components = {
             lbMaDV, tfMaDV, lbTenDV, tfTenDV, lbMoTa, tfMoTa,

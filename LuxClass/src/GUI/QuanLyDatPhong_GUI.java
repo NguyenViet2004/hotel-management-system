@@ -162,18 +162,21 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		panelWest.setLayout(null);
 		contentPane.add(panelWest);
 
-		Font ft = new Font("Arial", Font.BOLD, 18);
+		Font ft = new Font("Times New Roman", Font.BOLD, 18);
+		Font ftNho = new Font("Times New Roman", Font.PLAIN, 14);
 
+		// Panel chọn ngày
 		CustomRoundedPanel panelDate = new CustomRoundedPanel(10, 10, 10, 10);
 		panelDate.setBounds(20, 10, 180, 60);
 		panelDate.setBackground(Color.WHITE);
 		panelDate.setLayout(null);
 
 		JLabel lblDate = new JLabel("Chọn ngày");
-		lblDate.setFont(new Font("Arial", Font.BOLD, 12));
-		lblDate.setBounds(10, 5, 100, 20); // Adjusted bounds for label
+		lblDate.setFont(ftNho);
+		lblDate.setBounds(10, 5, 100, 20);
 		panelDate.add(lblDate);
 
+		// JDatePicker
 		UtilDateModel model = new UtilDateModel();
 		Calendar cal = Calendar.getInstance();
 		model.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
@@ -186,43 +189,54 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 
 		JDatePanelImpl datePanelImpl = new JDatePanelImpl(model, p);
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanelImpl, new DateLabelFormatter());
+		datePicker.setFont(ftNho);  // Cần thiết để tránh lỗi render font khi chạy jar
 		datePicker.setBounds(10, 30, 160, 26);
 		panelDate.add(datePicker);
 
 		datePicker.addActionListener(e -> {
-			java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
-			if (selectedDate != null) {
-				loadData(selectedDate);
-			}
+		    java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
+		    if (selectedDate != null) {
+		        loadData(selectedDate);
+		    }
 		});
 		panelWest.add(panelDate);
 
+		// Icon lịch – không chỉnh vì bạn để ảnh ngoài .jar
 		ImageIcon calendarIcon = new ImageIcon(
-				new ImageIcon("calendar.png").getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+		    new ImageIcon("calendar.png").getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH)
+		);
 		JLabel lblCalendarIcon = new JLabel(calendarIcon);
 		lblCalendarIcon.setBounds(145, 5, 30, 30);
 		panelDate.add(lblCalendarIcon);
 
-		JLabel lblTitleWest = new JLabel("Trạng thái"); // Renamed to avoid conflict with lblTitle in header
+		// Tiêu đề trái
+		JLabel lblTitleWest = new JLabel("Trạng thái");
 		lblTitleWest.setForeground(Color.decode("#3B9AEE"));
 		lblTitleWest.setBounds(20, 80, 150, 25);
 		lblTitleWest.setFont(ft);
 		panelWest.add(lblTitleWest);
 
+		// Radio button
 		rbPhongTrong = new JRadioButton("Phòng trống");
+		rbPhongTrong.setFont(ftNho);
 		rbPhongTrong.setBounds(35, 110, 150, 25);
 		rbPhongTrong.setBackground(Color.WHITE);
+		rbPhongTrong.setOpaque(false);
 		rbPhongTrong.addActionListener(e -> applyFilters());
 
 		rbPhongDaDat = new JRadioButton("Phòng đã đặt");
+		rbPhongDaDat.setFont(ftNho);
 		rbPhongDaDat.setBounds(35, 140, 150, 25);
 		rbPhongDaDat.setBackground(Color.WHITE);
+		rbPhongDaDat.setOpaque(false);
 		rbPhongDaDat.addActionListener(e -> applyFilters());
 
 		rbTatCaPhong = new JRadioButton("Tất Cả");
+		rbTatCaPhong.setFont(ftNho);
 		rbTatCaPhong.setBounds(35, 170, 150, 25);
 		rbTatCaPhong.setBackground(Color.WHITE);
-		rbTatCaPhong.setSelected(true); // Default to "Tất Cả"
+		rbTatCaPhong.setOpaque(false);
+		rbTatCaPhong.setSelected(true);
 		rbTatCaPhong.addActionListener(e -> applyFilters());
 
 		ButtonGroup groupStatus = new ButtonGroup();
@@ -233,33 +247,41 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		panelWest.add(rbPhongDaDat);
 		panelWest.add(rbTatCaPhong);
 
+		// Tiêu đề loại phòng
 		JLabel lblRoomType = new JLabel("Loại phòng");
 		lblRoomType.setBounds(20, 200, 150, 25);
 		lblRoomType.setForeground(Color.decode("#3B9AEE"));
 		lblRoomType.setFont(ft);
 		panelWest.add(lblRoomType);
 
+		// Danh sách loại phòng
 		ArrayList<LoaiPhong> danhSachLoaiPhong = dsLoaiPhong.getAllLoaiPhong();
 		int yPosition = 230;
 
 		ItemListener loaiPhongItemListener = e -> applyFilters();
 
 		for (LoaiPhong loaiPhong : danhSachLoaiPhong) {
-			JCheckBox cbLoaiPhong = new JCheckBox(loaiPhong.getTenLoai());
-			cbLoaiPhong.setBounds(35, yPosition, 200, 25);
-			cbLoaiPhong.setBackground(Color.WHITE);
-			cbLoaiPhong.setActionCommand(loaiPhong.getMaLoaiPhong());
-			cbLoaiPhong.addItemListener(loaiPhongItemListener);
-			panelWest.add(cbLoaiPhong);
-			loaiPhongCheckBoxes.add(cbLoaiPhong);
-			yPosition += 30;
+		    JCheckBox cbLoaiPhong = new JCheckBox(loaiPhong.getTenLoai());
+		    cbLoaiPhong.setFont(ftNho);
+		    cbLoaiPhong.setBounds(35, yPosition, 200, 25);
+		    cbLoaiPhong.setBackground(Color.WHITE);
+		    cbLoaiPhong.setOpaque(false);
+		    cbLoaiPhong.setActionCommand(loaiPhong.getMaLoaiPhong());
+		    cbLoaiPhong.addItemListener(loaiPhongItemListener);
+		    panelWest.add(cbLoaiPhong);
+		    loaiPhongCheckBoxes.add(cbLoaiPhong);
+		    yPosition += 30;
 		}
 
+		// CheckBox tất cả
 		cbAllRooms = new JCheckBox("Tất cả các loại phòng");
+		cbAllRooms.setFont(ftNho);
 		cbAllRooms.setBounds(35, yPosition, 200, 25);
 		cbAllRooms.setBackground(Color.WHITE);
+		cbAllRooms.setOpaque(false);
 		cbAllRooms.addItemListener(loaiPhongItemListener);
 		panelWest.add(cbAllRooms);
+
 
 		// Panel Center (Buttons)
         CustomRoundedPanel panelCenterButtons = new CustomRoundedPanel(15, 15, 15, 15);

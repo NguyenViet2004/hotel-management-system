@@ -14,12 +14,14 @@ public class ThongKeDoanhThuGUI extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 		setBackground(Color.WHITE);
 
+		Font fontTieuDe = new Font("Times New Roman", Font.BOLD, 24);
+
 		// Tiêu đề
 		JPanel header = new JPanel(new BorderLayout());
 		header.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		header.setBackground(Color.WHITE);
 		JLabel lbl = new JLabel("Thống kê doanh thu", JLabel.LEFT);
-		lbl.setFont(new Font("Arial", Font.BOLD, 24));
+		lbl.setFont(fontTieuDe);
 		header.add(lbl, BorderLayout.WEST);
 		add(header, BorderLayout.NORTH);
 

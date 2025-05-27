@@ -71,27 +71,40 @@ public class QuanLyPhong_Panel extends JPanel {
         int labelWidth = 130, fieldWidth = 250, height = 30, spacingY = 40;
         int leftX = 40, rightX = 600;
 
+        Font fontChuan = new Font("Times New Roman", Font.PLAIN, 18);
+        Font fontDam = new Font("Times New Roman", Font.BOLD, 18);
+
         // Left side
         JLabel lbSoPhong = new JLabel("Số phòng:");
+        lbSoPhong.setFont(fontDam);
         lbSoPhong.setBounds(leftX, 20, labelWidth, height);
+
         tfSoPhong = new JTextField();
+        tfSoPhong.setFont(fontChuan);
         tfSoPhong.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfSoPhong.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
 
         JLabel lbTrangThai = new JLabel("Trạng thái:");
+        lbTrangThai.setFont(fontDam);
         lbTrangThai.setBounds(leftX, 20 + spacingY, labelWidth, height);
+
         cbTrangThai = new JComboBox<>(new String[]{"Trống", "Không Sử Dụng"});
+        cbTrangThai.setFont(fontChuan);
         cbTrangThai.setBounds(leftX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
 
         // Right side
         JLabel lbLoaiPhong = new JLabel("Loại phòng:");
+        lbLoaiPhong.setFont(fontDam);
         lbLoaiPhong.setBounds(rightX, 20, labelWidth, height);
+
         cbLoaiPhong = new JComboBox<>();
+        cbLoaiPhong.setFont(fontChuan);
         cbLoaiPhong.setBounds(rightX + labelWidth + 10, 20, fieldWidth, height);
         cbLoaiPhong.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setFont(fontChuan);
                 if (value instanceof LoaiPhong) {
                     setText(((LoaiPhong) value).getTenLoai());
                 }
@@ -101,10 +114,14 @@ public class QuanLyPhong_Panel extends JPanel {
         loadLoaiPhong();
 
         JLabel lbMoTa = new JLabel("Mô tả:");
+        lbMoTa.setFont(fontDam);
         lbMoTa.setBounds(rightX, 20 + spacingY, labelWidth, height);
+
         tfMoTa = new JTextField();
+        tfMoTa.setFont(fontChuan);
         tfMoTa.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMoTa.setBounds(rightX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
+
 
         // Buttons (aligned on the same row, adjusted to prevent clipping)
         int buttonWidth = 170, buttonHeight = 35, buttonGap = 10;
@@ -114,26 +131,39 @@ public class QuanLyPhong_Panel extends JPanel {
         btnThemPhong = new JButton("Thêm phòng");
         btnThemPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnThemPhong.setBackground(new Color(0, 255, 128));
+        btnThemPhong.setOpaque(true);
+        btnThemPhong.setContentAreaFilled(true);
+        btnThemPhong.setBorderPainted(false);
         btnThemPhong.setBounds(buttonStartX, buttonY, buttonWidth, buttonHeight);
         btnThemPhong.addActionListener(this::handleAddPhong);
 
         btnSuaPhong = new JButton("Sửa phòng");
         btnSuaPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnSuaPhong.setBackground(new Color(255, 165, 0));
+        btnSuaPhong.setOpaque(true);
+        btnSuaPhong.setContentAreaFilled(true);
+        btnSuaPhong.setBorderPainted(false);
         btnSuaPhong.setBounds(buttonStartX + buttonWidth + buttonGap, buttonY, buttonWidth, buttonHeight);
         btnSuaPhong.addActionListener(this::handleUpdatePhong);
 
         btnXoaPhong = new JButton("Xóa phòng");
         btnXoaPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnXoaPhong.setBackground(new Color(255, 69, 0));
+        btnXoaPhong.setOpaque(true);
+        btnXoaPhong.setContentAreaFilled(true);
+        btnXoaPhong.setBorderPainted(false);
         btnXoaPhong.setBounds(buttonStartX + 2 * (buttonWidth + buttonGap), buttonY, buttonWidth, buttonHeight);
         btnXoaPhong.addActionListener(this::handleDeletePhong);
 
         JButton btnXoaTrangPhong = new JButton("Xóa trắng");
         btnXoaTrangPhong.setFont(new Font("Times New Roman", Font.BOLD, 18));
         btnXoaTrangPhong.setBackground(new Color(128, 128, 128));
+        btnXoaTrangPhong.setOpaque(true);
+        btnXoaTrangPhong.setContentAreaFilled(true);
+        btnXoaTrangPhong.setBorderPainted(false);
         btnXoaTrangPhong.setBounds(buttonStartX + 3 * (buttonWidth + buttonGap), buttonY, buttonWidth, buttonHeight);
         btnXoaTrangPhong.addActionListener(e -> clearPhongForm());
+
 
         Component[] components = {
                 lbSoPhong, tfSoPhong, lbTrangThai, cbTrangThai,

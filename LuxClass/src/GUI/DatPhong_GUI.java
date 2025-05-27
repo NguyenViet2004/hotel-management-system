@@ -377,44 +377,65 @@ public class DatPhong_GUI extends JDialog {
 
 		// ========== Tạo 3 nút với viền======
 		// Tạo kích thước chuẩn cho cả 3 nút
-		Dimension panelSize = buttonPanel.getPreferredSize();
-		Dimension buttonSize = new Dimension((int) (panelSize.width * 0.8), (int) (headerHeight * 0.2));
-
+		Font fontButton = new Font("Times New Roman", Font.BOLD, 16);
+		Dimension buttonSize = new Dimension(140, 40); // Bạn nên định nghĩa rõ nếu chưa có
 
 		// Nút theo ngày
 		JButton theoNgayButton = new JButton("Theo ngày");
-		theoNgayButton.setFont(new Font("Arial", Font.BOLD, 14));
-		theoNgayButton.setBackground(Color.GREEN);
+		theoNgayButton.setFont(fontButton);
+		theoNgayButton.setBackground(Color.decode("#00C853")); // Xanh lá đậm thay cho Color.GREEN
+		theoNgayButton.setForeground(Color.BLACK);
 		theoNgayButton.setFocusPainted(false);
-		theoNgayButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoNgayButton.setOpaque(true);
+		theoNgayButton.setContentAreaFilled(true);
+		theoNgayButton.setBorder(new CompoundBorder(
+		    new LineBorder(Color.BLACK, 2),
+		    new EmptyBorder(5, 15, 5, 15)
+		));
 		theoNgayButton.setPreferredSize(buttonSize);
-		theoNgayButton.setMaximumSize(buttonSize); // Quan trọng để BoxLayout áp đúng size
-		theoNgayButton.setAlignmentX(Component.CENTER_ALIGNMENT); // căn giữa ngang
+		theoNgayButton.setMaximumSize(buttonSize);
+		theoNgayButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		// Nút theo giờ
 		JButton theoGioButton = new JButton("Theo giờ");
-		theoGioButton.setFont(new Font("Arial", Font.BOLD, 14));
+		theoGioButton.setFont(fontButton);
 		theoGioButton.setBackground(Color.WHITE);
+		theoGioButton.setForeground(Color.BLACK);
 		theoGioButton.setFocusPainted(false);
-		theoGioButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoGioButton.setOpaque(true);
+		theoGioButton.setContentAreaFilled(true);
+		theoGioButton.setBorder(new CompoundBorder(
+		    new LineBorder(Color.BLACK, 2),
+		    new EmptyBorder(5, 15, 5, 15)
+		));
 		theoGioButton.setPreferredSize(buttonSize);
 		theoGioButton.setMaximumSize(buttonSize);
 		theoGioButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		// Nút theo đêm
 		JButton theoDemButton = new JButton("Theo đêm");
-		theoDemButton.setFont(new Font("Arial", Font.BOLD, 14));
+		theoDemButton.setFont(fontButton);
 		theoDemButton.setBackground(Color.WHITE);
+		theoDemButton.setForeground(Color.BLACK);
 		theoDemButton.setFocusPainted(false);
-		theoDemButton.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5, 15, 5, 15)));
+		theoDemButton.setOpaque(true);
+		theoDemButton.setContentAreaFilled(true);
+		theoDemButton.setBorder(new CompoundBorder(
+		    new LineBorder(Color.BLACK, 2),
+		    new EmptyBorder(5, 15, 5, 15)
+		));
 		theoDemButton.setPreferredSize(buttonSize);
 		theoDemButton.setMaximumSize(buttonSize);
 		theoDemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		buttonPanel.add(Box.createVerticalStrut(10)); // khoảng cách giữa các nút
+		// Thêm vào panel
+		buttonPanel.add(Box.createVerticalStrut(10));
 		buttonPanel.add(theoGioButton);
+		buttonPanel.add(Box.createVerticalStrut(10));
 		buttonPanel.add(theoNgayButton);
+		buttonPanel.add(Box.createVerticalStrut(10));
 		buttonPanel.add(theoDemButton);
+
 
 		theoGioButton.addActionListener(e -> {
 		    updateButtonStyles(theoGioButton, theoNgayButton, theoDemButton);
@@ -766,12 +787,17 @@ public class DatPhong_GUI extends JDialog {
 		
 		
 		// ===== Panel phải: Nút xác nhận =====
+		Font fontButton1 = new Font("Times New Roman", Font.BOLD, 16); // Gợi ý dùng font đồng bộ
+
 		JButton confirmButton = new JButton("Xác nhận");
-		confirmButton.setFont(new Font("Arial", Font.BOLD, 14));
+		confirmButton.setFont(fontButton1);
 		confirmButton.setForeground(Color.WHITE);
-		confirmButton.setBackground(new Color(0, 180, 0)); // Màu xanh lá
+		confirmButton.setBackground(new Color(0, 180, 0)); // Xanh lá đậm
 		confirmButton.setFocusPainted(false);
+		confirmButton.setOpaque(true);
+		confirmButton.setContentAreaFilled(true);
 		confirmButton.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+
 		confirmButton.addActionListener(e -> {
 
 	        tuNgay = convertToTimestamp(checkInButton.getSelectedDate(), checkInButton.fixedTime);

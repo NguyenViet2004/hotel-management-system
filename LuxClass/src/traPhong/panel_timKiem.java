@@ -205,27 +205,46 @@ public class panel_timKiem extends JPanel {
 		lblDanhSchn.setBounds(289, 390, 345, 38);
 		add(lblDanhSchn);
 		
+		Font fontTable = new Font("Times New Roman", Font.PLAIN, 18);
+		Font fontHeader = new Font("Times New Roman", Font.BOLD, 20);
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(47, 450, 851, 104);
 		add(scrollPane_1);
-		
+
 		table_DonDatPhong = new JTable();
-		table_DonDatPhong.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		table_DonDatPhong.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"M\u00E3 \u0111\u01A1n \u0111\u1EB7t ph\u00F2ng", "Tên khách", "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i", "Tr\u1EA1ng th\u00E1i", "Số phòng"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, true, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		table_DonDatPhong.setFont(fontTable);
 		table_DonDatPhong.setRowHeight(25);
+
+		// Đặt model và cấu hình cột không chỉnh sửa
+		table_DonDatPhong.setModel(new DefaultTableModel(
+		    new Object[][] {},
+		    new String[] {
+		        "Mã đơn đặt phòng", "Tên khách", "Số điện thoại", "Trạng thái", "Số phòng"
+		    }
+		) {
+		    boolean[] columnEditables = new boolean[] {
+		        false, false, true, false, false
+		    };
+		    public boolean isCellEditable(int row, int column) {
+		        return columnEditables[column];
+		    }
+		});
+
+		// Đặt font cho phần tiêu đề bảng
+		JTableHeader header1 = table_DonDatPhong.getTableHeader();
+		header1.setFont(fontHeader);
+		header1.setPreferredSize(new Dimension(header1.getWidth(), 30));
+
+		// (Tuỳ chọn) căn giữa dữ liệu trong bảng
+		DefaultTableCellRenderer centerRenderer1 = new DefaultTableCellRenderer();
+		centerRenderer1.setHorizontalAlignment(SwingConstants.CENTER);
+		for (int i = 0; i < table_DonDatPhong.getColumnCount(); i++) {
+		    table_DonDatPhong.getColumnModel().getColumn(i).setCellRenderer(centerRenderer1);
+		}
+
+		scrollPane_1.setViewportView(table_DonDatPhong);
+
 		table_DonDatPhong.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
@@ -254,16 +273,16 @@ public class panel_timKiem extends JPanel {
 		    }
 		});
 
-		JTableHeader header1 = table_DonDatPhong.getTableHeader();
-		header1.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		header1.setForeground(Color.WHITE); 
-		header1.setBackground(new Color(22, 160, 133)); 
+		JTableHeader header11 = table_DonDatPhong.getTableHeader();
+		header11.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		header11.setForeground(Color.WHITE); 
+		header11.setBackground(new Color(22, 160, 133)); 
 
 		// Căn giữa nội dung trong bảng
-		DefaultTableCellRenderer centerRenderer1 = new DefaultTableCellRenderer();
-		centerRenderer1.setHorizontalAlignment(SwingConstants.CENTER);
+		DefaultTableCellRenderer centerRenderer11 = new DefaultTableCellRenderer();
+		centerRenderer11.setHorizontalAlignment(SwingConstants.CENTER);
 		for (int i = 0; i < table_DonDatPhong.getColumnCount(); i++) {
-			table_DonDatPhong.getColumnModel().getColumn(i).setCellRenderer(centerRenderer1);
+			table_DonDatPhong.getColumnModel().getColumn(i).setCellRenderer(centerRenderer11);
 		}
 		// Căn giữa header
 		DefaultTableCellRenderer headerRenderer1 = (DefaultTableCellRenderer) table_DonDatPhong.getTableHeader().getDefaultRenderer();

@@ -27,6 +27,9 @@ public class QuanLyNhanVien_Panel extends JPanel {
         this.taiKhoanPanel = taiKhoanPanel;
         setLayout(new BorderLayout());
 
+        Font fontChuan = new Font("Times New Roman", Font.PLAIN, 18);
+        Font fontDam = new Font("Times New Roman", Font.BOLD, 18);
+
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(null);
         contentPanel.setBackground(new Color(240, 240, 240));
@@ -46,57 +49,76 @@ public class QuanLyNhanVien_Panel extends JPanel {
         int leftX = 40, rightX = 600;
 
         JLabel lbMaNV = new JLabel("Mã nhân viên:");
+        lbMaNV.setFont(fontDam);
         lbMaNV.setBounds(leftX, 20, labelWidth, height);
         tfMaNV = new JTextField();
+        tfMaNV.setFont(fontChuan);
         tfMaNV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMaNV.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
         tfMaNV.setEditable(false);
 
         JLabel lbHoTen = new JLabel("Họ tên:");
+        lbHoTen.setFont(fontDam);
         lbHoTen.setBounds(leftX, 20 + spacingY, labelWidth, height);
         tfHoTen = new JTextField();
+        tfHoTen.setFont(fontChuan);
         tfHoTen.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfHoTen.setBounds(leftX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
 
         JLabel lbNgaySinh = new JLabel("Ngày sinh:");
+        lbNgaySinh.setFont(fontDam);
         lbNgaySinh.setBounds(leftX, 20 + 2 * spacingY, labelWidth, height);
         dateChooser = new JDateChooser();
+        dateChooser.setFont(fontChuan);
         dateChooser.setDateFormatString("dd/MM/yyyy");
         dateChooser.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         dateChooser.setBounds(leftX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
 
         JLabel lbSdt = new JLabel("SĐT:");
+        lbSdt.setFont(fontDam);
         lbSdt.setBounds(leftX, 20 + 3 * spacingY, labelWidth, height);
         tfSdt = new JTextField();
+        tfSdt.setFont(fontChuan);
         tfSdt.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfSdt.setBounds(leftX + labelWidth + 10, 20 + 3 * spacingY, fieldWidth, height);
 
         JLabel lbCCCD = new JLabel("CCCD:");
+        lbCCCD.setFont(fontDam);
         lbCCCD.setBounds(rightX, 20, labelWidth, height);
         tfCCCD = new JTextField();
+        tfCCCD.setFont(fontChuan);
         tfCCCD.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfCCCD.setBounds(rightX + labelWidth + 10, 20, fieldWidth, height);
 
         JLabel lbDiaChi = new JLabel("Địa chỉ:");
+        lbDiaChi.setFont(fontDam);
         lbDiaChi.setBounds(rightX, 20 + spacingY, labelWidth, height);
         tfDiaChi = new JTextField();
+        tfDiaChi.setFont(fontChuan);
         tfDiaChi.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfDiaChi.setBounds(rightX + labelWidth + 10, 20 + spacingY, fieldWidth, height);
 
         JLabel lbChucVu = new JLabel("Chức vụ:");
+        lbChucVu.setFont(fontDam);
         lbChucVu.setBounds(rightX, 20 + 2 * spacingY, labelWidth, height);
         cbChucVu = new JComboBox<>(new String[]{"Kế toán", "Lễ tân", "Bếp", "Buồng phòng"});
+        cbChucVu.setFont(fontChuan);
         cbChucVu.setBounds(rightX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
         cbChucVu.addActionListener(e -> updateMaNVField());
 
         JLabel lbCa = new JLabel("Ca làm việc:");
+        lbCa.setFont(fontDam);
         lbCa.setBounds(rightX, 20 + 3 * spacingY, labelWidth, height);
         cbCa = new JComboBox<>(new String[]{"Ca 1", "Ca 2", "Ca 3"});
+        cbCa.setFont(fontChuan);
         cbCa.setBounds(rightX + labelWidth + 10, 20 + 3 * spacingY, fieldWidth, height);
 
         JButton btnThem = new JButton("Thêm nhân viên");
-        btnThem.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        btnThem.setFont(fontDam);
         btnThem.setBackground(new Color(0, 255, 128));
+        btnThem.setOpaque(true);
+        btnThem.setContentAreaFilled(true);
+        btnThem.setBorderPainted(false);
         btnThem.setBounds(rightX + labelWidth + 10, 20 + 4 * spacingY + 5, 180, 35);
         btnThem.addActionListener(this::handleAdd);
 
@@ -123,11 +145,11 @@ public class QuanLyNhanVien_Panel extends JPanel {
         String[] columns = {"Mã NV", "Họ tên", "Ngày sinh", "SĐT", "CCCD", "Địa chỉ", "Chức vụ", "Ca làm"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
+        table.setFont(fontChuan);
         table.setRowHeight(30);
-        table.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 
         JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Arial", Font.BOLD, 15));
+        header.setFont(new Font("Times New Roman", Font.BOLD, 18));
         header.setPreferredSize(new Dimension(header.getWidth(), 35));
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
