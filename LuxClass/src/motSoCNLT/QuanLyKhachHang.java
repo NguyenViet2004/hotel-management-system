@@ -228,6 +228,9 @@ public class QuanLyKhachHang extends JDialog {
 		capNhat.setBackground(new Color(128, 255, 128));
 		capNhat.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		capNhat.setBounds(890, 175, 132, 37);
+        capNhat.setOpaque(true);
+        capNhat.setContentAreaFilled(true);
+        capNhat.setBorderPainted(false);
 		capNhat.addActionListener(new ActionListener() {
 			
 			@Override

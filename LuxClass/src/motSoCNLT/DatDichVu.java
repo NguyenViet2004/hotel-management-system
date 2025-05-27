@@ -190,6 +190,9 @@ public class DatDichVu extends JDialog {
 		JButton xacNhan = new JButton("Xác nhận");
 		xacNhan.setBackground(new Color(128, 255, 128));
 		xacNhan.setFont(new Font("Times New Roman", Font.BOLD, 22));
+        xacNhan.setOpaque(true);
+        xacNhan.setContentAreaFilled(true);
+        xacNhan.setBorderPainted(false);
 		xacNhan.setBounds(230, 150, 138, 30);
 
 		loadDanhSachMaPhong();
@@ -550,6 +553,9 @@ public class DatDichVu extends JDialog {
 		JButton xacNhanDat = new JButton("Xác nhận đặt");
 		xacNhanDat.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		xacNhanDat.setBackground(new Color(128, 255, 128));
+        xacNhanDat.setOpaque(true);
+        xacNhanDat.setContentAreaFilled(true);
+        xacNhanDat.setBorderPainted(false);
 		xacNhanDat.setBounds(1074, 486, 172, 35);
 
 		panel_TimTheoMaPhong_1.add(xacNhanDat);
