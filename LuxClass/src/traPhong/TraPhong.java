@@ -3,6 +3,7 @@ package traPhong;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -23,6 +24,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -238,6 +241,19 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 		help.setBorderPainted(false);
 		help.setFocusPainted(false);
 		Header.add(help);
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ví dụ: hiển thị hộp thoại trợ giúp
+            	File htmlFile = new File("HTML/HDSD.html");
+                try {
+					Desktop.getDesktop().browse(htmlFile.toURI());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
 
 		JLabel lblNewLabel_8 = new JLabel("New label");
 		lblNewLabel_8.setBounds(Math.round(frameWidth * (1464f / 1536f)), Math.round(frameHeight * (20f / 816f)),

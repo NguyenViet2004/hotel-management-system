@@ -11,6 +11,8 @@ import GUI.RoundedBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -98,6 +100,19 @@ public class GDQuanLy_Gui {
 		help.setContentAreaFilled(false);
 		help.setBorderPainted(false);
 		Header.add(help);
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ví dụ: hiển thị hộp thoại trợ giúp
+            	File htmlFile = new File("HTML/HDSD.html");
+                try {
+					Desktop.getDesktop().browse(htmlFile.toURI());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
         class Scaler {
             float base;
             int actual;

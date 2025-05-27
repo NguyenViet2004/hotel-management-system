@@ -531,7 +531,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
     private void openHelpGuide() {
         try {
             // Sử dụng đường link lưu file HTMl của máy mình 
-            File htmlFile = new File("C:\\Users\\PC\\OneDrive\\Máy tính\\hotel-management-system\\LuxClass\\HTML\\HDSD.html");
+            File htmlFile = new File("HTML/HDSD.html");
             Desktop.getDesktop().browse(htmlFile.toURI());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Không thể mở trang hướng dẫn. Vui lòng kiểm tra file HDSD.html.", "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -151,6 +152,20 @@ public class GiaoDienChinh extends JFrame{
         help.setContentAreaFilled(false);
         help.setBorderPainted(false);
         Header.add(help);
+        help.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ví dụ: hiển thị hộp thoại trợ giúp
+            	File htmlFile = new File("HTML/HDSD.html");
+                try {
+					Desktop.getDesktop().browse(htmlFile.toURI());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        });
+
 
         JLabel lblNewLabel_1 = new JLabel();
      // Tạo ImageIcon từ file ảnh gốc
