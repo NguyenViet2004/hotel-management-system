@@ -69,6 +69,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -385,113 +386,158 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 	}
 
 	private JPanel createHeaderPanel() {
+	    JPanel headerPanel = new JPanel(new GridBagLayout());
+	    headerPanel.setBackground(Color.WHITE);
+	    headerPanel.setBorder(BorderFactory.createCompoundBorder(
+	            BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_MEDIUM_GRAY_BORDER), new EmptyBorder(8, 15, 8, 15)));
 
-		JPanel headerPanel = new JPanel(new GridBagLayout());
-		headerPanel.setBackground(Color.WHITE);
-		headerPanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createMatteBorder(0, 0, 1, 0, COLOR_MEDIUM_GRAY_BORDER), new EmptyBorder(8, 15, 8, 15)));
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.gridy = 0;
+	    gbc.insets = new Insets(0, 8, 0, 8);
+	    gbc.fill = GridBagConstraints.NONE;
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 8, 0, 8);
-		gbc.fill = GridBagConstraints.NONE;
+	    // Cột 0: Logo bên trái
+	    JLabel ilogo = new JLabel(loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/logoLux.png", 60, 60));
+	    JPanel logoPanel = new JPanel();
+	    logoPanel.setLayout(new BoxLayout(logoPanel, BoxLayout.Y_AXIS));
+	    logoPanel.setBackground(Color.WHITE);
+	    logoPanel.add(ilogo);
 
-		// Cột 0: Logo bên trái
-		JLabel ilogo = new JLabel(loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/logoLux.png", 60, 60));
-		JPanel logoPanel = new JPanel();
-		logoPanel.setLayout(new BoxLayout(logoPanel, BoxLayout.Y_AXIS));
-		logoPanel.setBackground(Color.WHITE);
-		logoPanel.add(ilogo);
+	    gbc.gridx = 0;
+	    gbc.weightx = 0;
+	    gbc.anchor = GridBagConstraints.LINE_START;
+	    headerPanel.add(logoPanel, gbc);
 
-		gbc.gridx = 0;
-		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.LINE_START;
-		headerPanel.add(logoPanel, gbc);
+	    // Cột 1: Panel chứa label và nút Home sát bên phải logo
+	    JPanel homePanel = new JPanel();
+	    homePanel.setLayout(new BoxLayout(homePanel, BoxLayout.Y_AXIS));
+	    homePanel.setBackground(Color.WHITE);
 
-		// Cột 1: Panel chứa label và nút Home sát bên phải logo
-		JPanel homePanel = new JPanel();
-		homePanel.setLayout(new BoxLayout(homePanel, BoxLayout.Y_AXIS));
-		homePanel.setBackground(Color.WHITE);
+	    JLabel lblTitleHeader = new JLabel("Quản lý đặt phòng");
+	    lblTitleHeader.setFont(FONT_MAIN_TITLE);
+	    lblTitleHeader.setForeground(COLOR_DARK_TEXT);
+	    lblTitleHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JLabel lblTitleHeader = new JLabel("Quản lý đặt phòng");
-		lblTitleHeader.setFont(FONT_MAIN_TITLE);
-		lblTitleHeader.setForeground(COLOR_DARK_TEXT);
-		lblTitleHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JButton btnHome = new JButton(loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/home.png", 30, 30));
-		btnHome.setBackground(Color.WHITE);
-		btnHome.setBorder(null);
-		btnHome.setBorderPainted(false);
-		btnHome.setContentAreaFilled(false);
-		btnHome.setFocusPainted(false);
-		btnHome.setOpaque(false);
-		btnHome.setAlignmentX(Component.LEFT_ALIGNMENT);
-		btnHome.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnHome.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-					dispose(); // đóng frame hiện tại
-	                GiaoDienChinh window = new GiaoDienChinh();
-	                window.setVisible(true);
-				}
-		});
-
-		homePanel.add(lblTitleHeader);
-		homePanel.add(Box.createVerticalStrut(5));
-		homePanel.add(btnHome);
-
-		gbc.gridx = 1;
-		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.LINE_START; // căn trái sát logo
-		gbc.fill = GridBagConstraints.NONE;
-		headerPanel.add(homePanel, gbc);
-
-		// Cột 2: dùng để đẩy khoảng cách (cột "rỗng")
-		gbc.gridx = 2;
-		gbc.weightx = 1; // Giãn hết khoảng trống
-		headerPanel.add(Box.createHorizontalGlue(), gbc);
-
-		// Cột 5: Nút Help
-		JButton btnHelp = createIconButton("?", 18);
-		gbc.gridx = 5;
-		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.LINE_END;
-		headerPanel.add(btnHelp, gbc);
-
-		// Cột 6: Panel chứa ảnh và tên lễ tân
-		JPanel userPanel = new JPanel();
-		userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
-		userPanel.setBackground(Color.WHITE);
-
-		ImageIcon userIcon = loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg", 42, 42);
-		JButton btnUserIcon = (userIcon != null) ? new JButton(userIcon) : new JButton("Ảnh lỗi");
-
-		btnUserIcon.setPreferredSize(new Dimension(40, 40));
-		btnUserIcon.setBackground(Color.WHITE);
-		btnUserIcon.setBorder(null);
-		btnUserIcon.setFocusable(false);
-		btnUserIcon.setContentAreaFilled(false);
-		btnUserIcon.setFocusPainted(false);
-		btnUserIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JLabel lblUserName = new JLabel("Lễ tân");
-		lblUserName.setFont(new Font("Times New Roman", Font.BOLD, 14));
-		lblUserName.setForeground(COLOR_DARK_TEXT);
-		lblUserName.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		userPanel.add(Box.createVerticalStrut(5));
-		userPanel.add(btnUserIcon);
-		userPanel.add(Box.createVerticalStrut(5));
-		userPanel.add(lblUserName);
-
-		gbc.gridx = 6;
-		gbc.weightx = 0;
-		gbc.anchor = GridBagConstraints.LINE_END;
-		headerPanel.add(userPanel, gbc);
+	    ImageIcon homeIcon = loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/home.png", 30, 30);
+	    JButton btnHome = new JButton(homeIcon);
+	    btnHome.setBackground(Color.WHITE);
+	    btnHome.setBorder(null);
+	    btnHome.setBorderPainted(false);
+	    btnHome.setContentAreaFilled(false);
+	    btnHome.setFocusPainted(false);
+	    btnHome.setOpaque(false);
+	    btnHome.setAlignmentX(Component.LEFT_ALIGNMENT);
+	    btnHome.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 
-		return headerPanel;
+	    btnHome.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            dispose(); // đóng frame hiện tại
+	            GiaoDienChinh window = new GiaoDienChinh();
+	            window.setVisible(true);
+	        }
+	    });
+
+	    homePanel.add(lblTitleHeader);
+	    homePanel.add(Box.createVerticalStrut(5));
+	    homePanel.add(btnHome);
+
+	    gbc.gridx = 1;
+	    gbc.weightx = 0;
+	    gbc.anchor = GridBagConstraints.LINE_START;
+	    gbc.fill = GridBagConstraints.NONE;
+	    headerPanel.add(homePanel, gbc);
+
+	    // Cột 2: dùng để đẩy khoảng cách (cột "rỗng")
+	    gbc.gridx = 2;
+	    gbc.weightx = 1; // Giãn hết khoảng trống
+	    headerPanel.add(Box.createHorizontalGlue(), gbc);
+
+	    // Cột 5: Nút Help
+	    ImageIcon helpIcon = loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/help.png", 24, 24);
+	    JButton btnHelp = new JButton(helpIcon);
+	    btnHelp.setPreferredSize(new Dimension(30, 30));
+	    btnHelp.setBackground(Color.WHITE);
+	    btnHelp.setBorder(null);
+	    btnHelp.setBorderPainted(false);
+	    btnHelp.setContentAreaFilled(false);
+	    btnHelp.setFocusPainted(false);
+	    btnHelp.setOpaque(false);
+
+
+	    btnHelp.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	// hàm này đã có viết ở phía dưới
+	            openHelpGuide();
+	            btnHelp.setToolTipText("Đã mở hướng dẫn");
+	        }
+	    });
+
+	    gbc.gridx = 5;
+	    gbc.weightx = 0;
+	    gbc.anchor = GridBagConstraints.LINE_END;
+	    headerPanel.add(btnHelp, gbc);
+
+	    // Cột 6: Panel chứa ảnh và tên lễ tân
+	    JPanel userPanel = new JPanel();
+	    userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
+	    userPanel.setBackground(Color.WHITE);
+
+	    ImageIcon userIcon = loadIcon("HinhAnhGiaoDienChinh/AnhTraPhong/anhdaidien.jpg", 42, 42);
+	    JButton btnUserIcon = (userIcon != null) ? new JButton(userIcon) : new JButton("Ảnh lỗi");
+	    btnUserIcon.setPreferredSize(new Dimension(40, 40));
+	    btnUserIcon.setBackground(Color.WHITE);
+	    btnUserIcon.setBorder(null);
+	    btnUserIcon.setFocusable(false);
+	    btnUserIcon.setContentAreaFilled(false);
+	    btnUserIcon.setFocusPainted(false);
+	    btnUserIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+	    JLabel lblUserName = new JLabel("Lễ tân");
+	    lblUserName.setFont(new Font("Times New Roman", Font.BOLD, 14));
+	    lblUserName.setForeground(COLOR_DARK_TEXT);
+	    lblUserName.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    userPanel.add(Box.createVerticalStrut(5));
+	    userPanel.add(btnUserIcon);
+	    userPanel.add(Box.createVerticalStrut(5));
+	    userPanel.add(lblUserName);
+
+	    gbc.gridx = 6;
+	    gbc.weightx = 0;
+	    gbc.anchor = GridBagConstraints.LINE_END;
+	    headerPanel.add(userPanel, gbc);
+
+	    return headerPanel;
 	}
+
+
+
+	// Helper method to scale an ImageIcon
+	private ImageIcon scaleIcon(ImageIcon icon, float scaleFactor) {
+	    if (icon == null) {
+	        return null;
+	    }
+	    Image img = icon.getImage();
+	    int newWidth = (int) (icon.getIconWidth() * scaleFactor);
+	    int newHeight = (int) (icon.getIconHeight() * scaleFactor);
+	    Image scaledImg = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+	    return new ImageIcon(scaledImg);
+	}
+	// Load trang HDHTML
+    private void openHelpGuide() {
+        try {
+            // Sử dụng đường link lưu file HTMl của máy mình 
+            File htmlFile = new File("C:\\Users\\PC\\OneDrive\\Máy tính\\hotel-management-system\\LuxClass\\HTML\\HDSD.html");
+            Desktop.getDesktop().browse(htmlFile.toURI());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Không thể mở trang hướng dẫn. Vui lòng kiểm tra file HDSD.html.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
 	private ImageIcon loadIcon(String fileName, int width, int height) {
 
