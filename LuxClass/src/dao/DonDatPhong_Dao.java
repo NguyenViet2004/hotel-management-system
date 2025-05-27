@@ -177,7 +177,7 @@ public class DonDatPhong_Dao {
 				+ "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec " + "FROM DonDatPhong ddp "
 				+ "JOIN ChiTietDonDatPhong ct ON ddp.maDonDatPhong = ct.maDonDatPhong "
 				+ "JOIN KhachHang kh ON ddp.maKH = kh.maKH " + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-				+ "WHERE ct.soPhong = ? AND ddp.trangThai = N'Chưa thanh toán'";
+				+ "WHERE ct.soPhong = ? AND ddp.trangThai = N'Nhận phòng'";
 
 		Connection conn = ConnectDB.getConnection();
 		PreparedStatement stmt = null;
@@ -245,7 +245,7 @@ public class DonDatPhong_Dao {
 				+ "nv.maNV, nv.hoTen AS tenNV, nv.ngaySinh, nv.sdt AS sdtNV, nv.diaChi, "
 				+ "nv.soCCCD AS cccdNV, nv.chucVu, nv.caLamViec " + "FROM DonDatPhong ddp "
 				+ "JOIN KhachHang kh ON ddp.maKH = kh.maKH " + "JOIN NhanVien nv ON ddp.maNV = nv.maNV "
-				+ "WHERE (kh.hoTen LIKE ? OR kh.sdt = ?) AND ddp.trangThai = N'Chưa thanh toán'";
+				+ "WHERE (kh.hoTen LIKE ? OR kh.sdt = ?) AND ddp.trangThai = N'Nhận phòng'";
 
 		try {
 			Connection connection = ConnectDB.getConnection();
