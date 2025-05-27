@@ -240,7 +240,7 @@ public class DonDatPhong {
 	}
 
 	public double tinhTienHoanCoc() {
-		return tienCoc - phiHuyPhong(ngayTraPhong, ngayNhanPhong);
+		return tienCoc - phiHuyPhong(LocalDateTime.now(), ngayNhanPhong);
 	}
 
 }
