@@ -3,7 +3,7 @@ package entity;
 public class ChiTietApDung {
 	  private String maDonDatPhong;
 	    private String maKhuyenMai;
-	    private Float tongThanhToanSauApDung;
+	    private Double tongThanhToanSauApDung;
 		public String getMaDonDatPhong() {
 			return maDonDatPhong;
 		}
@@ -17,13 +17,13 @@ public class ChiTietApDung {
 			this.maKhuyenMai = maKhuyenMai;
 		}
 		
-		public Float getTongThanhToanSauApDung() {
+		public Double getTongThanhToanSauApDung() {
 			return tongThanhToanSauApDung;
 		}
-		public void setTongThanhToanSauApDung(Float tongThanhToanSauApDung) {
+		public void setTongThanhToanSauApDung(Double tongThanhToanSauApDung) {
 			this.tongThanhToanSauApDung = tongThanhToanSauApDung;
 		}
-		public ChiTietApDung(String maDonDatPhong, String maKhuyenMai, Float tongThanhToanSauApDung) {
+		public ChiTietApDung(String maDonDatPhong, String maKhuyenMai, Double tongThanhToanSauApDung) {
 			super();
 			this.maDonDatPhong = maDonDatPhong;
 			this.maKhuyenMai = maKhuyenMai;
