@@ -280,19 +280,14 @@ public class quenMatKhau_dialog extends JDialog implements KeyListener {
 				}
 
 				NhanVien_Dao nVien_DAO = new NhanVien_Dao();
-				try {
-					NhanVien aNhanVien = nVien_DAO.timNhanVien(maNV, cCCD, SDT, tenTK);
-					if (aNhanVien != null) {
-						tenTaiKhoan.setText(tenTK);
-						panel_CapNhatMatKhau.setVisible(true);
-						panel_XacThuc.setVisible(false);
-					} else {
-						JOptionPane.showMessageDialog(null, "Thông tin không hợp lệ.", "Thông báo",
-								JOptionPane.WARNING_MESSAGE);
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				NhanVien aNhanVien = nVien_DAO.timNhanVien(maNV, cCCD, SDT, tenTK);
+				if (aNhanVien != null) {
+					tenTaiKhoan.setText(tenTK);
+					panel_CapNhatMatKhau.setVisible(true);
+					panel_XacThuc.setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(null, "Thông tin không hợp lệ.", "Thông báo",
+							JOptionPane.WARNING_MESSAGE);
 				}
 
 			}
