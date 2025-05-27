@@ -279,4 +279,5 @@ public class LoaiPhong_Dao {
         ArrayList<LoaiPhong> list = getAllLoaiPhongNew();
         return list.stream().anyMatch(lp -> lp.getTenLoai().equalsIgnoreCase(tenLoai) && !lp.getMaLoaiPhong().equals(excludeMaLoai));
     }
+
 }

@@ -94,25 +94,48 @@ public class DoiPhongDialog extends JDialog {
         add(panel, BorderLayout.CENTER);
         add(btnXacNhan, BorderLayout.SOUTH);
     }
-
-    private void taiDanhSachLoaiPhong() {
-        ArrayList<String> dsLoai = loaiPhongDAO.getDanhSachTenLoai();
-        for (String tenLoai : dsLoai) {
-            cmbLoaiPhong.addItem(tenLoai);
+    
+    private int getMucDoMacDinh(String tenLoai) {
+        switch (tenLoai.toLowerCase()) {
+            case "single room": return 1;
+            case "twin room": return 2;
+            case "double room": return 3;
+            case "triple room": return 4;
+            default: return Integer.MAX_VALUE;
         }
+    }
+    
+    private void taiDanhSachPhongMoi() {
+        String loaiPhongChon = (String) cmbLoaiPhong.getSelectedItem();
+        LocalDateTime thoiDiemDoi = ngayKetThucCu; // hoặc giờ hiện tại
 
-        String tenLoaiPhongCu = phongDAO.getTenLoaiTheoSoPhong(soPhongCu);
-        if (tenLoaiPhongCu != null) {
-            cmbLoaiPhong.setSelectedItem(tenLoaiPhongCu);
-            LocalDateTime thoiDiemDoi = ngayKetThucCu;
-            ArrayList<String> dsPhong = phongDAO.getPhongTrongTheoLoaiVaThoiGian(tenLoaiPhongCu, thoiDiemDoi);
-            cmbPhongMoi.removeAllItems();
-            for (String soPhong : dsPhong) {
-                if (!soPhong.equals(soPhongCu)) {
-                    cmbPhongMoi.addItem(soPhong);
-                }
+        ArrayList<String> dsPhong = phongDAO.getPhongTrongTheoLoaiVaThoiGian(loaiPhongChon, thoiDiemDoi);
+        cmbPhongMoi.removeAllItems();
+
+        for (String soPhong : dsPhong) {
+            if (!soPhong.equals(soPhongCu)) {
+                cmbPhongMoi.addItem(soPhong);
             }
         }
+    }
+
+
+    private void taiDanhSachLoaiPhong() {
+        String tenLoaiPhongCu = phongDAO.getTenLoaiTheoSoPhong(soPhongCu);
+        int mucHienTai = getMucDoMacDinh(tenLoaiPhongCu);
+        
+        ArrayList<String> dsLoai = loaiPhongDAO.getDanhSachTenLoai();
+        cmbLoaiPhong.removeAllItems();
+        
+        for (String tenLoai : dsLoai) {
+            if (getMucDoMacDinh(tenLoai) >= mucHienTai) {
+                cmbLoaiPhong.addItem(tenLoai);
+            }
+        }
+
+        cmbLoaiPhong.setSelectedItem(tenLoaiPhongCu); // gợi ý chọn đúng ban đầu
+        taiDanhSachPhongMoi(); // load danh sách phòng phù hợp
+        cmbLoaiPhong.addActionListener(e -> taiDanhSachPhongMoi());
     }
 
     private void batSuKien() {
