@@ -1,305 +1,230 @@
 package HuyPhong;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import dao.ChiTietDonDatPhong_Dao;
-import dao.DonDatPhong_Dao;
-import dao.LoaiPhong_Dao;
-import dao.Phong_Dao;
-import entity.ChiTietDonDatPhong;
-import entity.DonDatPhong;
-import entity.LoaiPhong;
-import entity.Phong;
+import dao.*;
+import entity.*;
 
-public class HuyPhong_GUI extends JFrame implements ActionListener{
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	DonDatPhong_Dao donDatPhongDao = new DonDatPhong_Dao();
-//	public static void main(String[] args) {
-//
-//		String maDonDatPhong = "23052025LT001003";
-//		DonDatPhong_Dao donDatPhong_Dao = new DonDatPhong_Dao();
-//		DonDatPhong donDatPhong = donDatPhong_Dao.timDonTheoMa(maDonDatPhong);
-//		SwingUtilities.invokeLater(() -> {
-//			new HuyPhong_GUI().taoDonHuyPhong(donDatPhong);
-//		});
-//	}
+public class HuyPhong_GUI extends JDialog implements ActionListener {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-	public void hienThiDonDatPhong(DonDatPhong don, ArrayList<LoaiPhong> dsLoaiPhong, JPanel roomPanel) {
-		LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
-		dsLoaiPhong = loaiPhongDao.getAllLoaiPhong();
-		Phong_Dao phongDao = new Phong_Dao();
+    public HuyPhong_GUI(Frame parent) {
+        super(parent, "Đơn Hủy Phòng", true); // Modal dialog
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setSize(1000, 700);
+        setLocationRelativeTo(parent);
+        setLayout(new BorderLayout());
+    }
 
-		roomPanel.removeAll(); // Xoá sạch để làm mới giao diện
-		roomPanel.setLayout(new BorderLayout());
-		roomPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phòng"));
-		ChiTietDonDatPhong_Dao dao = new ChiTietDonDatPhong_Dao();
-		ArrayList<ChiTietDonDatPhong> chiTietList = dao.getChiTietDonDatPhongTheoMaDon(don.getMaDonDatPhong());
-		Object[][] roomData = new Object[chiTietList.size()][4];
+    public void taoDonHuyPhong(DonDatPhong donDatPhong, Runnable reloadCallback) {
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		ZoneId zone = ZoneId.systemDefault();
-		LocalDateTime nhanPhong = don.getNgayNhanPhong();
-		LocalDateTime traPhong = don.getNgayTraPhong();
+        // I. Thông tin khách hàng
+        JPanel customerPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+        customerPanel.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
 
-		// Lấy ngày từ LocalDateTime để tính số ngày giữa
-		long soNgay = ChronoUnit.DAYS.between(nhanPhong.toLocalDate(), traPhong.toLocalDate());
+        customerPanel.add(new JLabel("👤 Khách hàng:"));
+        JTextField txtCustomer = new JTextField(donDatPhong.getKhachHang().getHoTen());
+        txtCustomer.setEditable(false);
+        customerPanel.add(txtCustomer);
 
-		// Nếu giờ checkout > giờ checkin ⇒ tính thêm 1 ngày nếu muốn làm tròn
-		if (traPhong.toLocalTime().isAfter(nhanPhong.toLocalTime())) {
-		    soNgay++;
-		}
+        customerPanel.add(new JLabel("📞 Điện thoại:"));
+        JTextField txtPhone = new JTextField(donDatPhong.getKhachHang().getSdt());
+        txtPhone.setEditable(false);
+        customerPanel.add(txtPhone);
 
-		if (soNgay == 0) soNgay = 1; // Tối thiểu 1 ngày
+        customerPanel.add(new JLabel("📅 Ngày đặt phòng:"));
+        JTextField txtBookingDate = new JTextField(donDatPhong.getNgayDatPhong().format(formatter));
+        txtBookingDate.setEditable(false);
+        customerPanel.add(txtBookingDate);
 
-		// Tính số giờ
-		long soGio = Duration.between(nhanPhong, traPhong).toHours();
-		if (soGio == 0) soGio = 1;
+        customerPanel.add(new JLabel("📅 Ngày nhận phòng:"));
+        JTextField txtCheckIn = new JTextField(donDatPhong.getNgayNhanPhong().format(formatter));
+        txtCheckIn.setEditable(false);
+        customerPanel.add(txtCheckIn);
 
-		// Số đêm (đơn giản bằng số ngày ngủ lại)
-		long soDem = ChronoUnit.DAYS.between(nhanPhong.toLocalDate(), traPhong.toLocalDate());
-		if (soDem == 0) soDem = 1;
+        customerPanel.add(new JLabel("📅 Ngày trả phòng:"));
+        JTextField txtCheckOut = new JTextField(donDatPhong.getNgayTraPhong().format(formatter));
+        txtCheckOut.setEditable(false);
+        customerPanel.add(txtCheckOut);
 
+        mainPanel.add(customerPanel);
 
-		for (int i = 0; i < chiTietList.size(); i++) {
-			ChiTietDonDatPhong ct = chiTietList.get(i);
-			Phong phong = ct.getPhong();
-			phong = phongDao.getPhongTheoMa(phong.getSoPhong());
-			LoaiPhong loai = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong());
+        // II. Thông tin phòng
+        JPanel roomPanel = new JPanel(new BorderLayout());
+        roomPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phòng"));
+        ArrayList<LoaiPhong> listLoaiPhong = new LoaiPhong_Dao().getAllLoaiPhong();
+        hienThiDonDatPhong(donDatPhong, listLoaiPhong, roomPanel);
+        mainPanel.add(roomPanel);
 
-			roomData[i][0] = phong.getSoPhong();
-			roomData[i][1] = loai.getTenLoai();
+        // III. Tiền cọc
+        JPanel depositPanel = new JPanel(new GridLayout(2, 2));
+        depositPanel.setBorder(BorderFactory.createTitledBorder("Tiền cọc"));
+        depositPanel.add(new JLabel(String.format("Số tiền khách hàng cọc: %, .0f VND", donDatPhong.getTienCoc())));
+        mainPanel.add(depositPanel);
 
-			switch (don.getLoaiDon()) {
-			case "Theo giờ":
-				roomData[i][2] = soGio;
-				roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoGio());
-				break;
-			case "Theo ngày":
-				roomData[i][2] = soNgay;
-				roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoNgay());
-				break;
-			case "Theo đêm":
-				roomData[i][2] = soNgay;
-				roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoDem());
-				break;
-			}
-		}
+        // IV. Chi phí hủy phòng
+        JPanel cancelFeePanel = taoCancelFeePanel(donDatPhong);
+        mainPanel.add(cancelFeePanel);
 
-		String donLoai = don.getLoaiDon(); // giả sử GIO, NGAY, DEM
+        // V. Nút xác nhận hủy
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnConfirm = new JButton("Xác nhận hủy");
+        btnConfirm.setBackground(Color.RED);
+        btnConfirm.setForeground(Color.WHITE);
+        btnConfirm.setFont(new Font("Arial", Font.BOLD, 14));
+        buttonPanel.add(btnConfirm);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(buttonPanel);
 
-		String soLuongText = switch (donLoai) {
-		    case "Theo giờ" -> "giờ";
-		    case "Theo đêm" -> "đêm";
-		    default -> "ngày";
-		};
-		String[] roomHeaders = { "Mã Phòng", "Loại phòng", "Số " + soLuongText, "Giá phòng" };
-		
-		DefaultTableModel model = new DefaultTableModel(roomData, roomHeaders);
-		JTable roomTable = new JTable(model);
+        ganSuKienHuyDon(btnConfirm, donDatPhong, this, reloadCallback);
 
-		roomTable.setEnabled(false);
-		roomTable.setRowHeight(25);
-		roomTable.setFont(new Font("Arial", Font.PLAIN, 13));
-		roomTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+        add(new JScrollPane(mainPanel), BorderLayout.CENTER);
+    }
 
-		JScrollPane scroll = new JScrollPane(roomTable);
-		scroll.setPreferredSize(new Dimension(400, 60));
+    public static JPanel taoCancelFeePanel(DonDatPhong don) {
+        JPanel cancelFeePanel = new JPanel(new BorderLayout());
+        cancelFeePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Chi phí hủy phòng", TitledBorder.LEFT, TitledBorder.TOP));
 
-		double tongTien = don.tinhTienPhong();
-		JLabel tongTienLabel = new JLabel(String.format("Tổng tiền thuê: %,.0f VND", tongTien));
-		tongTienLabel.setFont(new Font("Arial", Font.BOLD, 13));
-		tongTienLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
+        LocalDateTime now = LocalDateTime.now();
+        String ngayHuy = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String thoiGianHuy = now.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-		roomPanel.add(scroll, BorderLayout.CENTER);
-		roomPanel.add(tongTienLabel, BorderLayout.SOUTH);
+        Duration duration = Duration.between(now, don.getNgayNhanPhong());
+        long soGio = duration.toHours();
+        long soNgay = duration.toDays();
+        String huyTruoc = soNgay + " ngày " + (soGio % 24) + " giờ";
 
-		roomPanel.revalidate();
-		roomPanel.repaint();
-	}
+        String[] headers = {"Ngày hủy phòng", "Thời gian hủy", "Hủy trước bao lâu", "Phí hủy", "Số tiền hoàn cọc"};
+        Object[][] data = {{
+            ngayHuy,
+            thoiGianHuy,
+            huyTruoc,
+            String.format("%,.0f VND", don.phiHuyPhong(now, don.getNgayNhanPhong())),
+            String.format("%,.0f VND", don.tinhTienHoanCoc())
+        }};
 
-	public static JPanel taoCancelFeePanel(DonDatPhong don) {
-		JPanel cancelFeePanel = new JPanel(new BorderLayout());
-		cancelFeePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-				"Chi phí hủy phòng", TitledBorder.LEFT, TitledBorder.TOP));
+        JTable table = new JTable(new DefaultTableModel(data, headers));
+        table.setEnabled(false);
+        table.setRowHeight(25);
+        table.setFont(new Font("Arial", Font.PLAIN, 13));
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
-		// Định dạng ngày giờ hiện tại
-		LocalDateTime now = LocalDateTime.now();
-		String ngayHuy = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		String thoiGianHuy = now.format(DateTimeFormatter.ofPattern("HH:mm"));
-		
-		// Hủy trước bao lâu
-		Duration duration = Duration.between(now, don.getNgayNhanPhong());
-		long soGio = duration.toHours();
-		long soNgay = duration.toDays();
-		String huyTruoc = soNgay + " ngày " + (soGio % 24) + " giờ";
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(400, 60));
+        cancelFeePanel.add(scroll, BorderLayout.CENTER);
+        return cancelFeePanel;
+    }
 
-		
-		// Tạo dữ liệu bảng
-		String[] headers = { "Ngày hủy phòng", "Thời gian hủy", "Hủy trước bao lâu", "Phí hủy", "Số tiền hoàn cọc" };
-		Object[][] data = { { ngayHuy, thoiGianHuy, huyTruoc ,String.format("%,.0f VND", don.phiHuyPhong(now, don.getNgayNhanPhong())), String.format("%,.0f VND", don.tinhTienHoanCoc()) } };
+    public void hienThiDonDatPhong(DonDatPhong don, ArrayList<LoaiPhong> dsLoaiPhong, JPanel roomPanel) {
+        roomPanel.removeAll();
+        roomPanel.setLayout(new BorderLayout());
+        ChiTietDonDatPhong_Dao ctDao = new ChiTietDonDatPhong_Dao();
+        Phong_Dao phongDao = new Phong_Dao();
+        LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
 
-		// Tạo bảng bằng DefaultTableModel
-		DefaultTableModel model = new DefaultTableModel(data, headers);
-		JTable feeTable = new JTable(model);
-		feeTable.setEnabled(false);
-		feeTable.setRowHeight(25);
-		feeTable.setFont(new Font("Arial", Font.PLAIN, 13));
-		feeTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+        ArrayList<ChiTietDonDatPhong> chiTietList = ctDao.getChiTietDonDatPhongTheoMaDon(don.getMaDonDatPhong());
+        Object[][] roomData = new Object[chiTietList.size()][4];
 
-		// Đặt bảng vào scroll pane
-		JScrollPane scrollCancel = new JScrollPane(feeTable);
-		scrollCancel.setPreferredSize(new Dimension(400, 60));
+        LocalDateTime nhanPhong = don.getNgayNhanPhong();
+        LocalDateTime traPhong = don.getNgayTraPhong();
 
-		cancelFeePanel.add(scrollCancel, BorderLayout.CENTER);
-		return cancelFeePanel;
-	}
+        long soNgay = ChronoUnit.DAYS.between(nhanPhong.toLocalDate(), traPhong.toLocalDate());
+        if (traPhong.toLocalTime().isAfter(nhanPhong.toLocalTime())) soNgay++;
+        if (soNgay == 0) soNgay = 1;
 
-	public void taoDonHuyPhong(DonDatPhong donDatPhong, Runnable reloadCallback) {
-		JFrame frame = new JFrame("Đơn Hủy Phòng");
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setSize(1000, 700);
-		frame.setLocationRelativeTo(null);
-		frame.setLayout(new BorderLayout());
+        long soGio = Duration.between(nhanPhong, traPhong).toHours();
+        if (soGio == 0) soGio = 1;
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        for (int i = 0; i < chiTietList.size(); i++) {
+            ChiTietDonDatPhong ct = chiTietList.get(i);
+            Phong phong = phongDao.getPhongTheoMa(ct.getPhong().getSoPhong());
+            LoaiPhong loai = loaiPhongDao.getLoaiPhongTheoMa(phong.getLoaiPhong().getMaLoaiPhong());
 
-		// I. Thông tin khách hàng
-		JPanel customerPanel = new JPanel(new GridLayout(6, 2, 5, 5));
-		customerPanel.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
+            roomData[i][0] = phong.getSoPhong();
+            roomData[i][1] = loai.getTenLoai();
 
-		customerPanel.add(new JLabel("👤 Khách hàng:"));
-		JTextField txtCustomer = new JTextField(donDatPhong.getKhachHang().getHoTen());
-		customerPanel.add(txtCustomer);
-		txtCustomer.setEditable(false);
+            switch (don.getLoaiDon()) {
+                case "Theo giờ" -> {
+                    roomData[i][2] = soGio;
+                    roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoGio());
+                }
+                case "Theo ngày" -> {
+                    roomData[i][2] = soNgay;
+                    roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoNgay());
+                }
+                case "Theo đêm" -> {
+                    roomData[i][2] = soNgay;
+                    roomData[i][3] = String.format("%,.0f VND", loai.getGiaTheoDem());
+                }
+            }
+        }
 
-		customerPanel.add(new JLabel("📞 Điện thoại:"));
-		JTextField txtPhone = new JTextField(donDatPhong.getKhachHang().getSdt());
-		customerPanel.add(txtPhone);
-		txtPhone.setEditable(false);
-		
-		customerPanel.add(new JLabel("📅 Ngày đặt phòng:"));
-		JTextField txtBookingDate = new JTextField(donDatPhong.getNgayDatPhong().format(formatter));
-		customerPanel.add(txtBookingDate);
-		txtBookingDate.setEditable(false);
-		
-		customerPanel.add(new JLabel("📅 Ngày nhận phòng:"));
-		JTextField txtCheckIn = new JTextField(donDatPhong.getNgayNhanPhong().format(formatter));
-		customerPanel.add(txtCheckIn);
-		txtCheckIn.setEditable(false);
+        String[] headers = {"Mã Phòng", "Loại phòng", "Số " + switch (don.getLoaiDon()) {
+            case "Theo giờ" -> "giờ";
+            case "Theo đêm" -> "đêm";
+            default -> "ngày";
+        }, "Giá phòng"};
 
-		customerPanel.add(new JLabel("📅 Ngày trả phòng:"));
-		JTextField txtCheckOut = new JTextField(donDatPhong.getNgayTraPhong().format(formatter));
-		customerPanel.add(txtCheckOut);
-		txtCheckOut.setEditable(false);
+        JTable table = new JTable(new DefaultTableModel(roomData, headers));
+        table.setEnabled(false);
+        table.setRowHeight(25);
+        table.setFont(new Font("Arial", Font.PLAIN, 13));
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
-		mainPanel.add(customerPanel);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(400, 60));
 
-		// II. Thông tin phòng
-		JPanel roomPanel = new JPanel(new BorderLayout());
-		roomPanel.setBorder(BorderFactory.createTitledBorder("Thông tin phòng"));
-		LoaiPhong_Dao loaiPhongDao = new LoaiPhong_Dao();
-		ArrayList<LoaiPhong> listLoaiPhong = loaiPhongDao.getAllLoaiPhong();
+        double tongTien = don.tinhTienPhong();
+        JLabel tongTienLabel = new JLabel(String.format("Tổng tiền thuê: %,.0f VND", tongTien));
+        tongTienLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        tongTienLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
 
-		// Đưa vào Map để gọi hàm
-		hienThiDonDatPhong(donDatPhong, listLoaiPhong, roomPanel);
-		mainPanel.add(roomPanel);
-		// III. Tiền cọc
-		JPanel depositPanel = new JPanel(new GridLayout(2, 2));
-		depositPanel.setBorder(BorderFactory.createTitledBorder("Tiền cọc"));
+        roomPanel.add(scroll, BorderLayout.CENTER);
+        roomPanel.add(tongTienLabel, BorderLayout.SOUTH);
+        roomPanel.revalidate();
+        roomPanel.repaint();
+    }
 
-		depositPanel.add(new JLabel(String.format("Số tiền khách hàng cọc: %, .0f VND", donDatPhong.getTienCoc())));
+    private void ganSuKienHuyDon(JButton btnConfirm, DonDatPhong don, JDialog dialog, Runnable reloadCallback) {
+        btnConfirm.addActionListener(e -> {
+            int luaChon = JOptionPane.showConfirmDialog(
+                    dialog,
+                    "Bạn có chắc chắn muốn hủy đơn đặt phòng này không?",
+                    "Xác nhận hủy",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
 
-		mainPanel.add(depositPanel);
+            if (luaChon == JOptionPane.OK_OPTION) {
+                DonDatPhong_Dao dao = new DonDatPhong_Dao();
+                boolean ok = dao.setTrangThaiDonDatPhong(don.getMaDonDatPhong(), "Đã hủy");
 
-		// IV. Chi phí hủy phòng
-		JPanel cancelFeePanel = new JPanel(new BorderLayout());
-		cancelFeePanel = taoCancelFeePanel(donDatPhong);
-		mainPanel.add(cancelFeePanel);
+                if (ok) {
+                    JOptionPane.showMessageDialog(dialog, "Đã hủy đơn đặt phòng thành công!");
+                    dialog.dispose();
+                    if (reloadCallback != null) reloadCallback.run();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Có lỗi xảy ra khi hủy đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
 
-		// Nút xác nhận
-		JPanel buttonHuy = new JPanel((LayoutManager) new FlowLayout(FlowLayout.RIGHT));
-		JButton btnConfirm = new JButton("Xác nhận hủy");
-		btnConfirm.setBackground(Color.RED);
-		btnConfirm.setForeground(Color.WHITE);
-		btnConfirm.setFont(new Font("Arial", Font.BOLD, 14));
-		buttonHuy.add(btnConfirm);
-		mainPanel.add(Box.createVerticalStrut(10));
-		mainPanel.add(buttonHuy);
-		ganSuKienHuyDon(btnConfirm, donDatPhong, frame, reloadCallback);
-
-		frame.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
-		frame.setVisible(true);
-	}
-	
-	private void ganSuKienHuyDon(JButton btnConfirm, DonDatPhong don, JFrame frame, Runnable reloadCallback) {
-	    btnConfirm.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	            int luaChon = JOptionPane.showConfirmDialog(
-	                null,
-	                "Bạn có chắc chắn muốn hủy đơn đặt phòng này không?",
-	                "Xác nhận hủy",
-	                JOptionPane.OK_CANCEL_OPTION,
-	                JOptionPane.WARNING_MESSAGE
-	            );
-
-	            if (luaChon == JOptionPane.OK_OPTION) {
-	                DonDatPhong_Dao ddpDao = new DonDatPhong_Dao();
-	                // Cập nhật trạng thái đơn đặt phòng
-	                boolean capNhatDon = ddpDao.setTrangThaiDonDatPhong(don.getMaDonDatPhong(), "Đã hủy");
-
-	                if (capNhatDon) {
-	                    JOptionPane.showMessageDialog(null, "Đã hủy đơn đặt phòng thành công!");
-	                    frame.dispose(); // 👉 đóng cửa sổ hiện tại
-	                    if (reloadCallback != null) reloadCallback.run();
-	                } else {
-	                    JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi hủy đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-	                }
-	            }
-	        }
-
-	    });
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
+    @Override
+    public void actionPerformed(ActionEvent e) {}
 }

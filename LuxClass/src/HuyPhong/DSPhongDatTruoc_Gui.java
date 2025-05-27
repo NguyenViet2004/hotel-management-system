@@ -212,10 +212,13 @@ public class DSPhongDatTruoc_Gui extends JPanel {
 
 		if (tabIndex == 0) {
 			DonDatPhong donDatPhong = dao.timDonTheoMa(maDon);
+			
 			SwingUtilities.invokeLater(() -> {
-				new HuyPhong_GUI().taoDonHuyPhong(donDatPhong, () -> {
-					timKiemDonDatPhongTheoSDT();
-				});
+					 HuyPhong_GUI dialog = new HuyPhong_GUI(null);
+					    dialog.taoDonHuyPhong(donDatPhong, () -> {
+		                          timKiemDonDatPhongTheoSDT();
+					    });
+					    dialog.setVisible(true);
 			});
 		} else if (tabIndex == 1) {
 			int chon = JOptionPane.showConfirmDialog(null, "Bạn có chắc muốn hủy đơn tạm này?", "Xác nhận",
