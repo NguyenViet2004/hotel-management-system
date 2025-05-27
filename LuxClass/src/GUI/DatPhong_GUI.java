@@ -485,6 +485,8 @@ public class DatPhong_GUI extends JDialog {
 		    LocalDate inDate = checkInButton.getSelectedDate();
 		    checkOutButton.setSelectedDate(inDate.plusDays(1));
 		    checkOutButton.setFixedTime("08:00");
+		    
+		    checkOutButton.setEnabled(false);
 
 		    timePanel.setVisible(false);
 		    setTopInfoLayoutForMode(loaiDon);
