@@ -12,10 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
 
 import org.jdatepicker.impl.*;
+
 
 import dao.KhuyenMai_DAO;
 import entity.KhuyenMai;
@@ -34,7 +36,10 @@ public class QuanLyKhuyenMai_Panel extends JPanel {
     public QuanLyKhuyenMai_Panel() {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+        KhuyenMai_DAO dao = new KhuyenMai_DAO();
+		dao.capNhatTrangThaiKhuyenMaiHetHan(); // Cập nhật trước
 
+		ArrayList<KhuyenMai> danhSachKM = dao.getAllKhuyenMai(); // Lấy danh sách đã cập nhật
         BackgroundPanel backgroundPanel = new BackgroundPanel("img/HinhAnhGiaoDienChinh/nen.png");
         backgroundPanel.setLayout(null);
         add(backgroundPanel, BorderLayout.CENTER);
@@ -266,18 +271,47 @@ public class QuanLyKhuyenMai_Panel extends JPanel {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         btnCapNhat.addActionListener(e -> {
-            try {
-                Date start = sdf.parse(ngayBatDau.getText());
-                Date end = sdf.parse(ngayKetThuc.getText());
-                if (start.after(end)) {
-                    JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                // Xử lý thêm khuyến mãi ở đây
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ! (dd/MM/yyyy)", "Lỗi định dạng", JOptionPane.WARNING_MESSAGE);
-            }
+        	try {
+				Date start = sdf.parse(ngayBatDau.getText());
+				Date end = sdf.parse(ngayKetThuc.getText());
+				if (start.after(end)) {
+					JOptionPane.showMessageDialog(this, "Ngày bắt đầu không được sau ngày kết thúc!", "Lỗi",
+							JOptionPane.ERROR_MESSAGE);
+
+					// Làm nổi bật (focus) lại ô ngày bắt đầu
+					ngayKetThuc.getText();
+					return;
+				} else {
+					// Cho phép tiếp tục xử lý
+				}
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(this, "Định dạng ngày không hợp lệ! (dd/MM/yyyy)", "Lỗi định dạng",
+						JOptionPane.WARNING_MESSAGE);
+			}
+
+			KhuyenMai km = new KhuyenMai(maKhuyenMai.getText(), tenKhuyenMai.getText(),
+					loaiKhuyenMai.getSelectedItem().toString(),
+					Double.parseDouble(giaTriKhuyenMai.getSelectedItem().toString()),
+					LocalDate.parse(ngayBatDau.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+					LocalDate.parse(ngayKetThuc.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+					Double.parseDouble(loaiKhuyenMai.getSelectedIndex() == 0 ? comboBox_DieuKienThanhToan.getText()
+							: comboBox_DieuKienNgayO.getText()),
+					"Đang áp dụng");
+			KhuyenMai_DAO kMai_DAO = new KhuyenMai_DAO();
+			if (kMai_DAO.addKhuyenMai(km)) {
+				DefaultTableModel model = (DefaultTableModel) table_KhuyenMai.getModel();
+				model.addRow(new Object[] { km.getTenKhuyenMai(), km.getMaKhuyenMai(), km.getLoaiKhuyenMai(),
+						km.getGiaTriKhuyenMai() + "%",
+						km.getNgayBatDau().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+						km.getNgayKetThuc().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), km.getTrangThai(),
+						"Dừng" });
+				JOptionPane.showMessageDialog(this, "Thêm thành công!");
+			}
         });
+        
+		table_KhuyenMai.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
+		table_KhuyenMai.getColumnModel().getColumn(7).setCellEditor(new ButtonEditor(new JCheckBox()));
+        loadTable(danhSachKM);
     }
 
     class BackgroundPanel extends JPanel {
@@ -347,6 +381,91 @@ public class QuanLyKhuyenMai_Panel extends JPanel {
             return "";
         }
     }
+	class ButtonRenderer extends JButton implements TableCellRenderer {
+		public ButtonRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			setText((value == null) ? "Dừng" : value.toString());
+			return this;
+		}
+	}
+
+	class ButtonEditor extends DefaultCellEditor {
+		protected JButton button;
+		private String label;
+		private boolean clicked;
+		private JTable table;
+
+		public ButtonEditor(JCheckBox checkBox) {
+			super(checkBox);
+			button = new JButton();
+			button.setOpaque(true);
+			button.addActionListener(e -> fireEditingStopped());
+		}
+
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
+				int column) {
+			this.table = table;
+			label = (value == null) ? "Dừng" : value.toString();
+			button.setText(label);
+			clicked = true;
+			return button;
+		}
+
+		public Object getCellEditorValue() {
+			if (clicked) {
+				int row = table.getSelectedRow();
+				String maKM = table.getValueAt(row, 1).toString(); // Mã khuyến mãi
+				KhuyenMai_DAO khuyenMai_DAO = new KhuyenMai_DAO();
+				// Gọi cập nhật trạng thái trong database
+				if (khuyenMai_DAO.updateTrangThaiKhuyenMai(maKM, "Đã dừng")) {
+					table.setValueAt("Đã dừng", row, 6); // Cập nhật trong bảng
+					JOptionPane.showMessageDialog(button, "Đã dừng khuyến mãi!");
+				} else {
+					JOptionPane.showMessageDialog(button, "Cập nhật thất bại!");
+				}
+			}
+			clicked = false;
+			return label;
+		}
+
+		public boolean stopCellEditing() {
+			clicked = false;
+			return super.stopCellEditing();
+		}
+	}
+    public void loadTable(ArrayList<KhuyenMai> danhSachKM) {
+		ArrayList<KhuyenMai> sortedList = danhSachKM.stream()
+			    .sorted((km1, km2) -> {
+			        boolean km1Active = "Đang áp dụng".equals(km1.getTrangThai());
+			        boolean km2Active = "Đang áp dụng".equals(km2.getTrangThai());
+			        return Boolean.compare(!km1Active, !km2Active); // "Đang áp dụng" lên trước
+			    })
+			    .collect(Collectors.toCollection(ArrayList::new));
+
+	    DefaultTableModel model = (DefaultTableModel) table_KhuyenMai.getModel();
+	    model.setRowCount(0); // Xóa dữ liệu cũ
+
+	    for (KhuyenMai km : sortedList) {
+	    	 if ("Không".equalsIgnoreCase(km.getMaKhuyenMai())) {
+	    	        continue;
+	    	    }
+
+	        model.addRow(new Object[] {
+	            km.getTenKhuyenMai(),
+	            km.getMaKhuyenMai(),
+	            km.getLoaiKhuyenMai(),
+	            km.getGiaTriKhuyenMai() + "%",
+	            km.getNgayBatDau(),
+	            km.getNgayKetThuc(),
+	            km.getTrangThai()
+	        });
+	    }
+	}
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Quản Lý Khuyến Mãi");
