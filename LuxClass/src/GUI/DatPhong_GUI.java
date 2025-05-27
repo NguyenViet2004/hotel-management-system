@@ -2151,7 +2151,7 @@ public class DatPhong_GUI extends JDialog {
 		                dondatphongdao.xoaDonDatPhong(maDon);
 		                System.out.println("Có lỗi khi thêm chi tiết. Đã rollback đơn đặt phòng.");
 		            }
-		            String maPhieu ="PDV" +maDon;
+		            String maPhieu = maDon+ "001";
 		            LocalDateTime ngayLap = currentTimestamp.toLocalDateTime(); 
 		            
 		            System.out.println("mã phiếu: "+maPhieu);
