@@ -954,7 +954,7 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 		}
 		if (e.getSource() == btnNhan) {
 			// Sửa tên class đúng là DSPhongDatTruoc_Gui, dùng trong JDialog
-	        JDialog dialog = new JDialog();
+	        JDialog dialog = new JDialog(this, true);
 	        dialog.setTitle("Nhận phòng");
 	        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	        dialog.setSize(929, 629);
