@@ -1735,7 +1735,7 @@ public class TraPhong extends JFrame implements chiPhiPhatSinh_Dialog.ChiPhiPhat
 				JLabel qrLabel = new JLabel("", JLabel.CENTER);
 				String maKM = (String) khuyenMai.getSelectedItem();
 				System.out.println(maKM.split("-")[0].trim());
-				ChiTietApDung ctap = new ChiTietApDung(maDon, maKM.split("-")[0].trim(), (float) thanhTien);
+				ChiTietApDung ctap = new ChiTietApDung(maDon, maKM.split("-")[0].trim(), thanhTien);
 				ChiTietApDung_DAO chiTietApDung_DAO = new ChiTietApDung_DAO();
 				chiTietApDung_DAO.addChiTietApDung(ctap);
 				if (chuyenKhoan.isSelected()) {
