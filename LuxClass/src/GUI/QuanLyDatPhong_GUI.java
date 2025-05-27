@@ -637,7 +637,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 		if (rbPhongTrong.isSelected()) {
 			statusFilter = "TRONG";
 		} else if (rbPhongDaDat.isSelected()) {
-			statusFilter = "DADAT";
+			statusFilter = "Đang ở";
 		} else if (rbTatCaPhong.isSelected()) {
 			statusFilter = ""; // Show all
 		}
@@ -665,7 +665,7 @@ public class QuanLyDatPhong_GUI extends JFrame implements ActionListener, MouseL
 				matchesStatus = true;
 			} else if (statusFilter.equals("TRONG") && "Trống".equalsIgnoreCase(phong.getTrangThai())) {
 				matchesStatus = true;
-			} else if (statusFilter.equals("DADAT") && "Đang ở".equalsIgnoreCase(phong.getTrangThai())) {
+			} else if (statusFilter.equals("Đang ở") && "Đang ở".equalsIgnoreCase(phong.getTrangThai())) {
 				matchesStatus = true;
 			}
 
@@ -749,7 +749,7 @@ public static List<Phong> getPhongDaDatTheoNgay(java.sql.Date ngayDuocChon) {
 	        }
 	
 	        if (phongDaDatSet.contains(phong.getSoPhong())) {
-	            phong.setTrangThai("Đã đặt");
+	            phong.setTrangThai("Đang ở");
 	        } else {
 	            phong.setTrangThai("Trống");
 	        }
