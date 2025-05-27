@@ -331,3 +331,24 @@ INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, maLoai) VALUES
 ('DVBaoMau', N'Phí bảo mẫu', N'Phí bảo mẫu', 40000, 'DichVuKhac'),
 ('DVNoiEmBe', N'Nôi em bé', N'Nôi em bé', 30000, 'DichVuKhac');
 go
+
+INSERT INTO DonDatPhong
+    (maDonDatPhong, maKH, ngayDatPhong, ngayNhanPhong, ngayTraPhong, soKhach, tienCoc, thoiGianCoc, maNV, loaiDon, trangThai)
+VALUES
+    ('25052025LT001001', 'KH230520250001', '2025-05-25 10:00:00', '2025-05-27 14:00:00', '2025-05-31 12:00:00', 1, 0, '2025-05-25 10:00:00', '2025LT001', N'Theo ngày', N'Nhận phòng');
+
+	INSERT INTO ChiTietDonDatPhong (maDonDatPhong, soPhong, soLuong)
+VALUES 
+    ('25052025LT001001', 'P502', 1); -- single
+
+UPDATE Phong
+SET trangThai = N'Đang ở'
+WHERE soPhong IN ('P502');
+
+INSERT INTO ChiTietSuDungPhong (maDonDatPhong, soPhong, ngayBatDau, ngayKetThuc, ghiChu)
+VALUES 
+    ('25052025LT001001', 'P101', '2025-05-27 14:00:00', '2025-05-31 12:00:00', N'Phòng ban công');
+
+INSERT INTO ChiTietApDung (maDonDatPhong, maKhuyenMai, tongThanhToanSauApDung)
+VALUES 
+    ('25052025LT001001', N'Không', 5000000);
