@@ -1,4 +1,3 @@
-
 package quanLy;
 
 import javax.swing.*;
@@ -22,8 +21,10 @@ public class QuanLyNhanVien_Panel extends JPanel {
     private JComboBox<String> cbChucVu, cbCa;
     private JDateChooser dateChooser;
     private NhanVien_Dao nhanVienDao = new NhanVien_Dao();
+    private QuanLyTaiKhoan_Panel taiKhoanPanel;
 
-    public QuanLyNhanVien_Panel() {
+    public QuanLyNhanVien_Panel(QuanLyTaiKhoan_Panel taiKhoanPanel) {
+        this.taiKhoanPanel = taiKhoanPanel;
         setLayout(new BorderLayout());
 
         JPanel contentPanel = new JPanel();
@@ -41,7 +42,6 @@ public class QuanLyNhanVien_Panel extends JPanel {
         formPanel.setBackground(Color.WHITE);
         contentPanel.add(formPanel);
 
-        // Form fields
         int labelWidth = 130, fieldWidth = 250, height = 30, spacingY = 40;
         int leftX = 40, rightX = 600;
 
@@ -50,7 +50,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
         tfMaNV = new JTextField();
         tfMaNV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMaNV.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
-        tfMaNV.setEditable(false); // Disable manual input
+        tfMaNV.setEditable(false);
 
         JLabel lbHoTen = new JLabel("Họ tên:");
         lbHoTen.setBounds(leftX, 20 + spacingY, labelWidth, height);
@@ -142,15 +142,21 @@ public class QuanLyNhanVien_Panel extends JPanel {
     }
 
     private void loadData() {
-        model.setRowCount(0);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        List<NhanVien> list = nhanVienDao.getAllNhanVien();
-        for (NhanVien nv : list) {
-            model.addRow(new Object[]{
-                nv.getMaNV(), nv.getHoTen(),
-                sdf.format(java.sql.Date.valueOf(nv.getNgaySinh())),
-                nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
-            });
+        try {
+            model.setRowCount(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            List<NhanVien> list = nhanVienDao.getAllNhanVien();
+            for (NhanVien nv : list) {
+                model.addRow(new Object[]{
+                    nv.getMaNV(), nv.getHoTen(),
+                    sdf.format(java.sql.Date.valueOf(nv.getNgaySinh())),
+                    nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
+                });
+            }
+            System.out.println("loadData: Loaded " + list.size() + " employees into table");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -181,6 +187,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
             } while (nhanVienDao.isMaNVExists(maNV));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi kiểm tra mã nhân viên: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
 
@@ -193,7 +200,6 @@ public class QuanLyNhanVien_Panel extends JPanel {
     }
 
     private void handleAdd(ActionEvent e) {
-        // Validate birth date
         Date selectedDate = dateChooser.getDate();
         if (selectedDate == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh hợp lệ!");
@@ -207,7 +213,6 @@ public class QuanLyNhanVien_Panel extends JPanel {
             return;
         }
 
-        // Validate other fields
         String hoTen = tfHoTen.getText().trim();
         String sdt = tfSdt.getText().trim();
         String cccd = tfCCCD.getText().trim();
@@ -224,25 +229,21 @@ public class QuanLyNhanVien_Panel extends JPanel {
             return;
         }
 
-        // Validate hoTen
         if (!hoTen.matches("^[\\p{L} ]+$") || hoTen.length() < 2 || hoTen.length() > 50) {
             JOptionPane.showMessageDialog(this, "Họ tên chỉ chứa chữ cái, dấu cách, từ 2-50 ký tự!");
             return;
         }
 
-        // Validate sdt
         if (!sdt.matches("^0\\d{9}$")) {
             JOptionPane.showMessageDialog(this, "SĐT phải là 10 số, bắt đầu bằng 0!");
             return;
         }
 
-        // Validate cccd
         if (!cccd.matches("^\\d{12}$")) {
             JOptionPane.showMessageDialog(this, "CCCD phải là 12 số!");
             return;
         }
 
-        // Validate diaChi
         if (!diaChi.matches("^[\\p{L}\\d\\s,./-]+$") || diaChi.length() < 5 || diaChi.length() > 100) {
             JOptionPane.showMessageDialog(this, "Địa chỉ từ 5-100 ký tự, chỉ chứa chữ, số, dấu cách, ,./-!");
             return;
@@ -254,24 +255,34 @@ public class QuanLyNhanVien_Panel extends JPanel {
             cbChucVu.getSelectedItem().toString(), cbCa.getSelectedItem().toString()
         );
 
-        if (nhanVienDao.them(nv)) {
-            model.addRow(new Object[]{
-                nv.getMaNV(), nv.getHoTen(), new SimpleDateFormat("dd/MM/yyyy").format(selectedDate),
-                nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
-            });
-            JOptionPane.showMessageDialog(this, "Thêm thành công!");
-            updateMaNVField();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm thất bại! Mã nhân viên hoặc CCCD có thể đã tồn tại.");
+        try {
+            if (nhanVienDao.them(nv)) {
+                model.addRow(new Object[]{
+                    nv.getMaNV(), nv.getHoTen(), new SimpleDateFormat("dd/MM/yyyy").format(selectedDate),
+                    nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
+                });
+                JOptionPane.showMessageDialog(this, "Thêm thành công!");
+                // Clear input fields
+                tfHoTen.setText("");
+                tfSdt.setText("");
+                tfCCCD.setText("");
+                tfDiaChi.setText("");
+                dateChooser.setDate(null);
+                cbChucVu.setSelectedIndex(0); // Reset to first option
+                cbCa.setSelectedIndex(0);     // Reset to first option
+                updateMaNVField(); // Generate new MaNV
+                if (taiKhoanPanel != null) {
+                    System.out.println("handleAdd: Triggering refreshTable for employee " + nv.getMaNV());
+                    taiKhoanPanel.refreshTable();
+                } else {
+                    System.out.println("handleAdd: taiKhoanPanel is null");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm thất bại! Mã nhân viên hoặc CCCD có thể đã tồn tại.");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm nhân viên: " + ex.getMessage());
+            ex.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Quản lý nhân viên");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1220, 720);
-        frame.setContentPane(new QuanLyNhanVien_Panel());
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

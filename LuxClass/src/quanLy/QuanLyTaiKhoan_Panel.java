@@ -1,11 +1,9 @@
-// File: QuanLyTaiKhoan_Panel.java
 package quanLy;
 
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.util.ArrayList;
-
 import entity.NhanVien;
 import entity.TaiKhoan;
 import dao.TaiKhoan_Dao;
@@ -41,6 +39,12 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
         lblDanhSach.setBounds(400, 10, 400, 30);
         tablePanel.add(lblDanhSach);
 
+//        JButton btnRefresh = new JButton("Làm mới");
+//        btnRefresh.setFont(new Font("Times New Roman", Font.BOLD, 18));
+//        btnRefresh.setBounds(20, 10, 200, 30);
+//        btnRefresh.addActionListener(e -> refreshTable());
+//        tablePanel.add(btnRefresh);
+
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(20, 50, 1100, 500);
         tablePanel.add(scrollPane);
@@ -66,16 +70,29 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
         loadTableData();
     }
 
-    private void loadTableData() {
-        dsNhanVien = nvDao.getAllLeTan();
-        for (NhanVien nv : dsNhanVien) {
-            TaiKhoan tk = tkDao.getTaiKhoanByMaNV(nv.getMaNV());
-            String tenTK = (tk != null) ? tk.getTenDangNhap() : "Chưa có";
-            String trangThai = (tk != null) ? tk.getTrangThai() : "";
-            model.addRow(new Object[]{
-                nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), tenTK, trangThai, "Quản lý"
-            });
+    public void refreshTable() {
+        try {
+            model.setRowCount(0);
+            dsNhanVien = nvDao.getAllNhanVien(); // Use getAllNhanVien() to show all employees
+            // If you want only Lễ tân, use: dsNhanVien = nvDao.getAllLeTan();
+            for (NhanVien nv : dsNhanVien) {
+                TaiKhoan tk = tkDao.getTaiKhoanByMaNV(nv.getMaNV());
+                String tenTK = (tk != null) ? tk.getTenDangNhap() : "Chưa có";
+                String trangThai = (tk != null) ? tk.getTrangThai() : "";
+                model.addRow(new Object[]{
+                    nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), tenTK, trangThai, "Quản lý"
+                });
+            }
+            model.fireTableDataChanged(); // Ensure table updates visually
+            System.out.println("refreshTable: Loaded " + dsNhanVien.size() + " employees");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    private void loadTableData() {
+        refreshTable();
         table.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox(), dsNhanVien, tkDao));
     }
 
@@ -107,7 +124,6 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
             button.setOpaque(true);
             button.addActionListener(e -> {
                 fireEditingStopped();
-
                 NhanVien nv = dsNhanVien.get(row);
                 TaiKhoan tk = tkDao.getTaiKhoanByMaNV(nv.getMaNV());
 
@@ -133,38 +149,61 @@ public class QuanLyTaiKhoan_Panel extends JPanel {
     }
 
     private void taoTaiKhoan(NhanVien nv, int row) {
-        String tenDangNhap = JOptionPane.showInputDialog(this, "Tên đăng nhập:");
-        String matKhau = JOptionPane.showInputDialog(this, "Mật khẩu:");
-        if (tenDangNhap != null && matKhau != null) {
-            TaiKhoan tk = new TaiKhoan(tenDangNhap, matKhau, "Hoạt động", nv);
-            if (tkDao.taoTaiKhoan(tk)) {
-                JOptionPane.showMessageDialog(this, "Tạo tài khoản thành công!");
-                model.setValueAt(tenDangNhap, row, 3);
-                model.setValueAt("Hoạt động", row, 4);
+        try {
+            String tenDangNhap = JOptionPane.showInputDialog(this, "Tên đăng nhập:");
+            String matKhau = JOptionPane.showInputDialog(this, "Mật khẩu:");
+            if (tenDangNhap != null && matKhau != null && !tenDangNhap.trim().isEmpty() && !matKhau.trim().isEmpty()) {
+                TaiKhoan tk = new TaiKhoan(tenDangNhap, matKhau, "Hoạt động", nv);
+                if (tkDao.taoTaiKhoan(tk)) {
+                    JOptionPane.showMessageDialog(this, "Tạo tài khoản thành công!");
+                    model.setValueAt(tenDangNhap, row, 3);
+                    model.setValueAt("Hoạt động", row, 4);
+                    model.fireTableDataChanged();
+                    System.out.println("taoTaiKhoan: Created account for " + nv.getMaNV());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Tạo tài khoản thất bại!");
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Tạo tài khoản thất bại!");
+                JOptionPane.showMessageDialog(this, "Tên đăng nhập và mật khẩu không được để trống!");
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tạo tài khoản: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void suaHoacKhoaTaiKhoan(TaiKhoan tk, int row) {
-        String[] options = {"Đổi mật khẩu", "Khóa tài khoản"};
-        int choice = JOptionPane.showOptionDialog(this, "Chọn thao tác", "Quản lý tài khoản",
-            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+        try {
+            String[] options = {"Đổi mật khẩu", "Khóa tài khoản"};
+            int choice = JOptionPane.showOptionDialog(this, "Chọn thao tác", "Quản lý tài khoản",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 
-        if (choice == 0) {
-            String matKhauMoi = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
-            if (matKhauMoi != null && !matKhauMoi.isEmpty()) {
-                tk.setMatKhau(matKhauMoi);
-                if (tkDao.capNhatTaiKhoan(tk)) {
-                    JOptionPane.showMessageDialog(this, "Cập nhật mật khẩu thành công!");
+            if (choice == 0) {
+                String matKhauMoi = JOptionPane.showInputDialog(this, "Nhập mật khẩu mới:");
+                if (matKhauMoi != null && !matKhauMoi.trim().isEmpty()) {
+                    tk.setMatKhau(matKhauMoi);
+                    if (tkDao.capNhatTaiKhoan(tk)) {
+                        JOptionPane.showMessageDialog(this, "Cập nhật mật khẩu thành công!");
+                        System.out.println("suaHoacKhoaTaiKhoan: Updated password for " + tk.getTenDangNhap());
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cập nhật mật khẩu thất bại!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Mật khẩu mới không được để trống!");
+                }
+            } else if (choice == 1) {
+                if (tkDao.khoaTaiKhoan(tk.getTenDangNhap())) {
+                    JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa!");
+                    model.setValueAt("Vô hiệu hóa", row, 4);
+                    model.fireTableDataChanged();
+                    System.out.println("suaHoacKhoaTaiKhoan: Locked account " + tk.getTenDangNhap());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Khóa tài khoản thất bại!");
                 }
             }
-        } else if (choice == 1) {
-            if (tkDao.khoaTaiKhoan(tk.getTenDangNhap())) {
-                JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa!");
-                model.setValueAt("Vô hiệu hóa", row, 4);
-            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi xử lý tài khoản: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
