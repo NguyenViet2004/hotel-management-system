@@ -184,13 +184,14 @@ INSERT INTO Phong (soPhong, trangThai, loaiPhong, moTa) VALUES
 	('P306', N'Trống', 'twin', N'View biển, Phòng hút thuốc'),
 	('P509', N'Trống', 'twin', N'Ban công, View biển, Phòng hút thuốc'),
 	
-	-- triple: 6 phòng
+	-- triple: 7 phòng
 	('P401', N'Trống', 'triple', N'Ban công'),
 	('P402', N'Trống', 'triple', N'View biển'),
 	('P403', N'Trống', 'triple', N'Phòng hút thuốc'),
 	('P404', N'Trống', 'triple', N'Ban công, View biển'),
 	('P405', N'Trống', 'triple', N'Ban công, Phòng hút thuốc'),
-	('P506', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc')
+	('P506', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc'),
+	('P507', N'Trống', 'triple', N'Ban công, View biển, Phòng hút thuốc')
 go
 INSERT INTO NhanVien (maNV, hoTen, ngaySinh, sdt, diaChi, soCCCD, chucVu, caLamViec)
 VALUES 
