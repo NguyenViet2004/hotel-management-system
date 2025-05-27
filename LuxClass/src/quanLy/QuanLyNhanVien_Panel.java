@@ -1,4 +1,4 @@
-// File: QuanLyNhanVien_Panel.java
+
 package quanLy;
 
 import javax.swing.*;
@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import dao.NhanVien_Dao;
@@ -40,7 +41,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
         formPanel.setBackground(Color.WHITE);
         contentPanel.add(formPanel);
 
-        // Trái
+        // Form fields
         int labelWidth = 130, fieldWidth = 250, height = 30, spacingY = 40;
         int leftX = 40, rightX = 600;
 
@@ -49,6 +50,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
         tfMaNV = new JTextField();
         tfMaNV.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfMaNV.setBounds(leftX + labelWidth + 10, 20, fieldWidth, height);
+        tfMaNV.setEditable(false); // Disable manual input
 
         JLabel lbHoTen = new JLabel("Họ tên:");
         lbHoTen.setBounds(leftX, 20 + spacingY, labelWidth, height);
@@ -69,7 +71,6 @@ public class QuanLyNhanVien_Panel extends JPanel {
         tfSdt.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 2));
         tfSdt.setBounds(leftX + labelWidth + 10, 20 + 3 * spacingY, fieldWidth, height);
 
-        // Phải
         JLabel lbCCCD = new JLabel("CCCD:");
         lbCCCD.setBounds(rightX, 20, labelWidth, height);
         tfCCCD = new JTextField();
@@ -86,6 +87,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
         lbChucVu.setBounds(rightX, 20 + 2 * spacingY, labelWidth, height);
         cbChucVu = new JComboBox<>(new String[]{"Kế toán", "Lễ tân", "Bếp", "Buồng phòng"});
         cbChucVu.setBounds(rightX + labelWidth + 10, 20 + 2 * spacingY, fieldWidth, height);
+        cbChucVu.addActionListener(e -> updateMaNVField());
 
         JLabel lbCa = new JLabel("Ca làm việc:");
         lbCa.setBounds(rightX, 20 + 3 * spacingY, labelWidth, height);
@@ -98,7 +100,6 @@ public class QuanLyNhanVien_Panel extends JPanel {
         btnThem.setBounds(rightX + labelWidth + 10, 20 + 4 * spacingY + 5, 180, 35);
         btnThem.addActionListener(this::handleAdd);
 
-        // add vào formPanel
         Component[] components = {
             lbMaNV, tfMaNV, lbHoTen, tfHoTen, lbNgaySinh, dateChooser, lbSdt, tfSdt,
             lbCCCD, tfCCCD, lbDiaChi, tfDiaChi, lbChucVu, cbChucVu, lbCa, cbCa, btnThem
@@ -137,6 +138,7 @@ public class QuanLyNhanVien_Panel extends JPanel {
 
         scrollPane.setViewportView(table);
         loadData();
+        updateMaNVField();
     }
 
     private void loadData() {
@@ -152,26 +154,115 @@ public class QuanLyNhanVien_Panel extends JPanel {
         }
     }
 
+    private String generateMaNV() {
+        String role = cbChucVu.getSelectedItem().toString();
+        String roleCode;
+        switch (role) {
+            case "Kế toán": roleCode = "KT"; break;
+            case "Lễ tân": roleCode = "LT"; break;
+            case "Bếp": roleCode = "B"; break;
+            case "Buồng phòng": roleCode = "BP"; break;
+            default: roleCode = "NV";
+        }
+
+        int year = LocalDate.now().getYear();
+        String prefix = year + roleCode;
+        int sequence = 1;
+        String maNV;
+
+        try {
+            do {
+                maNV = String.format("%s%03d", prefix, sequence);
+                sequence++;
+                if (sequence > 999) {
+                    JOptionPane.showMessageDialog(this, "Đã hết số thứ tự cho mã nhân viên!");
+                    return null;
+                }
+            } while (nhanVienDao.isMaNVExists(maNV));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi kiểm tra mã nhân viên: " + e.getMessage());
+            return null;
+        }
+
+        return maNV;
+    }
+
+    private void updateMaNVField() {
+        String maNV = generateMaNV();
+        tfMaNV.setText(maNV != null ? maNV : "Lỗi sinh mã");
+    }
+
     private void handleAdd(ActionEvent e) {
+        // Validate birth date
         Date selectedDate = dateChooser.getDate();
         if (selectedDate == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh hợp lệ!");
             return;
         }
+        LocalDate birthDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate today = LocalDate.now();
+        long age = ChronoUnit.YEARS.between(birthDate, today);
+        if (age < 18) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi!");
+            return;
+        }
+
+        // Validate other fields
+        String hoTen = tfHoTen.getText().trim();
+        String sdt = tfSdt.getText().trim();
+        String cccd = tfCCCD.getText().trim();
+        String diaChi = tfDiaChi.getText().trim();
+        String maNV = tfMaNV.getText();
+
+        if (hoTen.isEmpty() || sdt.isEmpty() || cccd.isEmpty() || diaChi.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
+            return;
+        }
+
+        if (maNV.equals("Lỗi sinh mã") || maNV.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không thể sinh mã nhân viên!");
+            return;
+        }
+
+        // Validate hoTen
+        if (!hoTen.matches("^[\\p{L} ]+$") || hoTen.length() < 2 || hoTen.length() > 50) {
+            JOptionPane.showMessageDialog(this, "Họ tên chỉ chứa chữ cái, dấu cách, từ 2-50 ký tự!");
+            return;
+        }
+
+        // Validate sdt
+        if (!sdt.matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(this, "SĐT phải là 10 số, bắt đầu bằng 0!");
+            return;
+        }
+
+        // Validate cccd
+        if (!cccd.matches("^\\d{12}$")) {
+            JOptionPane.showMessageDialog(this, "CCCD phải là 12 số!");
+            return;
+        }
+
+        // Validate diaChi
+        if (!diaChi.matches("^[\\p{L}\\d\\s,./-]+$") || diaChi.length() < 5 || diaChi.length() > 100) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ từ 5-100 ký tự, chỉ chứa chữ, số, dấu cách, ,./-!");
+            return;
+        }
+
         NhanVien nv = new NhanVien(
-            tfMaNV.getText(), tfHoTen.getText(),
-            selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-            tfSdt.getText(), tfDiaChi.getText(), tfCCCD.getText(),
+            maNV, hoTen, birthDate,
+            sdt, diaChi, cccd,
             cbChucVu.getSelectedItem().toString(), cbCa.getSelectedItem().toString()
         );
+
         if (nhanVienDao.them(nv)) {
             model.addRow(new Object[]{
                 nv.getMaNV(), nv.getHoTen(), new SimpleDateFormat("dd/MM/yyyy").format(selectedDate),
                 nv.getSdt(), nv.getSoCCCD(), nv.getDiaChi(), nv.getChucVu(), nv.getCaLamViec()
             });
             JOptionPane.showMessageDialog(this, "Thêm thành công!");
+            updateMaNVField();
         } else {
-            JOptionPane.showMessageDialog(this, "Thêm thất bại (trùng mã?)");
+            JOptionPane.showMessageDialog(this, "Thêm thất bại! Mã nhân viên hoặc CCCD có thể đã tồn tại.");
         }
     }
 

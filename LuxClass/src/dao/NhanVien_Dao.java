@@ -252,4 +252,19 @@ public class NhanVien_Dao {
 
 	        return null; // Không tìm thấy
 	    }
+	 public boolean isMaNVExists(String maNV) {
+		    String sql = "SELECT COUNT(*) FROM NhanVien WHERE maNV = ?";
+		    try (Connection conn = ConnectDB.getConnection();
+		         PreparedStatement ps = conn.prepareStatement(sql)) {
+		        ps.setString(1, maNV);
+		        ResultSet rs = ps.executeQuery();
+		        if (rs.next()) {
+		            return rs.getInt(1) > 0;
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        // Log error or handle gracefully in production
+		    }
+		    return false;
+		}
 }
